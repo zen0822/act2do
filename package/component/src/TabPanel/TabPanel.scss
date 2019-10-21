@@ -1,0 +1,12 @@
+@import '../../scss/config.scss';
+
+$C_PREFIX: #{ $comp-prefix }-tab-panel;
+$TAB_PREFIX: #{ $comp-prefix }-tab;
+$ROW_PREFIX: #{ $comp-prefix }-row;
+$COL_PREFIX: #{ $comp-prefix }-col;
+
+.#{$C_PREFIX} {
+    .#{ $TAB_PREFIX } {
+        width: 100%;
+    }
+}

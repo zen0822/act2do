@@ -1,0 +1,32 @@
+@import '../../scss/config.scss';
+@import "../../scss/extend.scss";
+
+$C_PREFIX: #{$comp-prefix}-area-picker;
+$MENU_PREFIX: #{$comp-prefix}-menu;
+
+.#{$C_PREFIX} {
+    position: relative;
+    display: inline-block;
+    font-size: $h4;
+    width: 100%;
+    max-width: 568px;
+
+    &-province {
+        border: 1px solid $border-color;
+        border-radius: 3px;
+        color: $grey;
+        padding: 8px 10px;
+    }
+
+    .#{$MENU_PREFIX} {
+        width: 100%;
+    }
+
+    & > .#{$C_PREFIX}-error-tip {
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        font-size: $h5;
+        color: $danger-color;
+    }
+}

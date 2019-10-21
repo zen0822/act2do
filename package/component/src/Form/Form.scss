@@ -1,0 +1,13 @@
+@import '../../scss/config.scss';
+@import "../../scss/extend.scss";
+
+$C_PREFIX: #{ $comp-prefix }-form;
+$MENU_PREFIX: #{ $comp-prefix }-menu;
+$INPUT_PREFIX: #{ $comp-prefix }-input;
+
+.#{$C_PREFIX} {
+    .#{$MENU_PREFIX},
+    .#{$INPUT_PREFIX} {
+        width: 100%;
+    }
+}

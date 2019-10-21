@@ -1,0 +1,19 @@
+@import '../../scss/config.scss';
+@import "../../scss/extend.scss";
+
+$C_PREFIX: #{ $comp-prefix }-message;
+
+.#{$C_PREFIX} {
+    position: relative;
+    z-index: $z-index-toast;
+
+    .#{$C_PREFIX}-pop {
+        background-color: rgba(#000, .7);
+        border-radius: $border-radius;
+        color: #fff;
+        max-width: 200px;
+        padding: $gap-h $gap-h-double;
+        text-align: center;
+        white-space: pre-line;
+    }
+}

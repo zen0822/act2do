@@ -1,0 +1,73 @@
+@import '../../scss/config.scss';
+@import '../../scss/extend.scss';
+
+$C_PREFIX: #{$comp-prefix}-list;
+$LOADING_PREFIX: #{$comp-prefix}-loading;
+
+.#{$C_PREFIX} {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+
+    &-box,
+    &-content {
+        position: relative;
+    }
+
+    &-operation {
+        padding-bottom: $gap-v-double;
+        padding-top: $gap-v-double;
+        background-color: #fff;
+
+        &-loading {
+            text-align: right;
+            padding: $gap-v 0;
+
+            .rc-list-loading.rc-loading {
+                display: inline-block;
+                margin-top: 0;
+                margin-right: 6px;
+            }
+        }
+    }
+
+    &-loading.#{$LOADING_PREFIX} {
+        display: block;
+        margin: $gutter-v auto 0;
+        width: 20px;
+        max-height: 35px;
+        color: #ccc;
+    }
+
+    &-page {
+        width: 100%;
+
+        &-load-more {
+            text-align: center;
+            padding: $gap-v 0;
+        }
+    }
+
+    &-box-nomoredata {
+        padding: 20px 0;
+        text-align: center;
+        position: relative;
+
+        // &:after,
+        // &:before {
+        //     content: ' ';
+        //     width: 40px;
+        //     height: 1px;
+        //     background-color: #999;
+        //     position: absolute;
+        //     left: 20px;
+        //     top: 0;
+        //     bottom: 0;
+        //     margin: auto;
+        // }
+
+        // &:after {
+        //     left: auto;
+        //     right: 20px;
+        // }
+    }
+}

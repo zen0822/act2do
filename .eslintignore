@@ -1,0 +1,4 @@
+.vscode
+lib
+tsDist
+**/iconfont.svg.js

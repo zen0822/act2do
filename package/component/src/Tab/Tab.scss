@@ -1,0 +1,41 @@
+@import '../../scss/config.scss';
+@import '../../scss/mixin.scss';
+
+$C_PREFIX: #{ $comp-prefix }-tab;
+$ROW_PREFIX: #{ $comp-prefix }-row;
+$COL_PREFIX: #{ $comp-prefix }-col;
+
+.#{$C_PREFIX} {
+    display: inline-block;
+    font-size: 18px;
+    color: $grey-light;
+    border-bottom: $grey-lightest $border-thin solid;
+
+    .#{ $ROW_PREFIX } {
+        & > .#{ $COL_PREFIX } {
+            &:first-child .#{$C_PREFIX}-ele {
+                margin-left: 0;
+            }
+
+            &:last-child .#{$C_PREFIX}-ele {
+                margin-right: 0;
+            }
+
+            .#{$C_PREFIX}-ele {
+                margin: 0 $gutter-h-triple;
+                padding-bottom: $gutter-v-double / 2;
+                border-bottom: transparent 4px solid;
+                cursor: pointer;
+
+                &-selected {
+                    color: $grey-dark;
+                    border-bottom-color: $blue-color;
+                }
+
+                @include device-type('<m') {
+                    margin: 0 $gutter-h;
+                }
+            }
+        }
+    }
+}

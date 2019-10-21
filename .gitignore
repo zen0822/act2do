@@ -1,0 +1,7 @@
+*.zip
+*.log
+
+.vscode
+node_modules
+
+tsDist

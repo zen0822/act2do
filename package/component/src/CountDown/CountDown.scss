@@ -1,0 +1,7 @@
+@import '../../scss/config.scss';
+
+$C_PREFIX: #{ $comp-prefix }-count-down;
+
+.#{$C_PREFIX} {
+    display: inline-block;
+}

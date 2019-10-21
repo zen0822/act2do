@@ -1,0 +1,19 @@
+{
+  "name": "@act2do/component",
+  "version": "1.0.0",
+  "description": "Base component for react.",
+  "author": "zenhuangzheng@126.com",
+  "private": false,
+  "license": "MIT",
+  "typings": "./index.d.ts",
+  "bin": {
+    "act2do-component": "./bin/command.js"
+  },
+  "scripts": {
+    "debug": "",
+    "start": "build dev"
+  },
+  "devDependencies": {
+    "@act2do/build": "^0.0.1"
+  }
+}

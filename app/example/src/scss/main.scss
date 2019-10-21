@@ -1,0 +1,36 @@
+@import './config.scss';
+
+* {
+  -webkit-tap-highlight-color: rgba(255, 0, 0, 0);
+}
+
+html,
+body {
+  color: $grey;
+  font-size: $font-base;
+  font-weight: normal;
+  font-family: 'Microsoft Yahei', 'simSun', 'Arial';
+  padding: 0;
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+.#{$comp-prefix}-react-link {
+  &:link,
+  &:visited,
+  &:hover,
+  &:active {
+    color: $grey;
+    text-decoration: none;
+  }
+}
+
+.#{$comp-prefix}-link {
+  color: #2569ff;
+  white-space: nowrap;
+  text-decoration: underline;
+}

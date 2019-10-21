@@ -1,0 +1,30 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "Example application.",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "build": "build",
+    "debug": "lerna run --scope @act2do/build debug",
+    "dev:EX": "act2do-build dev config example/project.config.js",
+    "mock:EX": "nodemon --watch ./app/example/mock bin/mock.js --app example",
+    "prod:EX": "cross-env NODE_ENV=production node bin/prod --app example",
+    "nodemon": "nodemon",
+    "tsc": "tsc",
+    "tsc:watch": "tsc -w"
+  },
+  "devDependencies": {
+    "@act2do/build": "^0.0.1",
+    "@act2do/component": "^1.0.0",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-react-jsx-source": "^7.5.0",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.6.0",
+    "@babel/runtime": "^7.1.2",
+    "react-hot-loader": "^4.12.13"
+  }
+}

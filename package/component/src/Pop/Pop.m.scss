@@ -1,0 +1,14 @@
+/**
+ * pop 组件样式
+ */
+
+@import '../../scss/config.scss';
+@import '../../scss/mixin.scss';
+
+$C_PREFIX: #{ $comp-prefix }-pop;
+
+.#{$C_PREFIX} {
+  @include device-type("<l") {
+
+  }
+}

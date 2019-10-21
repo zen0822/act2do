@@ -1,0 +1,15 @@
+/**
+ * pop 组件样式
+ */
+
+@import '../../scss/config.scss';
+
+$C_PREFIX: #{ $comp-prefix }-pop;
+
+.#{$C_PREFIX} {
+  position: fixed;
+
+  &.#{$C_PREFIX}-part {
+    position: absolute;
+  }
+}

@@ -1,0 +1,99 @@
+@import '../../scss/config.scss';
+
+$C_PREFIX: #{$comp-prefix}-slideshow;
+
+.#{$C_PREFIX} {
+    position: relative;
+    overflow: hidden;
+
+    &-container {
+        width: 100%;
+        position: relative;
+    }
+
+    &-ele {
+        overflow: hidden;
+        display: none;
+        backface-visibility: hidden;
+        perspective: 1000px;
+        transition-timing-function: ease-in-out;
+        transition-property: transform;
+
+        &-active,
+        &-pre,
+        &-next {
+            display: block;
+        }
+
+        &-pre,
+        &-next {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        &-pre {
+            transform: translate3d(-100%, 0, 0);
+        }
+
+        &-next {
+            transform: translate3d(100%, 0, 0);
+        }
+
+        &-left,
+        &-right {
+            transform: translate3d(0, 0, 0);
+        }
+
+        &-active {
+            &.#{$C_PREFIX}-ele-left {
+                transform: translate3d(-100%, 0, 0);
+            }
+
+
+            &.#{$C_PREFIX}-ele-right {
+                transform: translate3d(100%, 0, 0);
+            }
+        }
+    }
+
+    &-pagination {
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translate(-50%, 0);
+
+        &-num {
+            color: #fff;
+        }
+
+        &-spot {
+            &-ele {
+                width: 5px;
+                height: 5px;
+                border-radius: 100%;
+                background-color: rgba(#fff, .6);
+                margin: 0 2.5px;
+
+                &-current {
+                    background-color: #fff;
+                }
+            }
+        }
+
+        &-rail {
+            &-ele {
+                width: 7px;
+                height: 2px;
+                border-radius: 4px;
+                background-color: rgba(#fff, .6);
+                margin: 0 2px;
+
+                &-current {
+                    background-color: #fff;
+                }
+            }
+        }
+    }
+}

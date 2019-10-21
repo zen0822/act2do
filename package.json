@@ -1,0 +1,60 @@
+{
+  "name": "act2do",
+  "version": "0.0.1",
+  "description": "Tool for react.",
+  "author": "zenhuangzheng@126.com",
+  "private": true,
+  "license": "UNLICENSED",
+  "bin": {
+    "set.js": "./bin/set.js"
+  },
+  "scripts": {
+    "dev:EX": "act2do-build dev config app/example/project.config.js",
+    "mock:EX": "nodemon --watch ./app/example/mock bin/mock.js --app example",
+    "prod:EX": "act2do-build prod config app/example/project.config.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "package/**/*.{js,jsx}": [
+      "eslint",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "@types/loadable__component": "^5.10.0",
+    "@types/node": "^12.7.5",
+    "@types/reach__router": "^1.2.5",
+    "@types/react-dom": "^16.9.0",
+    "@types/react-loadable": "^5.5.1",
+    "@types/react-redux": "^7.1.2",
+    "@typescript-eslint/eslint-plugin": "^2.3.3",
+    "@typescript-eslint/parser": "^2.3.3",
+    "eslint": "^6.4.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-friendly-formatter": "^4.0.1",
+    "eslint-plugin-html": "^6.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-json": "^1.4.0",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^2.1.2",
+    "eslint-plugin-standard": "^4.0.0",
+    "husky": "^3.0.9",
+    "lerna": "^3.17.0",
+    "lint-staged": "^9.4.2",
+    "react": "^16.10.2",
+    "stylelint": "^11.0.0",
+    "stylelint-config-standard": "^19.0.0",
+    "stylelint-scss": "^3.11.1",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "react-hot-loader": "^4.12.15",
+    "react-keep-alive": "^2.5.2"
+  }
+}

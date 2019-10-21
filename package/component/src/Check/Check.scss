@@ -1,0 +1,23 @@
+@import '../../scss/config.scss';
+@import "../../scss/extend.scss";
+
+$C_PREFIX: #{ $comp-prefix }-check;
+
+.#{$C_PREFIX} {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    font-size: $h4;
+
+    .#{$C_PREFIX}-label {
+        & > span,
+        & > input {
+            vertical-align: middle;
+        }
+
+        & > span {
+            margin-left: $gutter-h-half;
+            vertical-align: middle;
+        }
+    }
+}
