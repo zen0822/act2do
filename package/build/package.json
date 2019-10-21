@@ -102,5 +102,5 @@
     "webpack-hot-middleware": "^2.18.2",
     "yargs": "^14.2.0"
   },
-  "gitHead": "3f1e0a2b9a9f41f3e279ff0b4012a54221800ee5"
+  "gitHead": "6f116a3ce3fd9ef535a65825fd16cd12f4e2a82f"
 }
