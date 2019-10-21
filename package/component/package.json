@@ -1,6 +1,6 @@
 {
   "name": "@act2do/component",
-  "version": "1.0.0",
+  "version": "1.0.1-alpha.0",
   "description": "Base component for react.",
   "author": "zenhuangzheng@126.com",
   "private": false,
@@ -14,6 +14,6 @@
     "start": "build dev"
   },
   "devDependencies": {
-    "@act2do/build": "^0.0.1"
+    "@act2do/build": "^1.0.0-alpha.0"
   }
 }
