@@ -6,6 +6,9 @@
   "private": false,
   "license": "MIT",
   "typings": "./index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "lint-staged": {
     "src/**/*.js": [
       "eslint --fix",
@@ -99,5 +102,5 @@
     "webpack-hot-middleware": "^2.18.2",
     "yargs": "^14.2.0"
   },
-  "gitHead": "995f47bffa002762b3176ef1d7dbb6aadfd5d5ea"
+  "gitHead": "3f1e0a2b9a9f41f3e279ff0b4012a54221800ee5"
 }
