@@ -1,6 +1,6 @@
 {
   "name": "@act2do/build",
-  "version": "1.0.1-alpha.0",
+  "version": "1.0.2-alpha.0",
   "description": "Tool for build react app.",
   "author": "zenhuangzheng@126.com",
   "private": false,
