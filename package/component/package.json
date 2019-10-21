@@ -15,5 +15,6 @@
   },
   "devDependencies": {
     "@act2do/build": "^1.0.0-alpha.0"
-  }
+  },
+  "gitHead": "6f27d93865d95ad9937eb866d4c2c15d45c2ccf6"
 }
