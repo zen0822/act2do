@@ -16,7 +16,7 @@
     "test": "echo \"Error: no test specified in @act2do\" && exit 1"
   },
   "lint-staged": {
-    "{app}/**/*.{js,jsx,ts,tsx}": [
+    "{app,package}/**/*.{js,jsx,ts,tsx}": [
       "eslint"
     ]
   },
