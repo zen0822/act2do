@@ -6,7 +6,7 @@ import React from 'react'
 import RouterConfig from '../route/RouterConfig'
 import { setConfig } from 'react-hot-loader'
 import { hot } from 'react-hot-loader/root'
-const a = 2
+const a = 3
 setConfig({
   trackTailUpdates: false
 })
