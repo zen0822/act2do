@@ -13,8 +13,7 @@
     "act2do-component": "./bin/command.js"
   },
   "scripts": {
-    "debug": "",
-    "start": "build dev"
+    "test": "echo \"Error: no test specified in @act2do/component\" && exit 1"
   },
   "devDependencies": {
     "@act2do/build": "^1.0.4-alpha.0"
