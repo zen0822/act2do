@@ -1,5 +1,5 @@
 module.exports = {
   hooks: {
-    'pre-commit': 'lerna run test'
+    'pre-commit': 'yarn run precommit && lerna run test'
   }
 }

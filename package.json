@@ -11,6 +11,7 @@
   "scripts": {
     "dev:EX": "act2do-build dev config app/example/project.config.js",
     "mock:EX": "nodemon --watch ./app/example/mock bin/mock.js --app example",
+    "precommit": "lint-staged",
     "prod:EX": "act2do-build prod config app/example/project.config.js",
     "test": "echo \"Error: no test specified in @act2do\" && exit 1"
   },
