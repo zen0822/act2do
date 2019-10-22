@@ -9,12 +9,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "lint-staged": {
-    "src/**/*.js": [
-      "eslint --fix",
-      "git add"
-    ]
-  },
   "bin": {
     "act2do-build": "./bin/command.js"
   },
