@@ -14,13 +14,8 @@
     "prod:EX": "act2do-build prod config app/example/project.config.js",
     "test": "echo \"Error: no test specified in @act2do\" && exit 1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lerna run test"
-    }
-  },
   "lint-staged": {
-    "package/**/*.{js,jsx}": [
+    "{app,package}/**/*.{js,jsx,ts,tsx}": [
       "eslint",
       "git add"
     ]
