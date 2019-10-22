@@ -14,11 +14,6 @@
     "prod:EX": "act2do-build prod config app/example/project.config.js",
     "test": "echo \"Error: no test specified in @act2do\" && exit 1"
   },
-  "lint-staged": {
-    "{app,package}/**/*.{js,jsx,ts,tsx}": [
-      "eslint"
-    ]
-  },
   "devDependencies": {
     "@types/loadable__component": "^5.10.0",
     "@types/node": "^12.7.5",
