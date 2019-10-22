@@ -17,8 +17,7 @@
   },
   "lint-staged": {
     "{app,package}/**/*.{js,jsx,ts,tsx}": [
-      "eslint",
-      "git add"
+      "eslint"
     ]
   },
   "devDependencies": {
@@ -30,7 +29,7 @@
     "@types/react-redux": "^7.1.2",
     "@typescript-eslint/eslint-plugin": "^2.3.3",
     "@typescript-eslint/parser": "^2.3.3",
-    "eslint": "^6.4.0",
+    "eslint": "^6.5.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-friendly-formatter": "^4.0.1",
     "eslint-plugin-html": "^6.0.0",
