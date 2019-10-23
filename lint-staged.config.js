@@ -1,6 +1,9 @@
+const micromatch = require('micromatch')
+
 module.exports = {
-  '{app,package}/**/*.{js,jsx,ts,tsx}': [
-    'eslint --fix',
-    'git add'
-  ]
+  'app/**/*.{js,jsx,ts,tsx}': (file) => {
+    const match = micromatch.not(file, ['dist', 'tsDist'])
+
+    return match.map(file => `eslint ${file} --fix`)
+  }
 }
