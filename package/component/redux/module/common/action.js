@@ -17,71 +17,71 @@ export const ADD_TOAST = 'ADD_TOAST'
 export const ADD_TOAST_MESSAGE = 'ADD_TOAST_MESSAGE'
 
 export const addAlert = (vm) => {
-    return {
-        type: ADD_ALERT,
-        vm
-    }
+  return {
+    type: ADD_ALERT,
+    vm
+  }
 }
 
 export const addAlertMessage = (message) => {
-    return {
-        type: ADD_ALERT_MESSAGE,
-        message
-    }
+  return {
+    type: ADD_ALERT_MESSAGE,
+    message
+  }
 }
 
 export const addAlertProp = (prop) => {
-    return {
-        type: ADD_ALERT_PROP,
-        prop
-    }
+  return {
+    type: ADD_ALERT_PROP,
+    prop
+  }
 }
 
 export const addConfirm = (vm) => {
-    return {
-        type: ADD_CONFIRM,
-        vm
-    }
+  return {
+    type: ADD_CONFIRM,
+    vm
+  }
 }
 
 export const addConfirmMessage = (message) => {
-    return {
-        type: ADD_CONFIRM_MESSAGE,
-        message
-    }
+  return {
+    type: ADD_CONFIRM_MESSAGE,
+    message
+  }
 }
 
 export const addConfirmProp = (prop) => {
-    return {
-        type: ADD_CONFIRM_PROP,
-        prop
-    }
+  return {
+    type: ADD_CONFIRM_PROP,
+    prop
+  }
 }
 
 export const addTip = (vm) => {
-    return {
-        type: ADD_TIP,
-        vm
-    }
+  return {
+    type: ADD_TIP,
+    vm
+  }
 }
 
 export const addTipMessage = (message) => {
-    return {
-        type: ADD_TIP_MESSAGE,
-        message
-    }
+  return {
+    type: ADD_TIP_MESSAGE,
+    message
+  }
 }
 
 export const addToast = (vm) => {
-    return {
-        type: ADD_TOAST,
-        vm
-    }
+  return {
+    type: ADD_TOAST,
+    vm
+  }
 }
 
 export const addToastMessage = (message) => {
-    return {
-        type: ADD_TOAST_MESSAGE,
-        message
-    }
+  return {
+    type: ADD_TOAST_MESSAGE,
+    message
+  }
 }

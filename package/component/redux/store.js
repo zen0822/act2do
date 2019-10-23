@@ -3,17 +3,17 @@
  */
 
 import {
-    combineReducers
+  combineReducers
 } from 'redux'
 
 import commonReducer from './module/common/reducer'
 
 const commonStore = combineReducers({
-    common: commonReducer
+  common: commonReducer
 })
 
 export default commonStore
 
 export {
-    commonStore as common
+  commonStore as common
 }

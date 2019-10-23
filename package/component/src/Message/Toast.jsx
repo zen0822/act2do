@@ -13,61 +13,61 @@ import { common as commonStore } from '../../redux/store'
 import { addToast, addToastMessage } from '../../redux/module/common/action'
 
 let toasting = false // 是否正在显示 toast 组件
-let toastHub = [] // 存储需要显示 toast 的队列
+const toastHub = [] // 存储需要显示 toast 的队列
 
 const store = createStore(
-    commonStore,
-    applyMiddleware(
-        thunkMiddleware
-    )
+  commonStore,
+  applyMiddleware(
+    thunkMiddleware
+  )
 )
 
 // 创建 toast 组件
 class Toast extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.autoHideCb = this.autoHideCb.bind(this)
+    this.autoHideCb = this.autoHideCb.bind(this)
 
-        this.state = {
-            message: ''
-        }
+    this.state = {
+      message: ''
     }
+  }
 
-    show() {
-        this.refs.message.show()
+  show() {
+    this.refs.message.show()
+  }
+
+  hide() {
+    this.refs.message.hide()
+  }
+
+  autoHideCb() {
+    toasting = false
+
+    if (toastHub.length > 0) {
+      const { message, opt } = toastHub.shift()
+
+      return toast(message, opt)
     }
+  }
 
-    hide() {
-        this.refs.message.hide()
-    }
+  componentDidMount() {
+    store.subscribe(() => {
+      this.setState({
+        message: store.getState().common.toast.message
+      })
+    })
+  }
 
-    autoHideCb() {
-        toasting = false
-
-        if (toastHub.length > 0) {
-            const { message, opt } = toastHub.shift()
-
-            return toast(message, opt)
-        }
-    }
-
-    componentDidMount() {
-        store.subscribe(() => {
-            this.setState({
-                message: store.getState().common.toast.message
-            })
-        })
-    }
-
-    render() {
-        return <Message
-            hide={this.autoHideCb}
-            info={this.state.message}
-            position='bottom'
-            kind='fade'
-            ref='message' />
-    }
+  render() {
+    return <Message
+      hide={this.autoHideCb}
+      info={this.state.message}
+      position='bottom'
+      kind='fade'
+      ref='message' />
+  }
 }
 
 // 创建并挂载 toast 组件
@@ -86,28 +86,28 @@ store.dispatch(addToast(toastVm))
  * @param {object} opt - 选项
  */
 const toast = async (message = '', opt = {}) => {
-    if (toasting) {
-        return toastHub.push({
-            message,
-            opt
-        })
-    }
-
-    store.dispatch(addToastMessage(message))
-
-    return new Promise(async (resolve, reject) => {
-        try {
-            toasting = true
-
-            await toastVm.show()
-
-            opt.cb && opt.cb()
-
-            resolve()
-        } catch (error) {
-            reject(error)
-        }
+  if (toasting) {
+    return toastHub.push({
+      message,
+      opt
     })
+  }
+
+  store.dispatch(addToastMessage(message))
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      toasting = true
+
+      await toastVm.show()
+
+      opt.cb && opt.cb()
+
+      resolve()
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 export default toast

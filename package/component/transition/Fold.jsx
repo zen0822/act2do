@@ -22,216 +22,216 @@ import { xclass } from '../util/comp'
 import { prop as elementProp } from '../util/dom/prop'
 
 class Fold extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        // 这个组件的 dom 元素引用
-        this.$el = {}
-        // 需要被折叠的元素的高度
-        this.transitionHeight = props.height
-        // 过渡时间
-        this.transitionTime = this._getTransitionTime()
-        // 过渡的的样式声明
-        this.transition = `height ${this.transitionTime}ms ease-out`
+    // 这个组件的 dom 元素引用
+    this.$el = {}
+    // 需要被折叠的元素的高度
+    this.transitionHeight = props.height
+    // 过渡时间
+    this.transitionTime = this._getTransitionTime()
+    // 过渡的的样式声明
+    this.transition = `height ${this.transitionTime}ms ease-out`
+  }
+
+  _getTransitionTime() {
+    switch (this.props.speed) {
+      case 'normal':
+        return 300
+      case 'fast':
+        return 150
+      case 'slow':
+        return 450
+      default:
+        return 300
     }
+  }
 
-    _getTransitionTime() {
-        switch (this.props.speed) {
-            case 'normal':
-                return 300
-            case 'fast':
-                return 150
-            case 'slow':
-                return 450
-            default:
-                return 300
-        }
-    }
+  _compClass(className) {
+    return xclass('transition-fold', [
+      ''
+    ]) + ' ' + this.props.className
+  }
 
-    _compClass(className) {
-        return xclass('transition-fold', [
-            ''
-        ]) + ' ' + this.props.className
-    }
-
-    /**
+  /**
      * 启动进来时的过渡动画
      *
      * @param {Object} opt
      */
-    async enter(opt = {}) {
-        await this.beforeEnter(opt)
-        await this.entering(opt)
-        await this.afterEnter(opt)
+  async enter(opt = {}) {
+    await this.beforeEnter(opt)
+    await this.entering(opt)
+    await this.afterEnter(opt)
 
-        return new Promise((resolve, reject) => {
-            return resolve()
-        })
-    }
+    return new Promise((resolve, reject) => {
+      return resolve()
+    })
+  }
 
-    /**
+  /**
      * 启动离开时的过渡动画
      *
      * @param {Object} opt
      */
-    async leave(opt = {}) {
-        await this.beforeLeave(opt)
-        await this.leaveing(opt)
-        await this.afterLeave(opt)
+  async leave(opt = {}) {
+    await this.beforeLeave(opt)
+    await this.leaveing(opt)
+    await this.afterLeave(opt)
 
-        return new Promise((resolve, reject) => {
-            return resolve()
-        })
+    return new Promise((resolve, reject) => {
+      return resolve()
+    })
+  }
+
+  beforeEnter() {
+    const el = this.$el
+
+    if (!el) {
+      return false
     }
 
-    beforeEnter() {
-        let el = this.$el
+    this.props.beforeEnter && this.props.beforeEnter()
 
-        if (!el) {
-            return false
-        }
+    Object.assign(el.style, {
+      'transition': this.transition,
+      'height': 0,
+      'overflow': 'hidden'
+    })
 
-        this.props.beforeEnter && this.props.beforeEnter()
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        el.style.display = ''
 
-        Object.assign(el.style, {
-            'transition': this.transition,
-            'height': 0,
-            'overflow': 'hidden'
-        })
+        return resolve()
+      })
+    })
+  }
 
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                el.style.display = ''
+  entering() {
+    const el = this.$el
 
-                return resolve()
-            })
-        })
+    if (!el) {
+      return false
     }
 
-    entering() {
-        let el = this.$el
+    // HACK: trigger browser reflow
+    const height = el.offsetHeight
 
-        if (!el) {
-            return false
-        }
+    this.props.entering && this.props.entering()
 
-        // HACK: trigger browser reflow
-        let height = el.offsetHeight
+    el.style.height = `${this.transitionHeight}px`
 
-        this.props.entering && this.props.entering()
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        return resolve()
+      }, this.transitionTime)
+    })
+  }
 
-        el.style.height = `${this.transitionHeight}px`
+  afterEnter() {
+    const el = this.$el
 
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                return resolve()
-            }, this.transitionTime)
-        })
+    if (!el) {
+      return false
     }
 
-    afterEnter() {
-        let el = this.$el
+    Object.assign(el.style, {
+      'height': '',
+      'transition': '',
+      'overflow': ''
+    })
 
-        if (!el) {
-            return false
-        }
+    this.props.afterEnter && this.props.afterEnter()
+  }
 
-        Object.assign(el.style, {
-            'height': '',
-            'transition': '',
-            'overflow': ''
-        })
+  beforeLeave() {
+    const el = this.$el
 
-        this.props.afterEnter && this.props.afterEnter()
+    if (!el) {
+      return false
     }
 
-    beforeLeave() {
-        let el = this.$el
+    this.props.beforeLeave && this.props.beforeLeave()
 
-        if (!el) {
-            return false
-        }
+    return Object.assign(el.style, {
+      height: `${this.transitionHeight}px`,
+      overflow: 'hidden',
+      'transition': this.transition
+    })
+  }
 
-        this.props.beforeLeave && this.props.beforeLeave()
+  leaveing() {
+    const el = this.$el
 
-        return Object.assign(el.style, {
-            height: `${this.transitionHeight}px`,
-            overflow: 'hidden',
-            'transition': this.transition
-        })
+    if (!el) {
+      return false
     }
 
-    leaveing() {
-        let el = this.$el
+    const height = el.offsetHeight
 
-        if (!el) {
-            return false
-        }
+    this.props.leaving && this.props.leaving()
 
-        let height = el.offsetHeight
+    el.style.height = 0
 
-        this.props.leaving && this.props.leaving()
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        el.style.display = 'none'
 
-        el.style.height = 0
+        return resolve()
+      }, this.transitionTime)
+    })
+  }
 
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                el.style.display = 'none'
+  afterLeave() {
+    const el = this.$el
 
-                return resolve()
-            }, this.transitionTime)
-        })
+    if (!el) {
+      return false
     }
 
-    afterLeave() {
-        let el = this.$el
+    Object.assign(el.style, {
+      'transition': '',
+      'height': '',
+      'overflow': ''
+    })
 
-        if (!el) {
-            return false
-        }
+    this.props.afterLeave && this.props.afterLeave()
+  }
 
-        Object.assign(el.style, {
-            'transition': '',
-            'height': '',
-            'overflow': ''
-        })
-
-        this.props.afterLeave && this.props.afterLeave()
+  componentDidMount() {
+    if (this.props.height === undefined && this.$el) {
+      this.transitionHeight = elementProp(this.$el).offsetHeight
     }
+  }
 
-    componentDidMount() {
-        if (this.props.height === undefined && this.$el) {
-            this.transitionHeight = elementProp(this.$el).offsetHeight
-        }
-    }
-
-    render() {
-        return (
-            <div
-                className={this._compClass()}
-                ref={($el) => this.$el = $el}
-                style={{
-                    ...this.props.style,
-                    display: 'none'
-                }}
-            >
-                {this.props.children}
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div
+        className={this._compClass()}
+        ref={($el) => this.$el = $el}
+        style={{
+          ...this.props.style,
+          display: 'none'
+        }}
+      >
+        {this.props.children}
+      </div>
+    )
+  }
 }
 
 Fold.defaultProps = {
-    className: '',
-    style: {},
-    speed: 'normal'
+  className: '',
+  style: {},
+  speed: 'normal'
 }
 
 Fold.propTypes = {
-    className: PropTypes.string,
-    height: PropTypes.number,
-    style: PropTypes.object,
-    speed: PropTypes.string
+  className: PropTypes.string,
+  height: PropTypes.number,
+  style: PropTypes.object,
+  speed: PropTypes.string
 }
 
 export default Fold

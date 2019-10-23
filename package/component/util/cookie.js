@@ -7,16 +7,16 @@
  * @return {[type]}              [description]
  */
 const addCookie = (name, value, expiresHours, domain) => {
-    let cookieString = name + '=' + escape(value) + ';domain' + '=' + domain
+  let cookieString = name + '=' + escape(value) + ';domain' + '=' + domain
 
-    if (expiresHours > 0) {
-        let date = new Date()
+  if (expiresHours > 0) {
+    const date = new Date()
 
-        date.setTime(date.getTime() + expiresHours * 3600 * 1000)
-        cookieString = cookieString + '; expires=' + date.toGMTString()
-    }
+    date.setTime(date.getTime() + expiresHours * 3600 * 1000)
+    cookieString = cookieString + '; expires=' + date.toGMTString()
+  }
 
-    document.cookie = cookieString
+  document.cookie = cookieString
 }
 
 /**
@@ -27,7 +27,7 @@ const addCookie = (name, value, expiresHours, domain) => {
  *
  */
 const getCookie = (name, cookies = document.cookie) => {
-    return decodeURIComponent(cookies.replace(new RegExp('(?:(?:^|.*;)\\s*' + encodeURIComponent(name).replace(/[\-\.\+\*]/g, '\\$&') + '\\s*\\=\\s*([^;]*).*$)|^.*$'), '$1')) || null
+  return decodeURIComponent(cookies.replace(new RegExp('(?:(?:^|.*;)\\s*' + encodeURIComponent(name).replace(/[\-\.\+\*]/g, '\\$&') + '\\s*\\=\\s*([^;]*).*$)|^.*$'), '$1')) || null
 }
 
 /**
@@ -37,26 +37,26 @@ const getCookie = (name, cookies = document.cookie) => {
  * @return {[type]}      [description]
  */
 const delCookie = (name) => {
-    let date = new Date()
+  const date = new Date()
 
-    date.setTime(date.getTime() - 10000)
-    document.cookie = name + '=v; expires=' + date.toGMTString()
+  date.setTime(date.getTime() - 10000)
+  document.cookie = name + '=v; expires=' + date.toGMTString()
 }
 
 const setCookie = (name, value, expireMin, domain) => {
-    if (!domain) {
-        domain = location.hostname
-    }
-    if (arguments.length > 2) {
-        var expireTime = new Date(new Date().getTime() + parseInt(expireMin * 60 * 1000))
-        document.cookie = name + '=' + escape(value) + '; path=/; domain=' + domain + '; expires=' + expireTime.toGMTString()
-    } else {
-        document.cookie = name + '=' + escape(value) + '; path=/; domain=' + domain
-    }
+  if (!domain) {
+    domain = location.hostname
+  }
+  if (arguments.length > 2) {
+    const expireTime = new Date(new Date().getTime() + parseInt(expireMin * 60 * 1000))
+    document.cookie = name + '=' + escape(value) + '; path=/; domain=' + domain + '; expires=' + expireTime.toGMTString()
+  } else {
+    document.cookie = name + '=' + escape(value) + '; path=/; domain=' + domain
+  }
 }
 module.exports = {
-    addCookie,
-    getCookie,
-    delCookie,
-    setCookie
+  addCookie,
+  getCookie,
+  delCookie,
+  setCookie
 }

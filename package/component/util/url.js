@@ -4,27 +4,27 @@
  * @param {string} urlSearch - url 中的 search 值
  */
 const search = (urlSearch) => {
-    if (!urlSearch) {
-        return false
-    }
+  if (!urlSearch) {
+    return false
+  }
 
-    if (urlSearch.indexOf('?') > -1) {
-        urlSearch = urlSearch.slice(1)
-    }
+  if (urlSearch.indexOf('?') > -1) {
+    urlSearch = urlSearch.slice(1)
+  }
 
-    const searchObj = {}
+  const searchObj = {}
 
-    let urlSearchArr = urlSearch.split('&')
+  const urlSearchArr = urlSearch.split('&')
 
-    urlSearchArr.forEach((item) => {
-        let searchItem = item.split('=')
+  urlSearchArr.forEach((item) => {
+    const searchItem = item.split('=')
 
-        Object.assign(searchObj, {
-            [searchItem[0]]: searchItem[1]
-        })
+    Object.assign(searchObj, {
+      [searchItem[0]]: searchItem[1]
     })
+  })
 
-    return searchObj
+  return searchObj
 }
 
 /**
@@ -35,21 +35,21 @@ const search = (urlSearch) => {
  * @param {string} urlSearch - url 中的 search 值
  */
 const fitSearch = (urlSearch) => {
-    const urlSearchObj = search(urlSearch)
-    const urlSearchObjKeys = Object.keys(urlSearchObj)
-    const urlSearchObjValues = Object.values(urlSearchObj)
-    let urlSearchArr = []
+  const urlSearchObj = search(urlSearch)
+  const urlSearchObjKeys = Object.keys(urlSearchObj)
+  const urlSearchObjValues = Object.values(urlSearchObj)
+  const urlSearchArr = []
 
-    urlSearchObjValues.forEach((item, index) => {
-        if (item !== '') {
-            urlSearchArr.push(`${urlSearchObjKeys[index]}=${item}`)
-        }
-    })
+  urlSearchObjValues.forEach((item, index) => {
+    if (item !== '') {
+      urlSearchArr.push(`${urlSearchObjKeys[index]}=${item}`)
+    }
+  })
 
-    return urlSearchArr.join('&')
+  return urlSearchArr.join('&')
 }
 
 export {
-    search,
-    fitSearch
+  search,
+  fitSearch
 }

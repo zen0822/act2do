@@ -62,464 +62,464 @@ import validateRegex from './validate'
 
 const compName = 'input'
 const _xclass = (className) => {
-    return xclass.call(this, compName, className)
+  return xclass.call(this, compName, className)
 }
 
 const language = defineMessages({
-    wrongFormat: {
-        id: 'rc.input.wrongFormat'
-    },
-    noEmptyData: {
-        id: 'rc.input.noEmptyData'
-    },
-    inputNum: {
-        id: 'rc.input.inputNum'
-    },
-    noLessNum: {
-        id: 'rc.input.noLessNum'
-    },
-    noMoreNum: {
-        id: 'rc.input.noMoreNum'
-    },
-    noLessLength: {
-        id: 'rc.input.noLessLength'
-    },
-    noMoreLength: {
-        id: 'rc.input.noMoreLength'
-    }
+  wrongFormat: {
+    id: 'rc.input.wrongFormat'
+  },
+  noEmptyData: {
+    id: 'rc.input.noEmptyData'
+  },
+  inputNum: {
+    id: 'rc.input.inputNum'
+  },
+  noLessNum: {
+    id: 'rc.input.noLessNum'
+  },
+  noMoreNum: {
+    id: 'rc.input.noMoreNum'
+  },
+  noLessLength: {
+    id: 'rc.input.noLessLength'
+  },
+  noMoreLength: {
+    id: 'rc.input.noMoreLength'
+  }
 })
 
 class Input extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.compName = compName // 组件名字
-        this.regexObj = null // 正则校验的正则表达式
-        this.formatMessage = '' // 正则校验的错误提示
-        this.refInput = null // 输入框的 ref
-        this.focusing = false // 输入框获取焦点的状态
-        this.refInput = null // 输入框的 ref
+    this.compName = compName // 组件名字
+    this.regexObj = null // 正则校验的正则表达式
+    this.formatMessage = '' // 正则校验的错误提示
+    this.refInput = null // 输入框的 ref
+    this.focusing = false // 输入框获取焦点的状态
+    this.refInput = null // 输入框的 ref
 
-        this.onChangeHandler = this.onChangeHandler.bind(this)
-        this.onBlurHandler = this.onBlurHandler.bind(this)
-        this.onFocusHandler = this.onFocusHandler.bind(this)
+    this.onChangeHandler = this.onChangeHandler.bind(this)
+    this.onBlurHandler = this.onBlurHandler.bind(this)
+    this.onFocusHandler = this.onFocusHandler.bind(this)
 
-        if (props.regex) {
-            this.regexObj = new RegExp(props.regex)
-            this.formatMessage = props.regexTip || `${this.props.name ? this.props.name : ''}${this._getLanguage(language.wrongFormat)}`
-        } else if (props.verifiedType !== undefined) {
-            let validate = validateRegex(props.verifiedType)
-            this.regexObj = validate.regex
-            this.formatMessage = `${validate.dataTypeName}${this._getLanguage(language.wrongFormat)}`
-        }
-
-        this.state = {
-            errorTip: '', // 错误的提示信息
-            popErrorTip: props.errorTipType === 'tip', // 弹窗错误提示
-            value: props.value,
-            verified: props.verified, // 是否通过了验证
-            inputTextLength: 0 // 当前输入框的字符长度
-        }
+    if (props.regex) {
+      this.regexObj = new RegExp(props.regex)
+      this.formatMessage = props.regexTip || `${this.props.name ? this.props.name : ''}${this._getLanguage(language.wrongFormat)}`
+    } else if (props.verifiedType !== undefined) {
+      const validate = validateRegex(props.verifiedType)
+      this.regexObj = validate.regex
+      this.formatMessage = `${validate.dataTypeName}${this._getLanguage(language.wrongFormat)}`
     }
 
-    _getLanguage(config, opt) {
-        return this.props.intl.formatMessage(config, opt)
+    this.state = {
+      errorTip: '', // 错误的提示信息
+      popErrorTip: props.errorTipType === 'tip', // 弹窗错误提示
+      value: props.value,
+      verified: props.verified, // 是否通过了验证
+      inputTextLength: 0 // 当前输入框的字符长度
     }
+  }
 
-    /**
+  _getLanguage(config, opt) {
+    return this.props.intl.formatMessage(config, opt)
+  }
+
+  /**
      * 验证数据是否为空
      *
      * @return {Object} -
      *                  verified - 验证情况
      *                  errorTip - 错误提示
      */
-    _verifyEmpty(firstVerify) {
-        const { requiredTip, name } = this.props
-        let errorTip = ''
+  _verifyEmpty(firstVerify) {
+    const { requiredTip, name } = this.props
+    let errorTip = ''
 
-        if (this.props.required) {
-            errorTip = requiredTip || `${name || ''}${this._getLanguage(language.noEmptyData)}`
+    if (this.props.required) {
+      errorTip = requiredTip || `${name || ''}${this._getLanguage(language.noEmptyData)}`
 
-            return {
-                verified: false,
-                errorTip
-            }
-        }
-
-        return {
-            verified: true,
-            errorTip
-        }
+      return {
+        verified: false,
+        errorTip
+      }
     }
 
-    onChangeHandler(event) {
-        const {
-            numFixed,
-            number,
-            emoji,
-            onChangeValidate
-        } = this.props
-        let value = event.target.value
+    return {
+      verified: true,
+      errorTip
+    }
+  }
 
-        if (this.props.max && value.length > this.props.max) {
-            value = value.substr(0, this.props.max)
-        }
+  onChangeHandler(event) {
+    const {
+      numFixed,
+      number,
+      emoji,
+      onChangeValidate
+    } = this.props
+    let value = event.target.value
 
-        if (onChangeValidate && onChangeValidate(value)) {
-            return false
-        }
+    if (this.props.max && value.length > this.props.max) {
+      value = value.substr(0, this.props.max)
+    }
 
-        if (!!value && number) {
-            if (!/(^-?\d+)(\.?)(\d*$)/.test(value)) {
-                return false
-            }
+    if (onChangeValidate && onChangeValidate(value)) {
+      return false
+    }
 
-            if (this.props.maxNum && value > this.props.maxNum) {
-                return false
-            }
+    if (!!value && number) {
+      if (!/(^-?\d+)(\.?)(\d*$)/.test(value)) {
+        return false
+      }
 
-            if (numFixed && value.toString().includes('.') && value.toString().split('.')[1].length > numFixed) {
-                return false
-            }
-        }
+      if (this.props.maxNum && value > this.props.maxNum) {
+        return false
+      }
 
-        if (!emoji && /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[\A9|\AE]\u3030|\uA9|\uAE|\u3030/ig.test(value)) {
-            return false
-        }
+      if (numFixed && value.toString().includes('.') && value.toString().split('.')[1].length > numFixed) {
+        return false
+      }
+    }
 
-        this.props.onChange && this.props.onChange({
-            value: value
+    if (!emoji && /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[\A9|\AE]\u3030|\uA9|\uAE|\u3030/ig.test(value)) {
+      return false
+    }
+
+    this.props.onChange && this.props.onChange({
+      value: value
+    })
+
+    this.setState({
+      value: value,
+      inputTextLength: value.length
+    }, () => {
+      if (this.props.autoVerify) {
+        this.verify({
+          verifyRegex: false
         })
+      }
+    })
+  }
 
-        this.setState({
-            value: value,
-            inputTextLength: value.length
-        }, () => {
-            if (this.props.autoVerify) {
-                this.verify({
-                    verifyRegex: false
-                })
-            }
-        })
+  onBlurHandler(event) {
+    this.focusing = false
+    const { number, autoVerify, onChange } = this.props
+    let value = event.target.value
+    if (number && !!value) {
+      value = parseFloat(value)
+      this.setState({
+        value
+      })
+      onChange && onChange({
+        value: value
+      })
     }
 
-    onBlurHandler(event) {
-        this.focusing = false
-        const { number, autoVerify, onChange } = this.props
-        let value = event.target.value
-        if (number && !!value) {
-            value = parseFloat(value)
-            this.setState({
-                value
-            })
-            onChange && onChange({
-                value: value
-            })
-        }
-
-        if (autoVerify) {
-            return this.verify()
-        }
+    if (autoVerify) {
+      return this.verify()
     }
+  }
 
-    onFocusHandler(event) {
-        const { onFocus } = this.props
-        onFocus && onFocus(event)
-        this.focusing = true
-        onFocus && onFocus(event)
+  onFocusHandler(event) {
+    const { onFocus } = this.props
+    onFocus && onFocus(event)
+    this.focusing = true
+    onFocus && onFocus(event)
 
-        return this.setState({
-            verified: true,
-            errorTip: ''
-        })
+    return this.setState({
+      verified: true,
+      errorTip: ''
+    })
+  }
+
+  onKeyPressHandler(event) {
+    if (event.charCode === 13) {
+      return this.props.onEnter && this.props.onEnter()
     }
+  }
 
-    onKeyPressHandler(event) {
-        if (event.charCode === 13) {
-            return this.props.onEnter && this.props.onEnter()
-        }
-    }
+  val() {
+    return this.state.value
+  }
 
-    val() {
-        return this.state.value
-    }
-
-    /**
+  /**
      * 验证数据格式
      *
      * @param {Boolean} - 是否是第一次验证
      * @return {Object} - this - 组件
      */
-    verify({ verifyRegex = true, firstVerify } = {}) {
-        let verified = true
-        let errorTip = ''
-        let value = this.state.value
-        const inputName = this.props.name || ''
+  verify({ verifyRegex = true, firstVerify } = {}) {
+    let verified = true
+    let errorTip = ''
+    let value = this.state.value
+    const inputName = this.props.name || ''
 
-        const returnFun = () => {
-            if (!verified) {
-                document.body.scrollTop = clientOffset(this.refs.me).top
-            }
+    const returnFun = () => {
+      if (!verified) {
+        document.body.scrollTop = clientOffset(this.refs.me).top
+      }
 
-            this.setState({
-                verified,
-                errorTip: errorTip
-            }, () => {
-                !this.state.verified && this.state.popErrorTip && Tip(this.state.errorTip)
-            })
+      this.setState({
+        verified,
+        errorTip: errorTip
+      }, () => {
+        !this.state.verified && this.state.popErrorTip && Tip(this.state.errorTip)
+      })
 
 
-            return verified
-        }
+      return verified
+    }
 
-        if (!this.props.number) {
-            if (!value.trim) {
-                console.warn('也许你的数据是数字类型，如果是的请在 props 的 number 传入 true')
-            } else {
-                value = value.trim()
-            }
-        }
+    if (!this.props.number) {
+      if (!value.trim) {
+        console.warn('也许你的数据是数字类型，如果是的请在 props 的 number 传入 true')
+      } else {
+        value = value.trim()
+      }
+    }
 
-        if (!value && value !== 0) {
-            let verifyEmpty = this._verifyEmpty()
+    if (!value && value !== 0) {
+      const verifyEmpty = this._verifyEmpty()
 
-            verified = verifyEmpty.verified
-            errorTip = verifyEmpty.errorTip
+      verified = verifyEmpty.verified
+      errorTip = verifyEmpty.errorTip
 
-            return returnFun()
+      return returnFun()
+    } else {
+      if (this.props.number && isNaN(value)) {
+        errorTip = `${inputName}${this._getLanguage(language.inputNum)}`
+        verified = false
+
+        return returnFun()
+      }
+
+      if (this.props.min) {
+        if (this.props.number) {
+          verified = this.props.min <= value
+          errorTip = verified ? '' : `${inputName}${this._getLanguage(language.noLessNum, { num: this.props.min })}`
         } else {
-            if (this.props.number && isNaN(value)) {
-                errorTip = `${inputName}${this._getLanguage(language.inputNum)}`
-                verified = false
+          verified = this.props.min <= value.toString().length
+          errorTip = verified ? '' : `${inputName}${this._getLanguage(language.noLessLength, { length: this.props.min })}`
+        }
 
-                return returnFun()
-            }
+        if (!verified) {
+          return returnFun()
+        }
+      }
 
-            if (this.props.min) {
-                if (this.props.number) {
-                    verified = this.props.min <= value
-                    errorTip = verified ? '' : `${inputName}${this._getLanguage(language.noLessNum, { num: this.props.min })}`
-                } else {
-                    verified = this.props.min <= value.toString().length
-                    errorTip = verified ? '' : `${inputName}${this._getLanguage(language.noLessLength, { length: this.props.min })}`
-                }
+      if (this.props.max) {
+        verified = this.props.max >= value.toString().length
+        errorTip = verified ? '' : `${inputName}${this._getLanguage(language.noMoreLength, { length: this.props.max })}`
 
-                if (!verified) {
-                    return returnFun()
-                }
-            }
+        if (!verified) {
+          return returnFun()
+        }
+      }
 
-            if (this.props.max) {
-                verified = this.props.max >= value.toString().length
-                errorTip = verified ? '' : `${inputName}${this._getLanguage(language.noMoreLength, { length: this.props.max })}`
+      if (this.props.minNum && this.props.number) {
+        const num = Number(value)
 
-                if (!verified) {
-                    return returnFun()
-                }
-            }
+        verified = this.props.minNum <= num
+        errorTip = verified ? '' : `${inputName}${this._getLanguage(language.noLessNum, { num: this.props.minNum })}`
 
-            if (this.props.minNum && this.props.number) {
-                let num = Number(value)
+        if (!verified) {
+          return returnFun()
+        }
+      }
 
-                verified = this.props.minNum <= num
-                errorTip = verified ? '' : `${inputName}${this._getLanguage(language.noLessNum, { num: this.props.minNum })}`
+      if (this.props.maxNum && this.props.number) {
+        const num = Number(value)
 
-                if (!verified) {
-                    return returnFun()
-                }
-            }
+        verified = this.props.maxNum >= num
+        errorTip = verified ? '' : `${inputName}${this._getLanguage(language.noMoreNum, { num: this.props.maxNum })}`
 
-            if (this.props.maxNum && this.props.number) {
-                let num = Number(value)
+        if (!verified) {
+          return returnFun()
+        }
+      }
 
-                verified = this.props.maxNum >= num
-                errorTip = verified ? '' : `${inputName}${this._getLanguage(language.noMoreNum, { num: this.props.maxNum })}`
+      if (verifyRegex && (this.props.regex || this.props.verifiedType) && !this.regexObj.test(value)) {
+        verified = false
 
-                if (!verified) {
-                    return returnFun()
-                }
-            }
-
-            if (verifyRegex && (this.props.regex || this.props.verifiedType) && !this.regexObj.test(value)) {
-                verified = false
-
-                if (firstVerify) {
-                    errorTip = ''
-                } else {
-                    errorTip = this.formatMessage
-                }
-
-                return returnFun()
-            }
+        if (firstVerify) {
+          errorTip = ''
+        } else {
+          errorTip = this.formatMessage
         }
 
         return returnFun()
+      }
     }
 
-    /**
+    return returnFun()
+  }
+
+  /**
      * 验证数据格式并且弹出错误
      *
      * @return {Object} - this - 组件
      */
-    validate() {
-        this.verify()
+  validate() {
+    this.verify()
 
-        if (!this.verified) {
-            this.errorBorderDisplay = true
+    if (!this.verified) {
+      this.errorBorderDisplay = true
 
-            return false
-        }
-
-        return this
+      return false
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            value: nextProps.value,
-            verified: nextProps.verified
-        })
-    }
+    return this
+  }
 
-    render() {
-        const {
-            errorTipType,
-            inputInvisible,
-            fontSize,
-            height,
-            width,
-            align,
-            autoFocus
-        } = this.props
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      value: nextProps.value,
+      verified: nextProps.verified
+    })
+  }
 
-        return (
-            <div
-                className={
-                    `${_xclass()}
+  render() {
+    const {
+      errorTipType,
+      inputInvisible,
+      fontSize,
+      height,
+      width,
+      align,
+      autoFocus
+    } = this.props
+
+    return (
+      <div
+        className={
+          `${_xclass()}
                     ${_xclass(`border-${this.props.border}`)}
                     ${this.props.className}
                     ${this.props.block ? _xclass('block') : ''}`
-                }
-                ref='me'
-                style={{
-                    width: width
-                }}
-            >
-                <Row className={_xclass('wrap')}>
-                    <Col className={_xclass('wrap-header')} style={{ width: `${this.props.headerWidth}%` }}>
-                        {this.props.header}
-                    </Col>
-                    <Col className={_xclass('wrap-input')} style={{ width: `${100 - this.props.headerWidth}%` }}>
-                        {this.props.area
-                            ? (
-                                <textarea
-                                    autoFocus={autoFocus}
-                                    className={_xclass('tag-textarea')}
-                                    onChange={this.onChangeHandler}
-                                    onKeyPress={(event) => this.onKeyPressHandler(event)}
-                                    onFocus={this.onFocusHandler}
-                                    onBlur={this.onBlurHandler}
-                                    placeholder={this.props.placeholder}
-                                    rows={this.props.row}
-                                    value={this.state.value}
-                                    ref={(ref) => this.refInput = ref}
-                                    style={{
-                                        fontSize,
-                                        textAlign: align,
-                                        height: height
-                                    }}
-                                >
-                                </textarea>
-                            ) : (
-                                <input
-                                    autoFocus={autoFocus}
-                                    className={_xclass('tag-input')}
-                                    onChange={this.onChangeHandler}
-                                    onFocus={this.onFocusHandler}
-                                    onBlur={this.onBlurHandler}
-                                    onKeyPress={(event) => this.onKeyPressHandler(event)}
-                                    placeholder={this.props.placeholder}
-                                    ref={(ref) => this.refInput = ref}
-                                    type={inputInvisible ? 'password' : 'text'}
-                                    value={this.state.value}
-                                    style={{
-                                        textAlign: align,
-                                        fontSize: fontSize,
-                                        height: height
-                                    }}
-                                />
-                            )
-                        }
-                    </Col>
-                </Row>
-                {this.props.showLength &&
+        }
+        ref='me'
+        style={{
+          width: width
+        }}
+      >
+        <Row className={_xclass('wrap')}>
+          <Col className={_xclass('wrap-header')} style={{ width: `${this.props.headerWidth}%` }}>
+            {this.props.header}
+          </Col>
+          <Col className={_xclass('wrap-input')} style={{ width: `${100 - this.props.headerWidth}%` }}>
+            {this.props.area
+              ? (
+                <textarea
+                  autoFocus={autoFocus}
+                  className={_xclass('tag-textarea')}
+                  onChange={this.onChangeHandler}
+                  onKeyPress={(event) => this.onKeyPressHandler(event)}
+                  onFocus={this.onFocusHandler}
+                  onBlur={this.onBlurHandler}
+                  placeholder={this.props.placeholder}
+                  rows={this.props.row}
+                  value={this.state.value}
+                  ref={(ref) => this.refInput = ref}
+                  style={{
+                    fontSize,
+                    textAlign: align,
+                    height: height
+                  }}
+                >
+                </textarea>
+              ) : (
+                <input
+                  autoFocus={autoFocus}
+                  className={_xclass('tag-input')}
+                  onChange={this.onChangeHandler}
+                  onFocus={this.onFocusHandler}
+                  onBlur={this.onBlurHandler}
+                  onKeyPress={(event) => this.onKeyPressHandler(event)}
+                  placeholder={this.props.placeholder}
+                  ref={(ref) => this.refInput = ref}
+                  type={inputInvisible ? 'password' : 'text'}
+                  value={this.state.value}
+                  style={{
+                    textAlign: align,
+                    fontSize: fontSize,
+                    height: height
+                  }}
+                />
+              )
+            }
+          </Col>
+        </Row>
+        {this.props.showLength &&
                     <div className={_xclass('input-length')}>
-                        {`${this.state.inputTextLength} / ${this.props.max}`}
+                      {`${this.state.inputTextLength} / ${this.props.max}`}
                     </div>
-                }
-                <div
-                    className={_xclass('error-tip')}
-                    style={{
-                        display: errorTipType === 'hint' && !this.state.verified ? '' : 'none'
-                    }}
-                >{this.state.errorTip}</div>
-                {this.props.helperText && <div className={_xclass('helper-text')}>{this.props.helperText}</div>}
-            </div>
-        )
-    }
+        }
+        <div
+          className={_xclass('error-tip')}
+          style={{
+            display: errorTipType === 'hint' && !this.state.verified ? '' : 'none'
+          }}
+        >{this.state.errorTip}</div>
+        {this.props.helperText && <div className={_xclass('helper-text')}>{this.props.helperText}</div>}
+      </div>
+    )
+  }
 }
 
 Input.defaultProps = {
-    autoFocus: false,
-    area: false,
-    border: 'thin',
-    block: false,
-    autoVerify: false,
-    className: '',
-    value: '',
-    param: '',
-    helperText: '',
-    verified: true,
-    number: false,
-    errorMessage: '',
-    showLength: false,
-    errorTipType: 'hint',
-    emoji: false,
-    inputInvisible: false
+  autoFocus: false,
+  area: false,
+  border: 'thin',
+  block: false,
+  autoVerify: false,
+  className: '',
+  value: '',
+  param: '',
+  helperText: '',
+  verified: true,
+  number: false,
+  errorMessage: '',
+  showLength: false,
+  errorTipType: 'hint',
+  emoji: false,
+  inputInvisible: false
 }
 
 Input.propTypes = {
-    autoFocus: PropTypes.bool,
-    area: PropTypes.bool,
-    border: PropTypes.string,
-    block: PropTypes.bool,
-    autoVerify: PropTypes.bool,
-    emoji: PropTypes.bool,
-    theme: PropTypes.string,
-    className: PropTypes.string,
-    errorMessage: PropTypes.string,
-    info: PropTypes.string,
-    max: PropTypes.number,
-    maxNum: PropTypes.number,
-    min: PropTypes.number,
-    minNum: PropTypes.number,
-    param: PropTypes.string,
-    helperText: PropTypes.string,
-    placeholder: PropTypes.string,
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-    ]),
-    showLength: PropTypes.bool,
-    regex: PropTypes.string,
-    verifiedType: PropTypes.string,
-    inputInvisible: PropTypes.bool,
-    verified: PropTypes.bool,
-    intl: intlShape.isRequired,
-    errorTipType: PropTypes.string,
-    number: PropTypes.bool,
-    numFixed: PropTypes.number
+  autoFocus: PropTypes.bool,
+  area: PropTypes.bool,
+  border: PropTypes.string,
+  block: PropTypes.bool,
+  autoVerify: PropTypes.bool,
+  emoji: PropTypes.bool,
+  theme: PropTypes.string,
+  className: PropTypes.string,
+  errorMessage: PropTypes.string,
+  info: PropTypes.string,
+  max: PropTypes.number,
+  maxNum: PropTypes.number,
+  min: PropTypes.number,
+  minNum: PropTypes.number,
+  param: PropTypes.string,
+  helperText: PropTypes.string,
+  placeholder: PropTypes.string,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  showLength: PropTypes.bool,
+  regex: PropTypes.string,
+  verifiedType: PropTypes.string,
+  inputInvisible: PropTypes.bool,
+  verified: PropTypes.bool,
+  intl: intlShape.isRequired,
+  errorTipType: PropTypes.string,
+  number: PropTypes.bool,
+  numFixed: PropTypes.number
 }
 
 export default injectIntl(Input, {
-    withRef: true
+  withRef: true
 })

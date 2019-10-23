@@ -24,218 +24,218 @@ import { xclass } from '../../util/comp'
 import { prop as elementProp } from '../../util/dom/prop'
 
 class ListTransition extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.$el = {} // 这个组件的 dom 元素引用
-        this.transitionTime = this._getTransitionTime() // 过渡时间
-        this.display = false // 组件显示状态
-        this.transition = `transform ${this.transitionTime}ms ease-out` // 过渡的的样式声明
+    this.$el = {} // 这个组件的 dom 元素引用
+    this.transitionTime = this._getTransitionTime() // 过渡时间
+    this.display = false // 组件显示状态
+    this.transition = `transform ${this.transitionTime}ms ease-out` // 过渡的的样式声明
+  }
+
+  _getTransitionTime() {
+    switch (this.props.speed) {
+      case 'normal':
+        return 300
+      case 'fast':
+        return 150
+      case 'slow':
+        return 450
+      default:
+        return 300
     }
+  }
 
-    _getTransitionTime() {
-        switch (this.props.speed) {
-            case 'normal':
-                return 300
-            case 'fast':
-                return 150
-            case 'slow':
-                return 450
-            default:
-                return 300
-        }
-    }
+  _compClass(className) {
+    return xclass('list-transition-item', [
+      ''
+    ]) + ' ' + this.props.className
+  }
 
-    _compClass(className) {
-        return xclass('list-transition-item', [
-            ''
-        ]) + ' ' + this.props.className
-    }
-
-    /**
+  /**
      * 启动进来时的过渡动画
      *
      * @param {Object} opt
      */
-    async enter(opt = {}) {
-        if (this.props.reStart || !this.display) {
-            await this.beforeEnter(opt)
-            await this.entering(opt)
-            await this.afterEnter(opt)
-        }
-
-        return new Promise((resolve, reject) => {
-            return resolve()
-        })
+  async enter(opt = {}) {
+    if (this.props.reStart || !this.display) {
+      await this.beforeEnter(opt)
+      await this.entering(opt)
+      await this.afterEnter(opt)
     }
 
-    /**
+    return new Promise((resolve, reject) => {
+      return resolve()
+    })
+  }
+
+  /**
      * 启动离开时的过渡动画
      *
      * @param {Object} opt
      */
-    async leave(opt = {}) {
-        if (this.props.reStart || this.display) {
-            await this.beforeLeave(opt)
-            await this.leaveing(opt)
-            await this.afterLeave(opt)
-        }
-
-        return new Promise((resolve, reject) => {
-            return resolve()
-        })
+  async leave(opt = {}) {
+    if (this.props.reStart || this.display) {
+      await this.beforeLeave(opt)
+      await this.leaveing(opt)
+      await this.afterLeave(opt)
     }
 
-    beforeEnter() {
-        let el = this.$el
+    return new Promise((resolve, reject) => {
+      return resolve()
+    })
+  }
 
-        if (!el) {
-            return false
-        }
+  beforeEnter() {
+    const el = this.$el
 
-        this.display = false
-        this.props.beforeEnter && this.props.beforeEnter()
-
-        Object.assign(el.style, {
-            'transition': this.transition,
-            'transform': 'scale(.6)',
-            'transform-origin': this.props.origin
-        })
-
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                el.style.visibility = ''
-
-                return resolve()
-            }, 200)
-        })
+    if (!el) {
+      return false
     }
 
-    entering() {
-        let el = this.$el
+    this.display = false
+    this.props.beforeEnter && this.props.beforeEnter()
 
-        if (!el) {
-            return false
-        }
+    Object.assign(el.style, {
+      'transition': this.transition,
+      'transform': 'scale(.6)',
+      'transform-origin': this.props.origin
+    })
 
-        this.props.entering && this.props.entering()
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        el.style.visibility = ''
 
-        el.style.transform = ''
+        return resolve()
+      }, 200)
+    })
+  }
 
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                return resolve()
-            }, this.transitionTime)
-        })
+  entering() {
+    const el = this.$el
+
+    if (!el) {
+      return false
     }
 
-    afterEnter() {
-        let el = this.$el
+    this.props.entering && this.props.entering()
 
-        if (!el) {
-            return false
-        }
+    el.style.transform = ''
 
-        this.display = true
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        return resolve()
+      }, this.transitionTime)
+    })
+  }
 
-        Object.assign(el.style, {
-            'transition': '',
-            'transform-origin': ''
-        })
+  afterEnter() {
+    const el = this.$el
 
-        this.props.afterEnter && this.props.afterEnter()
+    if (!el) {
+      return false
     }
 
-    beforeLeave() {
-        let el = this.$el
+    this.display = true
 
-        if (!el) {
-            return false
-        }
+    Object.assign(el.style, {
+      'transition': '',
+      'transform-origin': ''
+    })
 
-        this.display = true
-        this.props.beforeLeave && this.props.beforeLeave()
+    this.props.afterEnter && this.props.afterEnter()
+  }
 
-        Object.assign(el.style, {
-            'transform-origin': this.props.origin
-        })
+  beforeLeave() {
+    const el = this.$el
 
-        return Object.assign(el.style, {
-            'transition': this.transition
-        })
+    if (!el) {
+      return false
     }
 
-    leaveing() {
-        let el = this.$el
+    this.display = true
+    this.props.beforeLeave && this.props.beforeLeave()
 
-        if (!el) {
-            return false
-        }
+    Object.assign(el.style, {
+      'transform-origin': this.props.origin
+    })
 
-        let height = el.offsetHeight
+    return Object.assign(el.style, {
+      'transition': this.transition
+    })
+  }
 
-        this.props.leaving && this.props.leaving()
+  leaveing() {
+    const el = this.$el
 
-        el.style.transform = 'scale(.6)'
-
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                el.style.visibility = 'hidden'
-
-                return resolve()
-            }, this.transitionTime)
-        })
+    if (!el) {
+      return false
     }
 
-    afterLeave() {
-        let el = this.$el
+    const height = el.offsetHeight
 
-        if (!el) {
-            return false
-        }
+    this.props.leaving && this.props.leaving()
 
-        this.display = false
+    el.style.transform = 'scale(.6)'
 
-        Object.assign(el.style, {
-            'transition': '',
-            'transform': '',
-            'transform-origin': ''
-        })
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        el.style.visibility = 'hidden'
 
-        this.props.afterLeave && this.props.afterLeave()
+        return resolve()
+      }, this.transitionTime)
+    })
+  }
+
+  afterLeave() {
+    const el = this.$el
+
+    if (!el) {
+      return false
     }
 
-    render() {
-        return (
-            <div
-                className={this._compClass()}
-                ref={($el) => this.$el = $el}
-                style={{
-                    ...this.props.style,
-                    visibility: 'hidden'
-                }}
-            >
-                {this.props.children}
-            </div>
-        )
-    }
+    this.display = false
+
+    Object.assign(el.style, {
+      'transition': '',
+      'transform': '',
+      'transform-origin': ''
+    })
+
+    this.props.afterLeave && this.props.afterLeave()
+  }
+
+  render() {
+    return (
+      <div
+        className={this._compClass()}
+        ref={($el) => this.$el = $el}
+        style={{
+          ...this.props.style,
+          visibility: 'hidden'
+        }}
+      >
+        {this.props.children}
+      </div>
+    )
+  }
 }
 
 ListTransition.defaultProps = {
-    className: '',
-    origin: '50% 50%',
-    reStart: false,
-    style: {},
-    speed: 'normal'
+  className: '',
+  origin: '50% 50%',
+  reStart: false,
+  style: {},
+  speed: 'normal'
 }
 
 ListTransition.propTypes = {
-    className: PropTypes.string,
-    origin: PropTypes.string,
-    height: PropTypes.number,
-    reStart: PropTypes.bool,
-    style: PropTypes.object,
-    speed: PropTypes.string
+  className: PropTypes.string,
+  origin: PropTypes.string,
+  height: PropTypes.number,
+  reStart: PropTypes.bool,
+  style: PropTypes.object,
+  speed: PropTypes.string
 }
 
 export default ListTransition

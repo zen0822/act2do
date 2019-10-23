@@ -34,6 +34,7 @@ class CompProtocol extends Component {
           frameBorder='0'
           onLoad={(event) => {
             this.setState({
+              // eslint-disable-next-line react/no-find-dom-node
               protocolFileHeight: ReactDOM.findDOMNode(event.currentTarget).contentWindow.document.body.scrollHeight
             })
           }}

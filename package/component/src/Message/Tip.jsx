@@ -13,13 +13,13 @@ import { common as commonStore } from '../../redux/store'
 import { addTip, addTipMessage } from '../../redux/module/common/action'
 
 let tiping = false // 是否正在显示 tip 组件
-let tipHub = [] // 存储需要显示 tip 的队列
+const tipHub = [] // 存储需要显示 tip 的队列
 
 const store = createStore(
-    commonStore,
-    applyMiddleware(
-        thunkMiddleware
-    )
+  commonStore,
+  applyMiddleware(
+    thunkMiddleware
+  )
 )
 
 // 创建并挂载 tip 组件
@@ -36,53 +36,53 @@ document.body.appendChild(tipElement)
  * @param {object} opt - 选项
  */
 const tip = async (message = '', opt = {}) => {
-    if (!message) return
-    if (tiping) {
-        if (opt.deWeighting) {
-            if (tipHub.every(item => item.message !== message)) {
-                return tipHub.push({
-                    message,
-                    opt
-                })
-            } else {
-                return tipHub
-            }
-        } else {
-            return tipHub.push({
-                message,
-                opt
-            })
-        }
+  if (!message) return
+  if (tiping) {
+    if (opt.deWeighting) {
+      if (tipHub.every(item => item.message !== message)) {
+        return tipHub.push({
+          message,
+          opt
+        })
+      } else {
+        return tipHub
+      }
+    } else {
+      return tipHub.push({
+        message,
+        opt
+      })
     }
+  }
 
-    store.dispatch(addTipMessage(message))
+  store.dispatch(addTipMessage(message))
 
-    return new Promise(async (resolve, reject) => {
-        try {
-            tiping = true
+  return new Promise(async (resolve, reject) => {
+    try {
+      tiping = true
 
-            await tipVm.show()
+      await tipVm.show()
 
-            opt.cb && opt.cb()
+      opt.cb && opt.cb()
 
-            resolve()
-        } catch (error) {
-            reject(error)
-        }
-    })
+      resolve()
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 render(
-    <Tip
-        store={store}
-        ref={(vm) => tipVm = vm}
-        onAutoHideCb={() => {
-            tiping = false
-        }}
-        tipHub={tipHub}
-        tip={tip}
-    />,
-    tipElement
+  <Tip
+    store={store}
+    ref={(vm) => tipVm = vm}
+    onAutoHideCb={() => {
+      tiping = false
+    }}
+    tipHub={tipHub}
+    tip={tip}
+  />,
+  tipElement
 )
 store.dispatch(addTip(tipVm))
 

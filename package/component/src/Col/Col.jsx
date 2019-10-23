@@ -28,105 +28,105 @@ import compConf from '../../config.json'
 import { xclass } from '../../util/comp'
 
 class Col extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.comp = 'col'
-        this.$el = null // 组件的 dom 对象
+    this.comp = 'col'
+    this.$el = null // 组件的 dom 对象
+  }
+
+  compClass() {
+    const classOpt = []
+    const deviceType = ['xs', 's', 'm', 'l', 'xl', 'span']
+    const compPrefixClass = `${compConf.prefix}-col`
+
+    if (this.props.gap > 0) {
+      classOpt.push(`${compPrefixClass}-gap-${this.props.gap}`)
     }
 
-    compClass() {
-        let classOpt = []
-        let deviceType = ['xs', 's', 'm', 'l', 'xl', 'span']
-        let compPrefixClass = `${compConf.prefix}-col`
-
-        if (this.props.gap > 0) {
-            classOpt.push(`${compPrefixClass}-gap-${this.props.gap}`)
-        }
-
-        if (this.props.pull > 0) {
-            classOpt.push(`${compPrefixClass}-pull-${this.props.pull}`)
-        }
-
-        if (this.props.push > 0) {
-            classOpt.push(`${compPrefixClass}-push-${this.props.push}`)
-        }
-
-        if (this.props.offset > 0) {
-            classOpt.push(`${compPrefixClass}-offset-${this.props.offset}`)
-        }
-
-        if (!this.props.grid) {
-            deviceType.forEach((item) => {
-                if (this.props[item] > 0) {
-                    classOpt.push(`${compPrefixClass}-${item}-${this.props[item]}`)
-                }
-            })
-        } else {
-            deviceType.forEach((item) => {
-                if (this.props[item] > 0) {
-                    classOpt.push(`${compPrefixClass}-${item}-${this.props[item]}`)
-                } else if (this.props.grid[item] > 0) {
-                    classOpt.push(`${compPrefixClass}-${item}-${this.props.grid[item]}`)
-                }
-            })
-        }
-
-        classOpt.push(compPrefixClass, this.props.className)
-
-        return classOpt.join(' ')
+    if (this.props.pull > 0) {
+      classOpt.push(`${compPrefixClass}-pull-${this.props.pull}`)
     }
 
-    componentDidMount() {
-        this.$el = this.refs.me
+    if (this.props.push > 0) {
+      classOpt.push(`${compPrefixClass}-push-${this.props.push}`)
     }
 
-    render() {
-        return (
-            <div
-                ref='me'
-                className={this.compClass()}
-                style={{
-                    height: this.props.height,
-                    width: this.props.width,
-                    ...this.props.style
-                }}
-            >
-                {this.props.children}
-            </div>
-        )
+    if (this.props.offset > 0) {
+      classOpt.push(`${compPrefixClass}-offset-${this.props.offset}`)
     }
+
+    if (!this.props.grid) {
+      deviceType.forEach((item) => {
+        if (this.props[item] > 0) {
+          classOpt.push(`${compPrefixClass}-${item}-${this.props[item]}`)
+        }
+      })
+    } else {
+      deviceType.forEach((item) => {
+        if (this.props[item] > 0) {
+          classOpt.push(`${compPrefixClass}-${item}-${this.props[item]}`)
+        } else if (this.props.grid[item] > 0) {
+          classOpt.push(`${compPrefixClass}-${item}-${this.props.grid[item]}`)
+        }
+      })
+    }
+
+    classOpt.push(compPrefixClass, this.props.className)
+
+    return classOpt.join(' ')
+  }
+
+  componentDidMount() {
+    this.$el = this.refs.me
+  }
+
+  render() {
+    return (
+      <div
+        ref='me'
+        className={this.compClass()}
+        style={{
+          height: this.props.height,
+          width: this.props.width,
+          ...this.props.style
+        }}
+      >
+        {this.props.children}
+      </div>
+    )
+  }
 }
 
 Col.defaultProps = {
-    gap: 0,
-    pull: 0,
-    push: 0,
-    offset: 0,
-    span: 0,
-    xs: 0,
-    s: 0,
-    m: 0,
-    l: 0,
-    xl: 0,
-    height: '',
-    width: ''
+  gap: 0,
+  pull: 0,
+  push: 0,
+  offset: 0,
+  span: 0,
+  xs: 0,
+  s: 0,
+  m: 0,
+  l: 0,
+  xl: 0,
+  height: '',
+  width: ''
 }
 
 Col.propTypes = {
-    gap: PropTypes.number,
-    pull: PropTypes.number,
-    push: PropTypes.number,
-    offset: PropTypes.number,
-    span: PropTypes.number,
-    xs: PropTypes.number,
-    s: PropTypes.number,
-    m: PropTypes.number,
-    l: PropTypes.number,
-    xl: PropTypes.number,
-    grid: PropTypes.object,
-    width: PropTypes.string,
-    height: PropTypes.string
+  gap: PropTypes.number,
+  pull: PropTypes.number,
+  push: PropTypes.number,
+  offset: PropTypes.number,
+  span: PropTypes.number,
+  xs: PropTypes.number,
+  s: PropTypes.number,
+  m: PropTypes.number,
+  l: PropTypes.number,
+  xl: PropTypes.number,
+  grid: PropTypes.object,
+  width: PropTypes.string,
+  height: PropTypes.string
 }
 
 export default Col

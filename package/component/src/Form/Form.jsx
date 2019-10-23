@@ -19,119 +19,119 @@ const compName = 'form'
 const controlName = ['input', 'menu', 'check', 'areaPicker', 'upload']
 
 const _xclass = (className) => {
-    return xclass.call(this, compName, className)
+  return xclass.call(this, compName, className)
 }
 
 class Form extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.compName = compName
-        this.value = {} // 表单控件的值
-        this.controlHub = []
-    }
+    this.compName = compName
+    this.value = {} // 表单控件的值
+    this.controlHub = []
+  }
 
-    /**
+  /**
      * 初始化表单组件
      */
-    _initForm() {
-        let controlHub = []
+  _initForm() {
+    const controlHub = []
 
-        this.controlHub.forEach((item) => {
-            controlName.forEach((controlName) => {
-                if (controlName === item.compName) {
-                    controlHub.push(item)
-                }
-            })
-        })
+    this.controlHub.forEach((item) => {
+      controlName.forEach((controlName) => {
+        if (controlName === item.compName) {
+          controlHub.push(item)
+        }
+      })
+    })
 
-        this.control = controlHub
-    }
+    this.control = controlHub
+  }
 
-    /**
+  /**
      * 传递控件
      */
-    hub(controlHub) {
-        this.controlHub = controlHub.slice()
+  hub(controlHub) {
+    this.controlHub = controlHub.slice()
 
-        this._initForm()
-    }
+    this._initForm()
+  }
 
-    /**
+  /**
      * 遍历传进来的表单控件的值和表单是否全部验证正确
      *
      * @return {object} -
      *                   verified: 表单是否全部验证正确
      *                   value: 表单值
      */
-    mapControl() {
-        let verified = true
+  mapControl() {
+    let verified = true
 
-        this.control.every((item) => {
-            if (!controlName.includes(item.compName)) {
-                return false
-            }
+    this.control.every((item) => {
+      if (!controlName.includes(item.compName)) {
+        return false
+      }
 
-            if (item.props.param) {
-                switch (item.compName) {
-                    case 'check':
-                        Object.assign(this.value, {
-                            [item.props.param]: item.val()
-                        })
-
-                        return true
-                    case 'areaPicker':
-                    case 'menu':
-                    default:
-                        if (item.verify()) {
-                            Object.assign(this.value, {
-                                [item.props.param]: item.val()
-                            })
-
-                            return true
-                        }
-
-                        verified = false
-
-                        return false
-                }
-            }
+      if (item.props.param) {
+        switch (item.compName) {
+          case 'check':
+            Object.assign(this.value, {
+              [item.props.param]: item.val()
+            })
 
             return true
-        })
+          case 'areaPicker':
+          case 'menu':
+          default:
+            if (item.verify()) {
+              Object.assign(this.value, {
+                [item.props.param]: item.val()
+              })
 
-        return {
-            value: this.value,
-            verified
+              return true
+            }
+
+            verified = false
+
+            return false
         }
-    }
+      }
 
-    /**
+      return true
+    })
+
+    return {
+      value: this.value,
+      verified
+    }
+  }
+
+  /**
      * 获取表单的值
      */
-    val() {
-        return this.mapControl().value
-    }
+  val() {
+    return this.mapControl().value
+  }
 
-    render() {
-        return (
-            <div className={`${_xclass()} ${this.props.className}`}>
-                <form>
-                    {this.props.children}
-                </form>
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div className={`${_xclass()} ${this.props.className}`}>
+        <form>
+          {this.props.children}
+        </form>
+      </div>
+    )
+  }
 }
 
 Form.defaultProps = {
-    className: '',
-    verifyData: false
+  className: '',
+  verifyData: false
 }
 
 Form.propTypes = {
-    className: PropTypes.string,
-    verifyData: PropTypes.bool
+  className: PropTypes.string,
+  verifyData: PropTypes.bool
 }
 
 export default Form

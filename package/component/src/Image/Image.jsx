@@ -26,173 +26,173 @@ const preImage = require('./pic_ load.png')
 
 const compPrefix = 'c-image-c'
 const _xclass = (className) => {
-    return `${compPrefix}-${className}`
+  return `${compPrefix}-${className}`
 }
 
 class Image extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this._isMounted = false
-        const { width, height } = props
+    this._isMounted = false
+    const { width, height } = props
 
-        this.state = {
-            imgState: 1, // 1：图片加载前，2：图片加载成功，3：图片加载失败
-            preImage: props.preSrc || preImage,
-            displayZoom: false, // 放大图的显示状态
-            _width: width === ''
-                ? ''
-                : Number.isNaN(Number(width)) ? width : `${width}px`,
-            _height: height === ''
-                ? ''
-                : Number.isNaN(Number(height)) ? height : `${height}px`
-        }
+    this.state = {
+      imgState: 1, // 1：图片加载前，2：图片加载成功，3：图片加载失败
+      preImage: props.preSrc || preImage,
+      displayZoom: false, // 放大图的显示状态
+      _width: width === ''
+        ? ''
+        : Number.isNaN(Number(width)) ? width : `${width}px`,
+      _height: height === ''
+        ? ''
+        : Number.isNaN(Number(height)) ? height : `${height}px`
     }
+  }
 
-    imageLoadSuccess(event) {
-        const image = event.currentTarget
+  imageLoadSuccess(event) {
+    const image = event.currentTarget
 
-        if (this.props.contain) {
-            const widthHeightRate = image.width / image.height
+    if (this.props.contain) {
+      const widthHeightRate = image.width / image.height
 
-            if (widthHeightRate > 1) {
-                this.setState({
-                    _width: '100%',
-                    _height: 'auto'
-                })
-            }
-
-            if (widthHeightRate < 1) {
-                this.setState({
-                    _width: 'auto',
-                    _height: '100%'
-                })
-            }
-        }
-
+      if (widthHeightRate > 1) {
         this.setState({
-            imgState: 2
+          _width: '100%',
+          _height: 'auto'
         })
-    }
+      }
 
-    imageLoadError() {
+      if (widthHeightRate < 1) {
         this.setState({
-            imgState: 3
+          _width: 'auto',
+          _height: '100%'
         })
+      }
     }
 
-    componentDidMount() {
-        this._isMounted = true
+    this.setState({
+      imgState: 2
+    })
+  }
+
+  imageLoadError() {
+    this.setState({
+      imgState: 3
+    })
+  }
+
+  componentDidMount() {
+    this._isMounted = true
+  }
+
+  componentWillMount() {
+    this._isMounted = false
+  }
+
+  render() {
+    const { imgState, preImage, _width, _height, displayZoom } = this.state
+    const {
+      className,
+      src,
+      zoomSrc,
+      zoom,
+      zoomEle,
+      alt,
+      title
+    } = this.props
+
+    const imgProps = {
+      className: _xclass('img'),
+      width: _width,
+      height: _height,
+      alt,
+      title
     }
 
-    componentWillMount() {
-        this._isMounted = false
+    const imageBoxStyle = {
+      width: _width,
+      height: _height
     }
 
-    render() {
-        const { imgState, preImage, _width, _height, displayZoom } = this.state
-        const {
-            className,
-            src,
-            zoomSrc,
-            zoom,
-            zoomEle,
-            alt,
-            title
-        } = this.props
-
-        const imgProps = {
-            className: _xclass('img'),
-            width: _width,
-            height: _height,
-            alt,
-            title
-        }
-
-        const imageBoxStyle = {
-            width: _width,
-            height: _height
-        }
-
-        return (
+    return (
+      <div
+        style={imageBoxStyle}
+        className={`${compPrefix} ${className}`}
+        ref={(ref) => this.imageBox = ref}
+        onClick={() => this.setState({ displayZoom: true })}
+      >
+        {zoom && displayZoom && (
+          <div className={_xclass('zoom')}>
             <div
-                style={imageBoxStyle}
-                className={`${compPrefix} ${className}`}
-                ref={(ref) => this.imageBox = ref}
-                onClick={() => this.setState({ displayZoom: true })}
-            >
-                {zoom && displayZoom && (
-                    <div className={_xclass('zoom')}>
-                        <div
-                            className={_xclass('zoom-layover')}
-                            onClick={(event) => {
-                                event.stopPropagation()
-                                this.setState({ displayZoom: false })
-                            }}
-                        ></div>
-                        <Row align='middle' style={{ height: '100vh' }}>
-                            <Col>
-                                <div className={_xclass('zoom-img')}>
-                                    {zoomEle || (
-                                        <img width={_width} height={_height} className={_xclass('zoom-img-ele')} src={zoomSrc} />
-                                    )}
-                                </div>
-                            </Col>
-                        </Row>
-                    </div>
-                )}
+              className={_xclass('zoom-layover')}
+              onClick={(event) => {
+                event.stopPropagation()
+                this.setState({ displayZoom: false })
+              }}
+            ></div>
+            <Row align='middle' style={{ height: '100vh' }}>
+              <Col>
+                <div className={_xclass('zoom-img')}>
+                  {zoomEle || (
+                    <img width={_width} height={_height} className={_xclass('zoom-img-ele')} src={zoomSrc} />
+                  )}
+                </div>
+              </Col>
+            </Row>
+          </div>
+        )}
 
-                {imgState === 1 && (
-                    <img
-                        {...imgProps}
-                        src={preImage}
-                    />
-                )}
+        {imgState === 1 && (
+          <img
+            {...imgProps}
+            src={preImage}
+          />
+        )}
 
-                <img
-                    {...imgProps}
-                    src={src}
-                    onLoad={(event) => this.imageLoadSuccess(event)}
-                    onError={() => this.imageLoadError()}
-                    style={{
-                        display: imgState === 2 ? '' : 'none',
-                        ...imageBoxStyle
-                    }}
-                />
+        <img
+          {...imgProps}
+          src={src}
+          onLoad={(event) => this.imageLoadSuccess(event)}
+          onError={() => this.imageLoadError()}
+          style={{
+            display: imgState === 2 ? '' : 'none',
+            ...imageBoxStyle
+          }}
+        />
 
-                {imgState === 3 && (
-                    <img
-                        {...imgProps}
-                        src={errorImage}
-                    />
-                )}
-            </div>
-        )
-    }
+        {imgState === 3 && (
+          <img
+            {...imgProps}
+            src={errorImage}
+          />
+        )}
+      </div>
+    )
+  }
 }
 
 Image.defaultProps = {
-    preSrc: '',
-    className: '',
-    src: '',
-    alt: '',
-    title: '',
-    contain: false,
-    zoom: false,
-    width: '',
-    height: ''
+  preSrc: '',
+  className: '',
+  src: '',
+  alt: '',
+  title: '',
+  contain: false,
+  zoom: false,
+  width: '',
+  height: ''
 }
 
 Image.propTypes = {
-    contain: PropTypes.bool,
-    zoom: PropTypes.bool,
-    preSrc: PropTypes.string,
-    className: PropTypes.string,
-    src: PropTypes.string,
-    alt: PropTypes.string,
-    title: PropTypes.string,
-    width: PropTypes.string,
-    height: PropTypes.string
+  contain: PropTypes.bool,
+  zoom: PropTypes.bool,
+  preSrc: PropTypes.string,
+  className: PropTypes.string,
+  src: PropTypes.string,
+  alt: PropTypes.string,
+  title: PropTypes.string,
+  width: PropTypes.string,
+  height: PropTypes.string
 }
 
 export default Image

@@ -17,124 +17,124 @@ import { xclass } from '../../util/comp'
 import { formatSecond as timeFormat } from '../../util/data/date'
 
 const _xclass = (className) => {
-    return xclass.call(this, 'count-down', className)
+  return xclass.call(this, 'count-down', className)
 }
 
 class CountDown extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.compName = 'countDown' // 组件名字
-        this.interval = null // 定时器
+    this.compName = 'countDown' // 组件名字
+    this.interval = null // 定时器
 
-        this.state = this._initData(props)
-    }
+    this.state = this._initData(props)
+  }
 
-    /**
+  /**
      * 初始化数据
      */
-    _initData(props) {
-        const { leftTime } = this.props
+  _initData(props) {
+    const { leftTime } = this.props
 
-        if (leftTime !== undefined) {
-            return {
-                value: leftTime
-            }
-        } else {
-            let today = new Date().getTime()
-            let value = props.value
+    if (leftTime !== undefined) {
+      return {
+        value: leftTime
+      }
+    } else {
+      const today = new Date().getTime()
+      let value = props.value
 
-            value = Math.round((props.initVal - today) / 1000)
-            value = value < 0 ? 0 : value
+      value = Math.round((props.initVal - today) / 1000)
+      value = value < 0 ? 0 : value
 
-            if (props.reverse) {
-                value = today
-            }
+      if (props.reverse) {
+        value = today
+      }
 
-            return {
-                value
-            }
-        }
+      return {
+        value
+      }
     }
+  }
 
-    /**
+  /**
      * 返回当前的时间
      */
-    val() {
-        return this.state.value
+  val() {
+    return this.state.value
+  }
+
+  start() {
+    if (!this.props.reverse && this.state.value <= 0) {
+      return false
     }
 
-    start() {
-        if (!this.props.reverse && this.state.value <= 0) {
-            return false
+    this.interval = setInterval(() => {
+      if (this.reverse) {
+        this.setState((preState) => ({
+          value: ++preState.value
+        }))
+      } else {
+        if (this.state.value - 1 < 0) {
+          return this.stop()
         }
 
-        this.interval = setInterval(() => {
-            if (this.reverse) {
-                this.setState((preState) => ({
-                    value: ++preState.value
-                }))
-            } else {
-                if (this.state.value - 1 < 0) {
-                    return this.stop()
-                }
+        this.setState((preState) => ({
+          value: --preState.value
+        }))
+      }
+    }, 1000)
+  }
 
-                this.setState((preState) => ({
-                    value: --preState.value
-                }))
-            }
-        }, 1000)
-    }
+  stop() {
+    return clearInterval(this.interval)
+  }
 
-    stop() {
-        return clearInterval(this.interval)
-    }
+  componentDidMount() {
+    this.start()
+  }
 
-    componentDidMount() {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.initVal !== this.props.initVal) {
+      this.stop()
+      this.setState({
+        value: (nextProps.type === 'time' && nextProps.initVal !== 0)
+          ? (new Date(nextProps.initVal).getTime() - new Date().getTime())
+          : 0
+      }, () => {
         this.start()
+      })
     }
+  }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.initVal !== this.props.initVal) {
-            this.stop()
-            this.setState({
-                value: (nextProps.type === 'time' && nextProps.initVal !== 0)
-                    ? (new Date(nextProps.initVal).getTime() - new Date().getTime())
-                    : 0
-            }, () => {
-                this.start()
-            })
-        }
-    }
+  componentWillUnmount() {
+    this.stop()
+  }
 
-    componentWillUnmount() {
-        this.stop()
-    }
-
-    render() {
-        return (
-            <div className={`${_xclass()} ${this.props.className}`}>
-                {timeFormat(this.state.value, this.props.format)}
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div className={`${_xclass()} ${this.props.className}`}>
+        {timeFormat(this.state.value, this.props.format)}
+      </div>
+    )
+  }
 }
 
 CountDown.defaultProps = {
-    className: '',
-    kind: 'primary',
-    radius: 's',
-    initVal: 0,
-    format: 'hh 小时 mm 分 ss 秒',
-    theme: ''
+  className: '',
+  kind: 'primary',
+  radius: 's',
+  initVal: 0,
+  format: 'hh 小时 mm 分 ss 秒',
+  theme: ''
 }
 
 CountDown.propTypes = {
-    initVal: PropTypes.number.isRequired,
-    reverse: PropTypes.bool,
-    size: PropTypes.string,
-    format: PropTypes.string,
-    theme: PropTypes.string
+  initVal: PropTypes.number.isRequired,
+  reverse: PropTypes.bool,
+  size: PropTypes.string,
+  format: PropTypes.string,
+  theme: PropTypes.string
 }
 
 export default CountDown

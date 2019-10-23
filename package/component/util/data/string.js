@@ -1,5 +1,5 @@
 const {
-    dataType
+  dataType
 } = require('./data')
 
 /**
@@ -9,7 +9,7 @@ const {
  * @return {Boolean} - whether variable is Obarrayject .
  */
 const isString = (str) => {
-    return dataType(str) === 'string'
+  return dataType(str) === 'string'
 }
 
 /**
@@ -20,7 +20,7 @@ const isString = (str) => {
  *
  */
 const trimEnter = (str) => {
-    return str.replace(/(^\n*)|(\n*$)/g, '')
+  return str.replace(/(^\n*)|(\n*$)/g, '')
 }
 
 /**
@@ -30,7 +30,7 @@ const trimEnter = (str) => {
  * @param {number} length - 需要保留字符串的长度
  */
 const omit = (str, length) => {
-    return str.substr(0, length) + '...'
+  return str.substr(0, length) + '...'
 }
 
 /**
@@ -41,30 +41,30 @@ const omit = (str, length) => {
  * @param {number} to 不写则默认为字符串末尾的位置
  */
 const shield = (str, from, to) => {
-    if (!str) {
-        return false
-    }
+  if (!str) {
+    return false
+  }
 
-    if (to !== undefined && to < from) {
-        return false
-    }
+  if (to !== undefined && to < from) {
+    return false
+  }
 
-    let shieldString = ''
+  let shieldString = ''
 
-    for (let i = 0, len = to - from; i < len; i++) {
-        shieldString = shieldString + '*'
-    }
+  for (let i = 0, len = to - from; i < len; i++) {
+    shieldString = shieldString + '*'
+  }
 
-    let stringArray = str.split('')
+  const stringArray = str.split('')
 
-    stringArray.splice(from, to - from, shieldString).join('')
+  stringArray.splice(from, to - from, shieldString).join('')
 
-    return stringArray
+  return stringArray
 }
 
 module.exports = {
-    isString,
-    trimEnter,
-    omit,
-    shield
+  isString,
+  trimEnter,
+  omit,
+  shield
 }

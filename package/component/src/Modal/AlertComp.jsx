@@ -7,63 +7,63 @@ import Modal from './Modal.jsx'
 
 // 创建 alert 组件
 class Alert extends Component {
-	constructor(props) {
-		super(props)
+  constructor(props) {
+    super(props)
 
-		this.onHideHandler = this.onHideHandler.bind(this)
-		this.onOkHandler = this.onOkHandler.bind(this)
+    this.onHideHandler = this.onHideHandler.bind(this)
+    this.onOkHandler = this.onOkHandler.bind(this)
 
-		this.state = {
-			message: ''
-		}
-	}
+    this.state = {
+      message: ''
+    }
+  }
 
-	show() {
-		this.refs.alert.show()
-	}
+  show() {
+    this.refs.alert.show()
+  }
 
-	hide() {
-		this.refs.alert.hide()
-	}
+  hide() {
+    this.refs.alert.hide()
+  }
 
-	display() {
-		return this.refs.alert.modalDisplay
-	}
+  display() {
+    return this.refs.alert.modalDisplay
+  }
 
-	onHideHandler() {
-		this.props.onHide && this.props.onHide()
+  onHideHandler() {
+    this.props.onHide && this.props.onHide()
 
-		if (this.props.alertHub.length > 0) {
-			const { message, opt } = this.props.alertHub.shift()
+    if (this.props.alertHub.length > 0) {
+      const { message, opt } = this.props.alertHub.shift()
 
-			return this.props.alert(message, opt)
-		}
-	}
+      return this.props.alert(message, opt)
+    }
+  }
 
-	onOkHandler() {
-		this.props.onOk && this.props.onOk()
+  onOkHandler() {
+    this.props.onOk && this.props.onOk()
 
-		return this.hide()
-	}
+    return this.hide()
+  }
 
-	componentDidMount() {
-		this.props.store.subscribe(() => {
-			this.setState({
-				message: this.props.store.getState().common.alert.message
-			})
-		})
-	}
+  componentDidMount() {
+    this.props.store.subscribe(() => {
+      this.setState({
+        message: this.props.store.getState().common.alert.message
+      })
+    })
+  }
 
-	render() {
-		return <Modal
-			{...this.props.store.getState().common.alert.prop}
-			type='alert'
-			onOk={this.onOkHandler}
-			onHide={this.onHideHandler}
-			message={this.state.message}
-			ref='alert'
-		/>
-	}
+  render() {
+    return <Modal
+      {...this.props.store.getState().common.alert.prop}
+      type='alert'
+      onOk={this.onOkHandler}
+      onHide={this.onHideHandler}
+      message={this.state.message}
+      ref='alert'
+    />
+  }
 }
 
 export default Alert

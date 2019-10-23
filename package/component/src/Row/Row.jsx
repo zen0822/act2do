@@ -23,51 +23,51 @@ import { xclass } from '../../util/comp'
 const layoutType = ['grid', 'flex', 'flow']
 
 class Row extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        let compClass = xclass('row', [
-            `align-${this.props.align}`,
-            `justify-${this.props.justify}`,
-            this.props.wrap
-        ])
+    const compClass = xclass('row', [
+      `align-${this.props.align}`,
+      `justify-${this.props.justify}`,
+      this.props.wrap
+    ])
 
-        this.compName = 'row'
-        this.$el = null // 组件的 dom 对象
+    this.compName = 'row'
+    this.$el = null // 组件的 dom 对象
 
-        this.state = {
-            compClass: `${compClass} ${compConf.prefix}-row ${props.className}`
-        }
+    this.state = {
+      compClass: `${compClass} ${compConf.prefix}-row ${props.className}`
     }
+  }
 
-    componentDidMount() {
-        this.$el = this.refs.me
-    }
+  componentDidMount() {
+    this.$el = this.refs.me
+  }
 
-    render() {
-        return (
-            <div ref='me' className={this.state.compClass} style={this.props.style}>
-                {this.props.children}
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div ref='me' className={this.state.compClass} style={this.props.style}>
+        {this.props.children}
+      </div>
+    )
+  }
 }
 
 Row.defaultProps = {
-    className: '',
-    align: 'center',
-    gap: 0,
-    justify: 'center',
-    wrap: 'wrap',
-    type: 'flow'
+  className: '',
+  align: 'center',
+  gap: 0,
+  justify: 'center',
+  wrap: 'wrap',
+  type: 'flow'
 }
 
 Row.propTypes = {
-    align: PropTypes.string.isRequired,
-    gap: PropTypes.number.isRequired,
-    justify: PropTypes.string.isRequired,
-    wrap: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired
+  align: PropTypes.string.isRequired,
+  gap: PropTypes.number.isRequired,
+  justify: PropTypes.string.isRequired,
+  wrap: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired
 }
 
 export default Row

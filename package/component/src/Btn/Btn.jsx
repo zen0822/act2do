@@ -33,126 +33,126 @@ import Loading from '../Loading/Loading'
 import { xclass } from '../../util/comp'
 
 class Btn extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.compName = 'btn' // 组件名字
-        this.clickHandler = this.clickHandler.bind(this)
+    this.compName = 'btn' // 组件名字
+    this.clickHandler = this.clickHandler.bind(this)
+  }
+
+  _xclass(className) {
+    return xclass.call(this, 'btn', className)
+  }
+
+  _compClass() {
+    const className = [
+      '',
+      `radius-${this.props.radius.toLowerCase()}`,
+      `size-${this.props.size.toLowerCase()}`,
+      `type-${this.props.type}`,
+      `kind-${this.props.kind}`
+    ]
+
+    if (this.props.disabled) {
+      className.push('disabled')
     }
 
-    _xclass(className) {
-        return xclass.call(this, 'btn', className)
+    if (this.props.block) {
+      className.push('block')
     }
 
-    _compClass() {
-        const className = [
-            '',
-            `radius-${this.props.radius.toLowerCase()}`,
-            `size-${this.props.size.toLowerCase()}`,
-            `type-${this.props.type}`,
-            `kind-${this.props.kind}`
-        ]
-
-        if (this.props.disabled) {
-            className.push('disabled')
-        }
-
-        if (this.props.block) {
-            className.push('block')
-        }
-
-        if (this.props.cushion) {
-            className.push('cushion')
-        }
-
-        return this._xclass(className)
+    if (this.props.cushion) {
+      className.push('cushion')
     }
 
-    /**
+    return this._xclass(className)
+  }
+
+  /**
      * 点击按钮
      *
      * @param {*} event
      * @param {*} value
      */
-    clickHandler(event) {
-        !this.props.disabled && this.props.onClick && this.props.onClick(event)
-    }
+  clickHandler(event) {
+    !this.props.disabled && this.props.onClick && this.props.onClick(event)
+  }
 
-    render() {
-        const {
-            style,
-            cushionColor,
-            disabled,
-            loading,
-            eleStyle
-        } = this.props
+  render() {
+    const {
+      style,
+      cushionColor,
+      disabled,
+      loading,
+      eleStyle
+    } = this.props
 
-        return (
-            <div
-                className={`${this._compClass()} ${this.props.className}`}
-                onClick={this.clickHandler}
-                style={{
-                    backgroundColor: cushionColor,
-                    ...style
-                }}
-            >
-                {disabled && (
-                    <div
-                        onClick={(event) => event.stopPropagation()}
-                        className={this._xclass('overlay')}>
-                    </div>
-                )}
+    return (
+      <div
+        className={`${this._compClass()} ${this.props.className}`}
+        onClick={this.clickHandler}
+        style={{
+          backgroundColor: cushionColor,
+          ...style
+        }}
+      >
+        {disabled && (
+          <div
+            onClick={(event) => event.stopPropagation()}
+            className={this._xclass('overlay')}>
+          </div>
+        )}
 
-                <div
-                    className={this._xclass('ele')}
-                    style={eleStyle}
-                >
-                    <div className={this._xclass('ele-border')}>
-                        {loading
-                            ? (
-                                <Loading display size='S' />)
-                            : (
-                                this.props.children
-                                    ? this.props.children
-                                    : this.props.link
-                                        ? <a target={this.props.targetBlank ? '_blank' : ''} href={this.props.link}>{this.props.initVal}</a>
-                                        : this.props.initVal
-                            )
-                        }
-                    </div>
-                </div>
-            </div>
-        )
-    }
+        <div
+          className={this._xclass('ele')}
+          style={eleStyle}
+        >
+          <div className={this._xclass('ele-border')}>
+            {loading
+              ? (
+                <Loading display size='S' />)
+              : (
+                this.props.children
+                  ? this.props.children
+                  : this.props.link
+                    ? <a target={this.props.targetBlank ? '_blank' : ''} href={this.props.link}>{this.props.initVal}</a>
+                    : this.props.initVal
+              )
+            }
+          </div>
+        </div>
+      </div>
+    )
+  }
 }
 
 Btn.defaultProps = {
-    className: '',
-    disabled: false,
-    block: false,
-    loading: false,
-    kind: 'primary',
-    initVal: '',
-    link: '',
-    cushion: false,
-    radius: 'S',
-    size: 'M',
-    targetBlank: false,
-    type: 'button'
+  className: '',
+  disabled: false,
+  block: false,
+  loading: false,
+  kind: 'primary',
+  initVal: '',
+  link: '',
+  cushion: false,
+  radius: 'S',
+  size: 'M',
+  targetBlank: false,
+  type: 'button'
 }
 
 Btn.propTypes = {
-    disabled: PropTypes.bool,
-    block: PropTypes.bool,
-    loading: PropTypes.bool,
-    radius: PropTypes.string,
-    size: PropTypes.string,
-    cushion: PropTypes.bool,
-    link: PropTypes.string,
-    theme: PropTypes.string,
-    type: PropTypes.string,
-    targetBlank: PropTypes.bool,
-    initVal: PropTypes.string
+  disabled: PropTypes.bool,
+  block: PropTypes.bool,
+  loading: PropTypes.bool,
+  radius: PropTypes.string,
+  size: PropTypes.string,
+  cushion: PropTypes.bool,
+  link: PropTypes.string,
+  theme: PropTypes.string,
+  type: PropTypes.string,
+  targetBlank: PropTypes.bool,
+  initVal: PropTypes.string
 }
 
 export default Btn

@@ -26,244 +26,244 @@ import React, { Component } from 'react'
 import { xclass } from '../util/comp'
 
 class Slide extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.transitionTime = this._getTransitionTime()
-        this.transition = `transform ${this.transitionTime}ms ease-out`
-        this.display = false // 组件显示状态
-        this.slideOffset = props.offset // 滑动的偏移值
+    this.transitionTime = this._getTransitionTime()
+    this.transition = `transform ${this.transitionTime}ms ease-out`
+    this.display = false // 组件显示状态
+    this.slideOffset = props.offset // 滑动的偏移值
+  }
+
+  _getTransitionTime() {
+    switch (this.props.speed) {
+      case 'normal':
+        return 300
+      case 'fast':
+        return 150
+      case 'slow':
+        return 450
+      default:
+        return 300
     }
+  }
 
-    _getTransitionTime() {
-        switch (this.props.speed) {
-            case 'normal':
-                return 300
-            case 'fast':
-                return 150
-            case 'slow':
-                return 450
-            default:
-                return 300
-        }
+  _compClass(className) {
+    return xclass('transition-slide', [
+      ''
+    ]) + ' ' + this.props.className
+  }
+
+  _getTranslate() {
+    switch (this.props.direction) {
+      case 'south':
+        return `translateY(calc(-110% - ${this.slideOffset}px))`
+      case 'north':
+        return `translateY(calc(110% + ${this.slideOffset}px))`
+      case 'east':
+        return `translateX(calc(-110% - ${this.slideOffset}px))`
+      case 'west':
+        return `translateX(calc(110% + ${this.slideOffset}px))`
+      default:
+        return `translateY(calc(-110% - ${this.slideOffset}px))`
     }
+  }
 
-    _compClass(className) {
-        return xclass('transition-slide', [
-            ''
-        ]) + ' ' + this.props.className
-    }
-
-    _getTranslate() {
-        switch (this.props.direction) {
-            case 'south':
-                return `translateY(calc(-110% - ${this.slideOffset}px))`
-            case 'north':
-                return `translateY(calc(110% + ${this.slideOffset}px))`
-            case 'east':
-                return `translateX(calc(-110% - ${this.slideOffset}px))`
-            case 'west':
-                return `translateX(calc(110% + ${this.slideOffset}px))`
-            default:
-                return `translateY(calc(-110% - ${this.slideOffset}px))`
-        }
-    }
-
-    /**
+  /**
      * 启动进来时的过渡动画
      *
      * @param {Object} opt
      */
-    async enter(opt = {}) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                await this.beforeEnter(opt)
-                await this.entering(opt)
-                await this.afterEnter(opt)
+  async enter(opt = {}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.beforeEnter(opt)
+        await this.entering(opt)
+        await this.afterEnter(opt)
 
-                resolve()
-            } catch (error) {
-                reject(error)
-            }
-        })
-    }
+        resolve()
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
 
-    /**
+  /**
      * 启动离开时的过渡动画
      *
      * @param {Object} opt
      */
-    async leave(opt = {}) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                this.transiting = this.isEntering = true
+  async leave(opt = {}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        this.transiting = this.isEntering = true
 
-                await this.beforeLeave(opt)
-                await this.leaveing(opt)
-                await this.afterLeave(opt)
+        await this.beforeLeave(opt)
+        await this.leaveing(opt)
+        await this.afterLeave(opt)
 
-                this.transiting = this.isEntering = false
+        this.transiting = this.isEntering = false
 
-                resolve()
-            } catch (error) {
-                reject(error)
-            }
-        })
+        resolve()
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
+
+  beforeEnter() {
+    const el = this.$el
+
+    if (!el) {
+      return false
     }
 
-    beforeEnter() {
-        let el = this.$el
+    this.display = false
+    this.props.beforeEnter && this.props.beforeEnter()
 
-        if (!el) {
-            return false
-        }
+    Object.assign(el.style, {
+      'transition': this.transition,
+      'transform': this._getTranslate()
+    })
 
-        this.display = false
-        this.props.beforeEnter && this.props.beforeEnter()
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        el.style.display = ''
 
-        Object.assign(el.style, {
-            'transition': this.transition,
-            'transform': this._getTranslate()
-        })
+        return resolve()
+      })
+    })
+  }
 
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                el.style.display = ''
+  entering() {
+    const el = this.$el
 
-                return resolve()
-            })
-        })
+    if (!el) {
+      return false
     }
 
-    entering() {
-        let el = this.$el
+    // HACK: trigger browser reflow
+    const height = el.offsetHeight
 
-        if (!el) {
-            return false
-        }
+    this.props.entering && this.props.entering()
 
-        // HACK: trigger browser reflow
-        let height = el.offsetHeight
+    Object.assign(el.style, {
+      'transform': ''
+    })
 
-        this.props.entering && this.props.entering()
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        return resolve()
+      }, this.transitionTime)
+    })
+  }
 
-        Object.assign(el.style, {
-            'transform': ''
-        })
+  afterEnter() {
+    this.display = true
+    const el = this.$el
 
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                return resolve()
-            }, this.transitionTime)
-        })
+    if (!el) {
+      return false
     }
 
-    afterEnter() {
-        this.display = true
-        let el = this.$el
+    Object.assign(el.style, {
+      'transition': ''
+    })
 
-        if (!el) {
-            return false
-        }
+    this.props.afterEnter && this.props.afterEnter()
+  }
 
-        Object.assign(el.style, {
-            'transition': ''
-        })
+  beforeLeave() {
+    const el = this.$el
 
-        this.props.afterEnter && this.props.afterEnter()
+    if (!el) {
+      return false
     }
 
-    beforeLeave() {
-        let el = this.$el
+    this.display = true
 
-        if (!el) {
-            return false
-        }
+    this.props.beforeLeave && this.props.beforeLeave()
 
-        this.display = true
+    return Object.assign(el.style, {
+      'transition': this.transition,
+      'transform': ''
+    })
+  }
 
-        this.props.beforeLeave && this.props.beforeLeave()
+  leaveing() {
+    const el = this.$el
 
-        return Object.assign(el.style, {
-            'transition': this.transition,
-            'transform': ''
-        })
+    if (!el) {
+      return false
     }
 
-    leaveing() {
-        let el = this.$el
+    this.props.leaving && this.props.leaving()
 
-        if (!el) {
-            return false
-        }
+    Object.assign(el.style, {
+      'transform': this._getTranslate()
+    })
 
-        this.props.leaving && this.props.leaving()
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        el.style.display = 'none'
 
-        Object.assign(el.style, {
-            'transform': this._getTranslate()
-        })
+        return resolve()
+      }, this.transitionTime)
+    })
+  }
 
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                el.style.display = 'none'
+  afterLeave() {
+    this.display = false
+    const el = this.$el
 
-                return resolve()
-            }, this.transitionTime)
-        })
+    if (!el) {
+      return false
     }
 
-    afterLeave() {
-        this.display = false
-        let el = this.$el
+    Object.assign(el.style, {
+      'transition': '',
+      'transform': ''
+    })
 
-        if (!el) {
-            return false
-        }
+    this.props.afterLeave && this.props.afterLeave()
+  }
 
-        Object.assign(el.style, {
-            'transition': '',
-            'transform': ''
-        })
+  componentWillReceiveProps(nextProps) {
+    this.slideOffset = nextProps.offset
+  }
 
-        this.props.afterLeave && this.props.afterLeave()
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.slideOffset = nextProps.offset
-    }
-
-    render() {
-        return (
-            <div
-                className={this._compClass()}
-                ref={($el) => this.$el = $el}
-                style={{
-                    ...this.props.style,
-                    display: this.display ? '' : 'none'
-                }}
-            >
-                {this.props.children}
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div
+        className={this._compClass()}
+        ref={($el) => this.$el = $el}
+        style={{
+          ...this.props.style,
+          display: this.display ? '' : 'none'
+        }}
+      >
+        {this.props.children}
+      </div>
+    )
+  }
 }
 
 Slide.defaultProps = {
-    className: '',
-    style: {},
-    speed: 'normal',
-    direction: 'south',
-    switch: false,
-    offset: 0
+  className: '',
+  style: {},
+  speed: 'normal',
+  direction: 'south',
+  switch: false,
+  offset: 0
 }
 
 Slide.propTypes = {
-    className: PropTypes.string,
-    style: PropTypes.object,
-    speed: PropTypes.string,
-    direction: PropTypes.string,
-    switch: PropTypes.bool,
-    offset: PropTypes.number.isRequired
+  className: PropTypes.string,
+  style: PropTypes.object,
+  speed: PropTypes.string,
+  direction: PropTypes.string,
+  switch: PropTypes.bool,
+  offset: PropTypes.number.isRequired
 }
 
 export default Slide

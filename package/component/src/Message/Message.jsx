@@ -27,168 +27,168 @@ import FadeTransition from '../../transition/Fade'
 import { xclass, optXclass } from '../../util/comp'
 
 import {
-    prop as elementProp,
-    handleEleDisplay
+  prop as elementProp,
+  handleEleDisplay
 } from '../../util/dom/prop'
 
 const _xclass = (className) => {
-    return xclass('message', className)
+  return xclass('message', className)
 }
 
 const MESSAGE_DISPLAY_TIME = 1500
 
 class Message extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.compName = 'message' // 组件名字
-        this.timer = {} // setTimeout 定时器
-        this.messageDisplay = false // 组件显示状态
+    this.compName = 'message' // 组件名字
+    this.timer = {} // setTimeout 定时器
+    this.messageDisplay = false // 组件显示状态
 
-        this._afterPopEnter = this._afterPopEnter.bind(this)
-        this._afterPopLeave = this._afterPopLeave.bind(this)
-    }
+    this._afterPopEnter = this._afterPopEnter.bind(this)
+    this._afterPopLeave = this._afterPopLeave.bind(this)
+  }
 
-    _compClass() {
-        return _xclass([
-            '',
-            `type-${this.props.type}`
-        ]) + ' ' + this.props.className
-    }
+  _compClass() {
+    return _xclass([
+      '',
+      `type-${this.props.type}`
+    ]) + ' ' + this.props.className
+  }
 
-    /**
+  /**
      * pop 进来的钩子
      */
-    _afterPopEnter() {
-        if (!this.props.notAutoHide) {
-            this.timer = setTimeout(() => {
-                this.hide()
-            }, MESSAGE_DISPLAY_TIME)
-        }
+  _afterPopEnter() {
+    if (!this.props.notAutoHide) {
+      this.timer = setTimeout(() => {
+        this.hide()
+      }, MESSAGE_DISPLAY_TIME)
     }
+  }
 
-    /**
+  /**
      * pop 离开的钩子
      */
-    _afterPopLeave() {
-        this.refs.me.style.display = 'none'
-    }
+  _afterPopLeave() {
+    this.refs.me.style.display = 'none'
+  }
 
-    /**
+  /**
      * 显示 message
      *
      * @param {Number} - 当前页码
      * @return {Object}
      */
-    show() {
-        this.messageDisplay = true
-        this.refs.me.style.display = ''
+  show() {
+    this.messageDisplay = true
+    this.refs.me.style.display = ''
 
-        return new Promise(async (resolve, reject) => {
-            try {
-                await this.refs.pop.enter()
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.refs.pop.enter()
 
-                this.props.show && this.props.show()
+        this.props.show && this.props.show()
 
-                resolve()
-            } catch (error) {
-                reject(error)
-            }
-        })
-    }
+        resolve()
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
 
-    /**
+  /**
      * 隐藏 message
      *
      * @return {Object}
      */
-    hide() {
-        this.messageDisplay = false
-        clearTimeout(this.timer)
+  hide() {
+    this.messageDisplay = false
+    clearTimeout(this.timer)
 
-        return new Promise(async (resolve, reject) => {
-            try {
-                await this.refs.pop.leave()
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.refs.pop.leave()
 
-                this.props.hide && this.props.hide()
+        this.props.hide && this.props.hide()
 
-                resolve()
-            } catch (error) {
-                reject(error)
-            }
-        })
-    }
+        resolve()
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
 
-    componentDidMount() {
-        handleEleDisplay({
-            element: this.refs.me,
-            cb: (element) => {
-                this.refs.pop.computePosition()
-            }
-        })
-    }
+  componentDidMount() {
+    handleEleDisplay({
+      element: this.refs.me,
+      cb: (element) => {
+        this.refs.pop.computePosition()
+      }
+    })
+  }
 
-    componentDidUpdate() {
-        handleEleDisplay({
-            element: this.refs.me,
-            cb: (element) => {
-                this.refs.pop.computePosition()
-            }
-        })
-    }
+  componentDidUpdate() {
+    handleEleDisplay({
+      element: this.refs.me,
+      cb: (element) => {
+        this.refs.pop.computePosition()
+      }
+    })
+  }
 
-    render() {
-        return (
-            <div
-                className={`${this._compClass()}`}
-                ref='me'
-                style={{
-                    display: this.messageDisplay ? '' : 'none'
-                }}
-            >
-                <Pop
-                    afterEnter={this._afterPopEnter}
-                    afterLeave={this._afterPopLeave}
-                    className={`${_xclass('pop')}`}
-                    position={this.props.position}
-                    ref='pop'
-                    speed={this.props.speed}
-                    kind={this.props.kind}
-                >
-                    {this.props.info === undefined
-                        ? this.props.children
-                        : this.props.info
-                    }
-                </Pop>
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div
+        className={`${this._compClass()}`}
+        ref='me'
+        style={{
+          display: this.messageDisplay ? '' : 'none'
+        }}
+      >
+        <Pop
+          afterEnter={this._afterPopEnter}
+          afterLeave={this._afterPopLeave}
+          className={`${_xclass('pop')}`}
+          position={this.props.position}
+          ref='pop'
+          speed={this.props.speed}
+          kind={this.props.kind}
+        >
+          {this.props.info === undefined
+            ? this.props.children
+            : this.props.info
+          }
+        </Pop>
+      </div>
+    )
+  }
 }
 
 Message.defaultProps = {
-    className: '',
-    direction: 'south',
-    position: 'center',
-    notAutoHide: false,
-    kind: 'fade',
-    speed: 'normal',
-    theme: 'primary',
-    type: 'pop'
+  className: '',
+  direction: 'south',
+  position: 'center',
+  notAutoHide: false,
+  kind: 'fade',
+  speed: 'normal',
+  theme: 'primary',
+  type: 'pop'
 }
 
 Message.propTypes = {
-    className: PropTypes.string,
-    direction: PropTypes.string,
-    kind: PropTypes.string,
-    message: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-    ]),
-    position: PropTypes.string,
-    notAutoHide: PropTypes.bool,
-    speed: PropTypes.string,
-    theme: PropTypes.string,
-    type: PropTypes.string
+  className: PropTypes.string,
+  direction: PropTypes.string,
+  kind: PropTypes.string,
+  message: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  position: PropTypes.string,
+  notAutoHide: PropTypes.bool,
+  speed: PropTypes.string,
+  theme: PropTypes.string,
+  type: PropTypes.string
 }
 
 export default Message
