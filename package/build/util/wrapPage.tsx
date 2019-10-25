@@ -1,7 +1,6 @@
 import { KeepAlive } from 'react-keep-alive'
 import React from 'react'
 import { RouteComponentProps } from '@reach/router'
-import { hot } from 'react-hot-loader/root'
 
 const wrapPage = (Comp: React.FC, name: string): React.FC<RouteComponentProps> => {
   const KeepAliveComp: React.FC<RouteComponentProps> = (props): React.ReactElement => (
@@ -10,7 +9,7 @@ const wrapPage = (Comp: React.FC, name: string): React.FC<RouteComponentProps> =
     </KeepAlive>
   )
 
-  return hot(KeepAliveComp)
+  return KeepAliveComp
 }
 
 export default wrapPage

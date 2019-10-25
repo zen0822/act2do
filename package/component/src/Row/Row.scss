@@ -2,50 +2,50 @@
  * row 组件样式
  */
 
-@import "../../scss/config.scss";
-@import "../../scss/extend.scss";
-@import "../../scss/mixin.scss";
+@import '../../scss/config.scss';
+@import '../../scss/extend.scss';
+@import '../../scss/mixin.scss';
 
-$C_PREFIX: #{ $comp-prefix }-row;
+$C_PREFIX: #{$comp-prefix}-row;
 
 .#{$C_PREFIX} {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    &.#{$C_PREFIX}-wrap {
-        flex-wrap: wrap;
+  &.#{$C_PREFIX}-wrap {
+    flex-wrap: wrap;
+  }
+
+  &.#{$C_PREFIX}-nowrap {
+    flex-wrap: nowrap;
+  }
+
+  &.#{$C_PREFIX}-align {
+    &-start {
+      align-items: flex-start;
     }
 
-    &.#{$C_PREFIX}-nowrap {
-        flex-wrap: nowrap;
+    &-end {
+      align-items: flex-end;
+    }
+  }
+
+  &.#{$C_PREFIX}-justify {
+    &-around {
+      justify-content: space-around;
     }
 
-    &.#{$C_PREFIX}-align {
-        &-start {
-            align-items: flex-start;
-        }
-
-        &-end {
-            align-items: flex-end;
-        }
+    &-justify {
+      justify-content: space-between;
     }
 
-    &.#{$C_PREFIX}-justify {
-        &-around {
-            justify-content: space-around;
-        }
-
-        &-justify {
-            justify-content: space-between;
-        }
-
-        &-start {
-            justify-content: flex-start;
-        }
-
-        &-end {
-            justify-content: flex-end;
-        }
+    &-start {
+      justify-content: flex-start;
     }
+
+    &-end {
+      justify-content: flex-end;
+    }
+  }
 }

@@ -86,7 +86,8 @@ module.exports = function ({
           filename: `${projectConfig.htmlName ? projectConfig.htmlName : 'index'}.html`,
           template,
           title: projectConfig.htmlTitle,
-          inject: true
+          inject: true,
+          favicon: path.resolve(projectConfig.path, projectConfig.favicon)
         }]
       }
     }

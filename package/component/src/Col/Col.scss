@@ -2,12 +2,12 @@
  * col 组件样式
  */
 
-@import "../../scss/config.scss";
-@import "../../scss/extend.scss";
-@import "../../scss/mixin.scss";
+@import '../../scss/config.scss';
+@import '../../scss/extend.scss';
+@import '../../scss/mixin.scss';
 
 $device-type: span, xs, s, m, l, xl;
-$C_PREFIX: #{ $comp-prefix }-col;
+$C_PREFIX: #{$comp-prefix}-col;
 
 @mixin device-style($type) {
   @for $i from 1 through 12 {
@@ -22,10 +22,11 @@ $C_PREFIX: #{ $comp-prefix }-col;
 
   @each $type in $device-type {
     @if $type != span {
-      @include device-type ($type) {
+      @include device-type($type) {
         @include device-style($type);
       }
-    } @else {
+    }
+    @else {
       @include device-style($type);
     }
   }

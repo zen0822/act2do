@@ -109,8 +109,7 @@ module.exports = function ({
         sass: {
           loader: 'sass-loader'
         }
-      },
-      exclude: [/(grid|util)\.scss$/]
+      }
     },
     img: {
       ...commonRule,
