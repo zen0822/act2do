@@ -59,6 +59,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 0,
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    'react/prop-types': 0,
     'quotes': ['error', 'single', {
       'allowTemplateLiterals': true
     }],

@@ -87,7 +87,7 @@ module.exports = function ({
           template,
           title: projectConfig.htmlTitle,
           inject: true,
-          favicon: path.resolve(projectConfig.path, projectConfig.favicon)
+          favicon: projectConfig.favicon && path.resolve(projectConfig.path, projectConfig.favicon)
         }]
       }
     }
