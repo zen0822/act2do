@@ -1,43 +1,39 @@
 /**
- * list 组件
+ * list 组件(当前只支持移动端)
  *
  * 重要：当为下拉加载更多功能开启时，不单止 initItem 要赋值，还要调用 update 方法
  *
  * @prop {boolean} auto - 根据传入的列表数据自动生成分页数据
  * @prop {boolean} animate - 是否有列表动画
- * @prop {number} height - 列表高度
- * @prop {string} theme - 主题
  * @prop {string} className
+ * @prop {number} height - 列表高度
  * @prop {array} initItem - 列表数据
  * @prop {any} keyName - 列表数据作为 key 的参数名字
- * @prop {boolean} waterfall - 瀑布流数据
- *
  * @prop {number} initDataLength - 当 pageType 为 load 时，一开始展示的数据条数
  * @prop {boolean} loadAll - 当 pageType 为 more 时，启用加载更多的功能即一下全部加载，而不是分页式的加载更多
  * @prop {object} noMoreDataTip - 当 pageType 为 load 时，没有更多数据加载的提示文案，为空时不显示
- *
  * @prop {object} page - 分页数据（没传的话，默认将传的列表数据（item）作为分页数据）
  * @prop {boolean} pager - 启动分页
  * @prop {string} pageType - 默认为 num，可选 more
  * @prop {string} pageSize - 将列表数据（item）分为每页多少条数据
  * @prop {string} pageTrigger - 加载更多的触发模式（滚动到底部自动触发（默认）：scroll | 点击：click）
- *
- * @prop {object} slotHeader - 添加在列表头部的组件
- * @prop {number} slotHeight - slotHeader 的高度，作为滚动加载需要排除的高度
  * @prop {boolean} refresh - 页面下拉刷新的开关
+ * @prop {number} slotHeaderHeight - slotHeader 的高度，作为滚动加载需要排除的高度
+ * @prop {string} theme - 主题
+ * @prop {boolean} waterfall - 瀑布流数据
  *
  * @event onClick - 点击按钮事件
  * @event onSwitch - 页面跳转事件
  * @event onScroll - 页面滚动事件
  *
+ * @slot slotHeader - 添加在列表头部的组件
  * @slot slot - 列表内容
  * @slot slotPage - 分页的内容分发
  */
 
 import './List.scss'
 
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import compConf from '../../config.json'
 import { xclass } from '../../util/comp'
 import { prop as eleProps } from '../../util/dom/prop'
@@ -49,15 +45,12 @@ import Loading from '../Loading/Loading'
 import Row from '../Row/Row'
 import Col from '../Col/Col'
 
-import dsBridge from 'dsbridge'
-
-const HEIGHT = 200
-const _xclass = (className) => {
+const _xclass = (className: string | Array<string>) => {
   return xclass('list', className)
 }
 
 // 存储还没执行过渡动画（没出现到用户视线）的列表数据
-const addUIDToListItem = (listItem) => {
+const addUIDToListItem = (listItem: Array<{ rcuid: string }>) => {
   listItem.forEach((item) => {
     if (!item) {
       return false
@@ -69,7 +62,45 @@ const addUIDToListItem = (listItem) => {
   return listItem
 }
 
-class List extends Component {
+type TypeListProps = {
+  auto: boolean
+  animate: boolean
+  className: string
+  emptyHint: string
+  initItem: Array<object>
+  initDataLength: number
+  loadAll: boolean
+  noMoreDataTip: string
+  page: object
+  pager: boolean
+  pageSize: number
+  pageType: string
+  pageTrigger: string
+  refresh: boolean
+  slotHeight: number
+  style: { [key: string]: any }
+  theme: string
+}
+
+const Col: React.FC<TypeListProps> = ({
+  auto = false,
+  animate = false,
+  className = '',
+  initItem = [],
+  loadAll = false,
+  noMoreDataTip = '已经到底啦 ~',
+  page = {},
+  pager = false,
+  pageType = 'num',
+  pageTrigger = 'scroll',
+  pageSize = 20,
+  emptyHint = '暂无数据',
+  refresh = false,
+  style = {},
+  slotHeight = 0,
+  theme = 'primary',
+  ...props
+}): React.ReactElement => {
   constructor(props) {
     super(props)
 
@@ -215,7 +246,7 @@ class List extends Component {
      * @param {object} props - 组件的 props 值
      */
   _initListData({
-    listItem = [],
+    listItem =[],
     pageData = this.state.pageData,
     replace = false
   } = {}) {
@@ -632,57 +663,18 @@ class List extends Component {
           )
         }
         {pager
-                    && this.props.noMoreDataTip
-                    && this.state.pageData.current === this.state.pageData.length
-                    && this.state.pageData.length > 1
-                    && (
-                      <div className={_xclass('box-nomoredata')}>
-                        {this.props.noMoreDataTip}
-                      </div>
-                    )
+          && this.props.noMoreDataTip
+          && this.state.pageData.current === this.state.pageData.length
+          && this.state.pageData.length > 1
+          && (
+            <div className={_xclass('box-nomoredata')}>
+              {this.props.noMoreDataTip}
+            </div>
+          )
         }
       </div>
     )
   }
-}
-
-List.defaultProps = {
-  auto: false,
-  animate: false,
-  className: '',
-  initItem: [],
-  loadAll: false,
-  noMoreDataTip: '已经到底啦 ~',
-  page: {},
-  pager: false,
-  pageType: 'num',
-  pageTrigger: 'scroll',
-  pageSize: 20,
-  style: {},
-  emptyHint: '暂无数据',
-  slotHeight: 0,
-  theme: 'primary',
-  refresh: false
-}
-
-List.propTypes = {
-  auto: PropTypes.bool,
-  refresh: PropTypes.bool,
-  animate: PropTypes.bool,
-  className: PropTypes.string,
-  loadAll: PropTypes.bool,
-  initItem: PropTypes.array,
-  initDataLength: PropTypes.number,
-  slotHeight: PropTypes.number,
-  noMoreDataTip: PropTypes.string,
-  page: PropTypes.object,
-  pager: PropTypes.bool,
-  pageSize: PropTypes.number,
-  pageType: PropTypes.string,
-  pageTrigger: PropTypes.string,
-  style: PropTypes.object,
-  theme: PropTypes.string,
-  emptyHint: PropTypes.string
 }
 
 export default List

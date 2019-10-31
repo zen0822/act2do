@@ -3,10 +3,6 @@ import { Router } from '@reach/router'
 import loadable from '@loadable/component'
 import LoadingComp from '@act2do/component/src/Loading/Loading'
 
-import {
-  Provider as KeepAliveProvider
-} from 'react-keep-alive'
-
 const Loading = (
   <div style={{
     height: window.innerHeight,
@@ -45,13 +41,11 @@ const NotFound = loadable(
 )
 
 const RouterConfig: React.FC = (): React.ReactElement => (
-  <KeepAliveProvider>
-    <Router>
-      <PageHome path='/' />
-      <PageDetail path='detail' />
-      <NotFound default />
-    </Router>
-  </KeepAliveProvider>
+  <Router>
+    <PageHome path='/' />
+    <PageDetail path='detail' />
+    <NotFound default />
+  </Router>
 )
 
 export default RouterConfig
