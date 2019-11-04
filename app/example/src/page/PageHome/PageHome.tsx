@@ -1,14 +1,15 @@
 import './PageHome.scss'
 import React, { useState } from 'react'
-import { Link, RouteComponentProps } from '@reach/router'
+import { Link } from '@reach/router'
 import { useKeepAliveEffect } from 'react-keep-alive'
 import api from '../../../api'
 import wrapPage from '@act2do/build/util/wrapPage'
 import Input from '@act2do/component/src/Input/Input'
+import { hot } from 'react-hot-loader/root'
 
 const compPrefix = 'p-home-p'
 
-const PageHome: React.FC<RouteComponentProps> = (): React.ReactElement => {
+const PageHome: React.FC = (): React.ReactElement => {
   document.title = '用户协议'
   const ad = {
     zen: 'handsome'
@@ -46,4 +47,4 @@ const PageHome: React.FC<RouteComponentProps> = (): React.ReactElement => {
   )
 }
 
-export default wrapPage(PageHome, 'home')
+export default hot(wrapPage(PageHome, 'home'))

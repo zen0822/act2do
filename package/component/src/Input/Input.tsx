@@ -44,7 +44,7 @@
  */
 
 import './Input.scss'
-
+import { hot } from 'react-hot-loader'
 import React, { useState, useEffect, useRef } from 'react'
 import { defineMessages, useIntl } from 'react-intl'
 

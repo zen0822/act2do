@@ -4,3 +4,4 @@ tsDist
 **/iconfont.svg.js
 dist
 package/component/util/*
+node_modules

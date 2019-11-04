@@ -3,27 +3,29 @@
  *
  * 重要：当为下拉加载更多功能开启时，不单止 initItem 要赋值，还要调用 update 方法
  *
- * @prop {boolean} auto - 根据传入的列表数据自动生成分页数据
- * @prop {boolean} animate - 是否有列表动画
- * @prop {string} className
- * @prop {number} height - 列表高度
- * @prop {array} initItem - 列表数据
+ * @prop {array} item - 列表数据
  * @prop {any} keyName - 列表数据作为 key 的参数名字
  * @prop {number} initDataLength - 当 pageType 为 load 时，一开始展示的数据条数
- * @prop {boolean} loadAll - 当 pageType 为 more 时，启用加载更多的功能即一下全部加载，而不是分页式的加载更多
  * @prop {object} noMoreDataTip - 当 pageType 为 load 时，没有更多数据加载的提示文案，为空时不显示
+ *
+ * @prop {boolean} auto - 根据传入的列表数据自动生成分页数据
+ * @prop {boolean} loadAll - 当 pageType 为 more 时，启用加载更多的功能即一下全部加载，而不是分页式的加载更多
  * @prop {object} page - 分页数据（没传的话，默认将传的列表数据（item）作为分页数据）
  * @prop {boolean} pager - 启动分页
  * @prop {string} pageType - 默认为 num，可选 more
  * @prop {string} pageSize - 将列表数据（item）分为每页多少条数据
  * @prop {string} pageTrigger - 加载更多的触发模式（滚动到底部自动触发（默认）：scroll | 点击：click）
+
  * @prop {boolean} refresh - 页面下拉刷新的开关
  * @prop {number} slotHeaderHeight - slotHeader 的高度，作为滚动加载需要排除的高度
+ *
+ * @prop {string} className
+ * @prop {boolean} animate - 是否有列表动画
+ * @prop {number} height - 列表高度
  * @prop {string} theme - 主题
  * @prop {boolean} waterfall - 瀑布流数据
  *
- * @event onClick - 点击按钮事件
- * @event onSwitch - 页面跳转事件
+ * @event onChange - 列表数据改变（分页和列表）
  * @event onScroll - 页面滚动事件
  *
  * @slot slotHeader - 添加在列表头部的组件
@@ -33,11 +35,19 @@
 
 import './List.scss'
 
-import React, { useState, useEffect } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  ReactElement,
+  TouchEvent,
+  UIEvent
+} from 'react'
 import compConf from '../../config.json'
 import { xclass } from '../../util/comp'
 import { prop as eleProps } from '../../util/dom/prop'
 import { uid } from '../../util/util'
+import { useIsMounted } from '../../hook/hook'
 
 import ListTransition from './ListTransition'
 import Page from '../Page/Page'
@@ -45,13 +55,24 @@ import Loading from '../Loading/Loading'
 import Row from '../Row/Row'
 import Col from '../Col/Col'
 
-const _xclass = (className: string | Array<string>) => {
+type TypePage = {
+  current: number
+  length: number
+  size: number
+  total: number
+}
+
+type TypeItem = Array<Record<string, any>>
+
+const _xclass = (className: string | Array<string>): string => {
   return xclass('list', className)
 }
 
 // 存储还没执行过渡动画（没出现到用户视线）的列表数据
-const addUIDToListItem = (listItem: Array<{ rcuid: string }>) => {
-  listItem.forEach((item) => {
+const addUIDToListItem = (listItem: TypeItem): TypeItem => {
+  const listItemTemp = [...listItem]
+
+  listItemTemp.forEach((item) => {
     if (!item) {
       return false
     }
@@ -59,251 +80,100 @@ const addUIDToListItem = (listItem: Array<{ rcuid: string }>) => {
     item.rcuid = uid()
   })
 
-  return listItem
+  return listItemTemp
 }
 
-type TypeListProps = {
+type TypeItemProps = {
   auto: boolean
   animate: boolean
   className: string
   emptyHint: string
-  initItem: Array<object>
+  item: TypeItem
   initDataLength: number
+  keyName: string,
   loadAll: boolean
   noMoreDataTip: string
-  page: object
+  onChange: (list: TypeItem, page: TypePage) => void
+  onScroll: (scrollTop: number) => void
+  onSwitch: Function
+  page: TypePage
   pager: boolean
   pageSize: number
   pageType: string
   pageTrigger: string
   refresh: boolean
+  slot: React.FC
+  slotHeader: React.FC
   slotHeight: number
+  slotPage: string
   style: { [key: string]: any }
   theme: string
+  waterfall: boolean
 }
 
-const Col: React.FC<TypeListProps> = ({
+const List: React.FC<TypeItemProps> = ({
   auto = false,
   animate = false,
   className = '',
-  initItem = [],
+  item = [],
+  initDataLength,
+  keyName,
   loadAll = false,
   noMoreDataTip = '已经到底啦 ~',
+  onChange,
+  onScroll,
+  onSwitch,
   page = {},
   pager = false,
   pageType = 'num',
   pageTrigger = 'scroll',
   pageSize = 20,
   emptyHint = '暂无数据',
-  refresh = false,
   style = {},
-  slotHeight = 0,
-  theme = 'primary',
+  slot,
+  slotHeight,
+  slotPage,
+  waterfall = false,
   ...props
 }): React.ReactElement => {
-  constructor(props) {
-    super(props)
+  const refIsMounted = useIsMounted()
 
-    this._isMounted = false
-    this.compName = 'list' // 组件名字
-    this.$el = null // 组件的 dom
-    this.scrolling = false // 是否正在滚动
-    this.listHeight = 0 // 列表的高度
-    this.listBoxHeight = 0 // 列表内容的高度
-    this.componentFirstUpdate = true // 组件第一次更新
-    this.noAnimateListItem = [] // 还没执行过渡动画（没出现到用户视线）的列表数据
-    this.updated = false // 组件数据更新
-    this.hasRefresh = dsBridge.hasNativeMethod('jsRefresh')
-    this.targetScrollTop = 0 // 当前滚动条的高度
+  const refMe = useRef(null) // 组件的 dom
+  const refBox = useRef(null) // 组件的 dom
+  const refScrolling = useRef(false) // 是否正在滚动
+  const refNoAnimateListItem = useRef<TypeItem>([]) // 还没执行过渡动画（没出现到用户视线）的列表数据
+  const refTargetScrollTop = useRef(0) // 当前滚动条的高度
 
-    this.isTouchStart = false // 正在触发 touchStart 事件
-    this.touchStart = { // 触控的开始位置
-      x: 0,
-      y: 0
-    }
-    this.touchEnd = { // 触控的结束位置
-      x: 0,
-      y: 0
-    }
+  const refListHeight = useRef(0) // 列表的高度
+  const refListBoxHeight = useRef(0) // 列表内容的高度
 
-    this._switchHandler = this._switchHandler.bind(this)
-    this._scrollHandler = this._scrollHandler.bind(this)
-    this._loadAllHandler = this._loadAllHandler.bind(this)
+  const refIsTouchStart = useRef(false) // 正在触发 touchStart 事件
+  const refTouchStart = useRef({ // 触控的开始位置
+    x: 0,
+    y: 0
+  })
+  const refTouchEnd = useRef({ // 触控的结束位置
+    x: 0,
+    y: 0
+  })
 
-    const pageData = this._initPageData(props.page)
-    const listItem = this._initListData({
-      listItem: props.initItem,
-      pageData,
-      replace: true
-    })
-    const listItemEmpty = listItem.length === 0
+  const [loadingDisplay, setLoadingDisplay] = useState(true)
+  const [hasLoadAll, setHasLoadAll] = useState(true)
 
-    this.state = {
-      pageData,
-      hasData: !listItemEmpty,
-      item: listItem,
-      loadingDisplay: true,
-      pageDisplay: pageData.length !== pageData.current,
-      hasLoadAll: false // 是否已经打开全部了
-    }
-  }
-
-  _compClass() {
+  function compClass(): string {
     return _xclass([
       '',
-      `type-${this.props.pageType}`
+      `type-${pageType}`
     ])
-  }
-
-  async _switchHandler() {
-    const { pageData } = this.state
-
-    if (pageData.length === pageData.current || !this.state.pageDisplay) {
-      return false
-    }
-
-    if (this.props.auto) {
-      if (this.props.loadAll) {
-        // 加载全部
-      }
-
-      this._isMounted && this.setState({
-        pageData: {
-          ...pageData,
-          current: pageData.current + 1
-        }
-      }, () => {
-        const listItem = this._initListData({
-          listItem: this.props.initItem
-        })
-
-        this._initList(listItem, this.state.pageData)
-      })
-    }
-
-    this.props.onSwitch && this.props.onSwitch()
-  }
-
-  _scrollHandler(event) {
-    const currentTarget = event.currentTarget
-    const targetScrollTop = currentTarget.scrollTop
-    this.targetScrollTop = targetScrollTop
-
-    if (!this.scrolling) {
-      window.requestAnimationFrame(() => {
-        this.props.animate
-          ? this._animateListItem(targetScrollTop)
-          : this._getHeight()
-
-        if (this.props.pageTrigger === 'scroll') {
-          const flat = this.listBoxHeight - this.listHeight + this.props.slotHeight
-
-          if (targetScrollTop < flat + 3 && targetScrollTop > flat - 3) {
-            !this.state.loadingDisplay && this.props.pager && this._switchHandler()
-          }
-        }
-
-        this.scrolling = false
-      })
-
-      this.scrolling = true
-    }
-
-    if (this.props.refresh && this.hasRefresh) {
-      if (targetScrollTop === 0) {
-        dsBridge.call('jsRefresh ', { isEnable: true })
-      } else {
-        dsBridge.call('jsRefresh ', { isEnable: false })
-      }
-    }
-
-    this.props.onScroll && this.props.onScroll({
-      scrollTop: targetScrollTop
-    })
-  }
-
-  _loadAllHandler() {
-    this.setState({
-      hasLoadAll: !this.state.hasLoadAll
-    }, () => {
-      this.setState({
-        item: this._initListData({ replace: true })
-      })
-    })
-  }
-
-  /**
-     * 获得列表组件的相关数据
-     */
-  _getHeight() {
-    this.listHeight = this.$el ? this.$el.clientHeight : 0
-    this.listBoxHeight = this.refs.box ? this.refs.box.scrollHeight : 0
-  }
-
-  /**
-     * 初始化列表数据
-     *
-     * @param {object} props - 组件的 props 值
-     */
-  _initListData({
-    listItem =[],
-    pageData = this.state.pageData,
-    replace = false
-  } = {}) {
-    let item = []
-
-    if (this.props.loadAll) {
-      if (this.state) {
-        item = this.state.hasLoadAll
-          ? this.props.initItem.slice(0, this.props.initItem.length)
-          : this.props.initItem.slice(0, this.props.initDataLength)
-      } else {
-        item = this.props.initItem.slice(0, this.props.initDataLength)
-      }
-    } else {
-      if (this.props.auto) {
-        let start = 0
-        let end = 0
-
-        if (pageData.current === 1) {
-          start = 0
-          end = this.props.initDataLength
-            ? this.props.initDataLength
-            : this.props.pageSize
-        } else {
-          start = this.props.initDataLength
-            ? (pageData.current - 2) * this.props.pageSize + this.props.initDataLength
-            : (pageData.current - 1) * this.props.pageSize
-          end = start + this.props.pageSize
-        }
-
-        item = this.props.initItem.slice(start, end)
-      } else {
-        item = listItem
-      }
-    }
-
-    item = addUIDToListItem(item)
-    this.noAnimateListItem = this.noAnimateListItem.concat(item)
-
-    if (replace) {
-      return item
-    }
-
-    if (this.props.pageType === 'more') {
-      return this.state.item.concat(item)
-    } else {
-      return item
-    }
   }
 
   /**
      * 初始化分页相关数据
      */
-  _initPageData(pageData) {
-    if (this.props.auto) {
-      const listLength = this.props.initItem.length
-      const size = this.props.pageSize
+  function initPageData(pageData: TypePage): TypePage {
+    if (auto) {
+      const listLength = item.length
+      const size = pageSize
 
       return {
         length: Math.ceil(listLength / size),
@@ -314,367 +184,411 @@ const Col: React.FC<TypeListProps> = ({
     } else {
       return {
         ...pageData,
-        size: pageData.size || this.props.pageSize
+        size: pageData.size || pageSize
       }
     }
   }
 
+  const [statePage, setStatePage] = useState(initPageData(page as TypePage))
+  const [pageDisplay, setPageDisplay] = useState(statePage.length !== statePage.current)
+
   /**
-     * 初始化列表
+     * 初始化列表数据
      *
      * @param {object} props - 组件的 props 值
      */
-  _initList(listItem = [], pageData = {}) {
-    // 如果是下拉加载时，第一页的数据小于分页长度时，不显示分页
-    let pageDisplay = true
-    if (this.props.pageType === 'more' && pageData.current === 1 && listItem.length < pageData.size) {
-      pageDisplay = false
+  function initListData({
+    listItem,
+    pageData,
+    replace = false
+  }: {
+    listItem: TypeItem
+    pageData: TypePage
+    replace?: boolean
+  }): TypeItem {
+    let itemTemp = []
+
+    if (loadAll) {
+      itemTemp = hasLoadAll
+        ? item.slice(0, item.length)
+        : item.slice(0, initDataLength)
+    } else {
+      if (auto) {
+        let start = 0
+        let end = 0
+
+        if (pageData.current === 1) {
+          start = 0
+          end = initDataLength || pageSize
+        } else {
+          start = initDataLength
+            ? (pageData.current - 2) * pageSize + initDataLength
+            : (pageData.current - 1) * pageSize
+          end = start + pageSize
+        }
+
+        itemTemp = item.slice(start, end)
+      } else {
+        itemTemp = [...listItem]
+      }
     }
 
-    this._getHeight()
+    itemTemp = addUIDToListItem(item)
+    refNoAnimateListItem.current = [...refNoAnimateListItem.current, ...item]
 
-    this._isMounted && this.setState({
-      item: listItem,
-      hasData: listItem.length > 0,
-      pageData,
-      pageDisplay: pageData.length !== pageData.current && pageDisplay,
-      loadingDisplay: false
-    }, () => {
-      this.props.animate
-        ? this._animateListItem(this.refs.me.scrollTop)
-        : this._getHeight()
-    })
+    if (replace) {
+      return itemTemp
+    }
+
+    if (pageType === 'more') {
+      return itemTemp.concat(item)
+    } else {
+      return item
+    }
+  }
+  const [stateItem, setStateItem] = useState(initListData({
+    listItem: item,
+    pageData: statePage,
+    replace: true
+  }))
+  const stateItemEmpty = stateItem.length === 0
+
+  /**
+     * 获得列表组件的相关数据
+     */
+  function getHeight(): void {
+    refListHeight.current = (refMe && refMe.current) ? refMe.current.clientHeight : 0
+    refListBoxHeight.current = (refBox && refBox.current) ? refBox.current.scrollHeight : 0
   }
 
   /**
-     * 执行列表的动画效果
-     *
-     * @param {number} scrollTop - 列表内容的滚动高度
-     */
-  _animateListItem(scrollTop = 0) {
-    const noAnimateListItem = this.noAnimateListItem.slice()
+   * 执行列表的动画效果
+   *
+   * @param {number} scrollTop - 列表内容的滚动高度
+   */
+  function animateListItem(scrollTop = 0): boolean | number {
+    const noAnimateListItem = [...refNoAnimateListItem.current]
     const length = noAnimateListItem.length
 
     if (length === 0) {
       return false
     }
 
-    const $ref = this.refs[`listEle${noAnimateListItem[0].rcuid}`]
-    const props = eleProps($ref.$el)
+    return scrollTop
 
-    if (props.offsetTop > this.listHeight + scrollTop) {
-      return false
-    }
+    // const $ref = refs[`listEle${noAnimateListItem[0].rcuid}`]
 
-    const afterAnimate = async (index) => {
-      if (index === length) {
-        return false
-      }
+    // if (offsetTop > listHeight + scrollTop) {
+    //   return false
+    // }
 
-      const $ref = this.refs[`listEle${noAnimateListItem[index].rcuid}`]
-      const props = eleProps($ref.$el)
+    // const afterAnimate = async (index) => {
+    //   if (index === length) {
+    //     return false
+    //   }
 
-      if (props.offsetTop < this.listHeight + scrollTop) {
-        this.noAnimateListItem.shift()
-        this.refs[`listEle${noAnimateListItem[index].rcuid}`].enter().then(() => {
-          this._getHeight()
-        })
-        return afterAnimate(index + 1)
-      }
-    }
+    //   const $ref = refs[`listEle${noAnimateListItem[index].rcuid}`]
+    //   const props = eleProps($ref.$el)
 
-    return afterAnimate(0)
+    //   if (offsetTop < listHeight + scrollTop) {
+    //     noAnimateListItem.shift()
+    //     refs[`listEle${noAnimateListItem[index].rcuid}`].enter().then(() => {
+    //       getHeight()
+    //     })
+    //     return afterAnimate(index + 1)
+    //   }
+    // }
+
+    // return afterAnimate(0)
   }
 
   /**
-     * 更新列表数据
-     *
-     * @param {promise, function} dataHandler - 通过 Promise 返回的列表数据, list 和 page
-     */
-  async update(dataHandler) {
-    return new Promise((resolve, reject) => {
-      this.setState({
-        loadingDisplay: true
-      }, async () => {
-        try {
-          const response = typeof dataHandler === 'function'
-            ? await dataHandler()
-            : dataHandler
-          const listItem = this._initListData({
-            listItem: response.list
-          })
+   * 初始化列表
+   *
+   * @param {object} props - 组件的 props 值
+   */
+  function initList(listItem: TypeItem, pageData: TypePage): void {
+    // 如果是下拉加载时，第一页的数据小于分页长度时，不显示分页
+    let pageDisplay = true
 
-          const pageData = this._initPageData(response.page)
+    if (pageType === 'more' && pageData.current === 1 && listItem.length < pageData.size) {
+      pageDisplay = false
+    }
 
-          resolve({
-            list: listItem,
-            page: pageData
-          })
-          this._initList(listItem, pageData)
-          this.updated = true
-        } catch (error) {
-          console.warn(error)
-        }
+    setStatePage(pageData)
+    setStateItem(listItem)
+    setPageDisplay(pageData.length !== pageData.current && pageDisplay)
+    setLoadingDisplay(false)
+
+    animate
+      ? animateListItem((refMe.current as any).scrollTop)
+      : getHeight()
+  }
+
+  function onSwitchHandler(): void | boolean {
+    if (statePage.length === statePage.current || !pageDisplay) {
+      return false
+    }
+
+    if (auto) {
+      if (loadAll) {
+        // 加载全部
+      }
+
+      const pageData = {
+        ...statePage,
+        current: statePage.current + 1
+      }
+
+      setStatePage(pageData)
+
+      const listItem = initListData({
+        listItem: item,
+        pageData
       })
-    })
+
+      initList(listItem, statePage)
+    }
+
+    onSwitch && onSwitch(statePage)
+  }
+
+  function onScrollHandler(event: UIEvent): void {
+    const currentTarget = event.currentTarget
+    const targetScrollTop = currentTarget.scrollTop
+    refTargetScrollTop.current = targetScrollTop
+
+    if (!refScrolling.current) {
+      window.requestAnimationFrame(() => {
+        animate
+          ? animateListItem(targetScrollTop)
+          : getHeight()
+
+        if (pageTrigger === 'scroll') {
+          const flat = refListBoxHeight.current - refListHeight.current + slotHeight
+
+          if (targetScrollTop < flat + 3 && targetScrollTop > flat - 3) {
+            !loadingDisplay && pager && onSwitchHandler()
+          }
+        }
+
+        refScrolling.current = false
+      })
+
+      refScrolling.current = true
+    }
+
+    onScroll && onScroll(targetScrollTop)
+  }
+
+  function _loadAllHandler(): void {
+    setHasLoadAll(!hasLoadAll)
   }
 
   /**
-     * 初始化列表组件(分页变成 第一页，列表数据还原)
-     */
-  init() {
-    const pageData = {
-      current: 1
-    }
+   * 改变itemList内具体内容
+   */
+  function changeItemHandler(index: number, data?: any): void {
+    const itemTemp = [...stateItem]
+    itemTemp.splice(index, 1, data)
 
-    this.updated = false
-    const initPageData = this._initPageData(pageData)
-    const listData = this._initListData({
-      listItem: this.props.initItem,
-      pageData: initPageData,
-      replace: true
-    })
-
-    this.refs.me.scrollTo && this.refs.me.scrollTo(0, 0)
-
-    return this._initList(listData, initPageData)
+    setStateItem(itemTemp)
   }
 
-  /*
-    * 改变itemList内具体内容
-    * */
-  _handleChangeItem(index, data) {
-    const { item } = this.state
-    item.splice(index, 1, data)
+  function onTouchStartHandler(event: TouchEvent): void {
+    refIsTouchStart.current = true
 
-    this.setState({
-      item: [...item]
-    })
-  }
-
-  _handlerTouchStart(event) {
-    this.isTouchStart = true
-
-    this.touchStart = {
+    refTouchStart.current = {
       x: event.touches[0].clientX,
       y: event.touches[0].clientY
     }
-
-    if (this.hasRefresh && this.props.refresh && this.targetScrollTop === 0) {
-      dsBridge.call('jsRefresh ', { isEnable: true })
-    }
   }
 
-  _handlerTouchMove(event) {
-    if (!this.isTouchStart) {
+  function onTouchMoveHandler(event: TouchEvent): void | boolean {
+    if (!refIsTouchStart.current) {
       return false
     }
 
-    this.touchEnd = {
+    refTouchEnd.current = {
       x: event.touches[0].clientX,
       y: event.touches[0].clientY
     }
   }
 
-  _handlerTouchEnd() {
-    this.isTouchStart = false
+  function onTouchEndHandler(): void {
+    refIsTouchStart.current = false
   }
 
-  componentDidMount() {
-    this._isMounted = true
-    this._initList(this.state.item, this.state.pageData)
-    this.$el = this.refs.me
+  useEffect(() => {
+    // _initList(item, statePage)
+  })
 
-    if (this.props.refresh && this.hasRefresh) {
-      dsBridge.call('jsRefresh ', { isEnable: true })
-    }
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false
-
-    this.hasRefresh && dsBridge.call('jsRefresh ', { isEnable: false })
-  }
-
-  render() {
-    const {
-      loadingDisplay,
-      pageDisplay,
-      item: stateItem
-    } = this.state
-
-    const {
-      pager,
-      keyName,
-      waterfall
-    } = this.props
-
-    const contentEle = waterfall
-      ? (
-        <Row wrap='wrap' justify='justify'>
-          {stateItem.map((item, index) => {
-            if (!item) {
-              return null
-            }
-
-            return (
-              <Col key={keyName ? item[keyName] : item.rcuid}>
-                {this.props.slot
-                  ? <this.props.slot
-                    more={pageDisplay}
-                    index={index + 1}
-                    lastIndex={stateItem.length}
-                    changeItem={this._handleChangeItem.bind(this, index)}
-                    item={item} />
-                  : item.text
-                }
-              </Col>
-            )
-          })}
-        </Row>
-      ) : (
-        <div className={_xclass('content')}>
-          {this.props.animate
-            ? (
-              stateItem.map((item, index) =>
-                <ListTransition
-                  className={_xclass('content-ele')}
-                  origin='50% 0'
-                  ref={`listEle${item.rcuid}`}
-                  key={index.toString()}
-                >
-                  <Row>
-                    <Col span={12}>
-                      {this.props.slot
-                        ? <this.props.slot
-                          more={pageDisplay}
-                          index={index + 1}
-                          lastIndex={stateItem.length}
-                          changeItem={this._handleChangeItem.bind(this, index)}
-                          item={item} />
-                        : item.text
-                      }
-                    </Col>
-                  </Row>
-                </ListTransition>
-              )
-            ) : (
-              stateItem.map((item, index) => {
-                if (!item) {
-                  return null
-                }
-
-                return (
-                  <Row
-                    className={_xclass('content-ele')}
-                    key={keyName ? item[keyName] : item.rcuid}
-                    ref={`listEle${item.rcuid}`}
-                  >
-                    <Col span={12}>
-                      {this.props.slot
-                        ? <this.props.slot
-                          more={pageDisplay}
-                          index={index + 1}
-                          lastIndex={stateItem.length}
-                          changeItem={this._handleChangeItem.bind(this, index)}
-                          item={item} />
-                        : item.text
-                      }
-                    </Col>
-                  </Row>
-                )
-              })
-            )
+  const contentEle = waterfall
+    ? (
+      <Row>
+        {stateItem.map((item, index) => {
+          if (!item) {
+            return null
           }
-        </div>
-      )
 
-    const operaterEle = (loadingDisplay || pageDisplay) && (
-      <div ref='operation' className={_xclass('operation')}>
-        {loadingDisplay
-          ? (
-            <Row justify='justify'>
-              <Col width='50%' className={_xclass('operation-loading')}>
-                <Loading
-                  size='S'
-                  className={_xclass('loading')}
-                  display={loadingDisplay}
+          return (
+            <Col key={keyName ? item[keyName] : item.rcuid}>
+              {slot
+                ? <slot
+                  more={pageDisplay}
+                  index={index + 1}
+                  lastIndex={stateItem.length}
+                  changeItem={(): void => changeItemHandler(index)}
+                  item={item}
                 />
-              </Col>
-              <Col width='50%'>
-                <span>加载中</span>
-              </Col>
-            </Row>
-          ) : (
-            pager && pageDisplay && <Page
-              className={_xclass('page')}
-              data={this.state.pageData}
-              onSwitch={this._switchHandler}
-              type='more'
-              ref='pager'
-              slotLoadMore={() => {
-                if (this.props.slotPage) {
-                  return <this.props.slotPage display={pageDisplay} />
-                } else {
-                  return (
-                    <div className={_xclass('page-load-more')}>
-                      {this.props.pageTrigger === 'scroll'
-                        ? '上拉加载'
-                        : '点击加载'
-                      }
-                    </div>
-                  )
-                }
-              }}
-            />
+                : item.text
+              }
+            </Col>
           )
-        }
-      </div>
-    )
-
-    const loadAllEle = this.props.initItem.length > this.props.initDataLength && (
-      <div className={_xclass('operation')} onClick={this._loadAllHandler}>
-        {this.props.slotPage
-          ? <this.props.slotPage loadAll={this.state.hasLoadAll} />
-          : this.state.hasLoadAll ? '收起全部' : '展开更多'
-        }
-      </div>
-    )
-
-    return (
-      <div
-        className={`${this._compClass()} ${this.props.className}`}
-        onScroll={this._scrollHandler}
-        onTouchStart={(event) => this._handlerTouchStart(event)}
-        onTouchMove={(event) => this._handlerTouchMove(event)}
-        onTouchEnd={(event) => this._handlerTouchEnd(event)}
-        ref='me'
-        style={this.props.style}
-      >
-        {this.props.slotHeader}
-        {this.state.hasData
+        })}
+      </Row>
+    ) : (
+      <div className={_xclass('content')}>
+        {animate
           ? (
-            <div className={_xclass('box')} ref='box'>
-              {contentEle}
-              {this.props.loadAll ? loadAllEle : operaterEle}
-            </div>
+            stateItem.map((item, index) =>
+              <ListTransition
+                className={_xclass('content-ele')}
+                origin='50% 0'
+                ref={`listEle${item.rcuid}`}
+                key={index.toString()}
+              >
+                <Row>
+                  <Col span={12}>
+                    {slot
+                      ? <slot
+                        more={pageDisplay}
+                        index={index + 1}
+                        lastIndex={stateItem.length}
+                        changeItem={(): void => changeItemHandler(index)}
+                        item={item}
+                      />
+                      : item.text
+                    }
+                  </Col>
+                </Row>
+              </ListTransition>
+            )
           ) : (
-            <p className={`${compConf.prefix}-css-text-center`}>{this.props.emptyHint}</p>
-          )
-        }
-        {pager
-          && this.props.noMoreDataTip
-          && this.state.pageData.current === this.state.pageData.length
-          && this.state.pageData.length > 1
-          && (
-            <div className={_xclass('box-nomoredata')}>
-              {this.props.noMoreDataTip}
-            </div>
+            stateItem.map((item, index) => {
+              if (!item) {
+                return null
+              }
+
+              return (
+                <Row
+                  className={_xclass('content-ele')}
+                  key={keyName ? item[keyName] : item.rcuid}
+                // ref={`listEle${item.rcuid}`}
+                >
+                  <Col span={12}>
+                    {slot
+                      ? <slot
+                        more={pageDisplay}
+                        index={index + 1}
+                        lastIndex={stateItem.length}
+                        changeItem={(): void => changeItemHandler(index)}
+                        item={item} />
+                      : item.text
+                    }
+                  </Col>
+                </Row>
+              )
+            })
           )
         }
       </div>
     )
-  }
+
+  const operaterEle = (loadingDisplay || pageDisplay) && (
+    <div className={_xclass('operation')}>
+      {loadingDisplay
+        ? (
+          <Row justify='justify'>
+            <Col width='50%' className={_xclass('operation-loading')}>
+              <Loading
+                size='S'
+                className={_xclass('loading')}
+                display={loadingDisplay}
+              />
+            </Col>
+            <Col width='50%'>
+              <span>加载中</span>
+            </Col>
+          </Row>
+        ) : (
+          pager && pageDisplay && <Page
+            className={_xclass('page')}
+            data={statePage}
+            onSwitch={onSwitchHandler}
+            type='more'
+            slotLoadMore={(): ReactElement => {
+              if (slotPage) {
+                return <slotPage display={pageDisplay} />
+              } else {
+                return (
+                  <div className={_xclass('page-load-more')}>
+                    {pageTrigger === 'scroll'
+                      ? '上拉加载'
+                      : '点击加载'
+                    }
+                  </div>
+                )
+              }
+            }}
+          />
+        )
+      }
+    </div>
+  )
+
+  const loadAllEle = item.length > initDataLength && (
+    <div className={_xclass('operation')} onClick={_loadAllHandler}>
+      {slotPage
+        ? <slotPage loadAll={hasLoadAll} />
+        : hasLoadAll ? '收起全部' : '展开更多'
+      }
+    </div>
+  )
+
+  return (
+    <div
+      className={`${compClass()} ${className}`}
+      onScroll={onScrollHandler}
+      onTouchStart={onTouchStartHandler}
+      onTouchMove={onTouchMoveHandler}
+      onTouchEnd={onTouchEndHandler}
+      ref={refMe}
+      style={style}
+    >
+      {props.slotHeader}
+      {stateItemEmpty
+        ? (
+          <p className={`${compConf.prefix}-css-text-center`}>{emptyHint}</p>
+        ) : (
+          <div className={_xclass('box')} ref={refBox}>
+            {contentEle}
+            {loadAll ? loadAllEle : operaterEle}
+          </div>
+        )
+      }
+      {pager
+        && noMoreDataTip
+        && statePage.current === statePage.length
+        && statePage.length > 1
+        && (
+          <div className={_xclass('box-nomoredata')}>
+            {noMoreDataTip}
+          </div>
+        )
+      }
+    </div>
+  )
 }
 
 export default List

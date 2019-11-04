@@ -16,11 +16,7 @@
     "test": "echo \"No test specified in @act2do/component\" && exit 0"
   },
   "devDependencies": {
-    "@act2do/build": "^1.0.4-alpha.0",
-    "@types/react-intl": "^3.0.0"
+    "@act2do/build": "^1.0.4-alpha.0"
   },
-  "gitHead": "6f116a3ce3fd9ef535a65825fd16cd12f4e2a82f",
-  "dependencies": {
-    "react-intl": "^3.4.0"
-  }
+  "gitHead": "6f116a3ce3fd9ef535a65825fd16cd12f4e2a82f"
 }

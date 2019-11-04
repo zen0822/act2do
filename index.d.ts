@@ -8,3 +8,9 @@ declare module '*.scss'
 
 declare module 'reactComp/*'
 declare module 'appDir/*'
+
+declare namespace JSX {
+  interface IntrinsicElements {
+      [elemName: string]: any;
+  }
+}
