@@ -3,7 +3,6 @@ import React, {
   FC
 } from 'react'
 import {
-  BrowserRouter as Router,
   Route,
   Switch
 } from 'react-router-dom'
@@ -71,13 +70,11 @@ const NotFound = loadable(() => import('../src/page/NotFound/NotFound'))
 
 const RouterConfig: React.FC = (): React.ReactElement => (
   <ErrorBoundary>
-    <Router>
-      <Switch>
-        <Route component={loadableWrap(PageHome)} exact path='/' />
-        <Route component={loadableWrap(PageDetail)} exact path='/detail' />
-        <Route component={loadableWrap(NotFound)} path='*' />
-      </Switch>
-    </Router>
+    <Switch>
+      <Route component={loadableWrap(PageHome)} exact path='/' />
+      <Route component={loadableWrap(PageDetail)} exact path='/detail' />
+      <Route component={loadableWrap(NotFound)} path='*' />
+    </Switch>
   </ErrorBoundary>
 )
 

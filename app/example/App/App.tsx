@@ -10,6 +10,9 @@ import { setConfig } from 'react-hot-loader'
 import { hot } from 'react-hot-loader/root'
 import { Provider as KeepAliveProvider } from 'react-keep-alive'
 
+import {
+  BrowserRouter as Router
+} from 'react-router-dom'
 import { store } from '../store/store'
 import { Provider as ReduxProvider } from 'react-redux'
 
@@ -40,9 +43,11 @@ const intl = createIntl({ locale: 'zh-CN', messages: messageAst })
 const App: React.FC = (): React.ReactElement => (
   <ReduxProvider store={store}>
     <RawIntlProvider value={intl}>
-      <KeepAliveProvider>
-        <RouterConfig />
-      </KeepAliveProvider>
+      <Router>
+        <KeepAliveProvider>
+          <RouterConfig />
+        </KeepAliveProvider>
+      </Router>
     </RawIntlProvider>
   </ReduxProvider>
 )
