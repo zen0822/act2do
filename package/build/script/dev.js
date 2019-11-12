@@ -52,9 +52,7 @@ module.exports = function ({
       aggregateTimeout: 300,
       poll: 1000
     },
-    stats: {
-      colors: true
-    }
+    stats: 'errors-warnings'
   })
 
   console.log(`Starting frontend build server listening at ${httpsOpt ? 'http' : 'https'}://localhost:${port}\n`)

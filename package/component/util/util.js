@@ -74,7 +74,5 @@ const throttle = function (func, wait = 1000) {
 export {
   debounce,
   throttle,
-  uid,
-  getUrlParam,
-  parseUA
+  uid
 }

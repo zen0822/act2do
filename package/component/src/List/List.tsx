@@ -1,16 +1,16 @@
 /**
  * list 组件(当前只支持移动端)
  *
- * 重要：当为下拉加载更多功能开启时，不单止 initItem 要赋值，还要调用 update 方法
+ * 重要：当 auto = false 时，initItem 必须初始化传并且 initPage 必须由父组件传入
  *
- * @prop {array} item - 列表数据
+ * @prop {array} initItem - 初始化列表数据
  * @prop {any} keyName - 列表数据作为 key 的参数名字
  * @prop {number} initDataLength - 当 pageType 为 load 时，一开始展示的数据条数
- * @prop {object} noMoreDataTip - 当 pageType 为 load 时，没有更多数据加载的提示文案，为空时不显示
+ * @prop {object} noMoreDataHint - 当 pageType 为 load 时，没有更多数据加载的提示文案，为空时不显示
  *
  * @prop {boolean} auto - 根据传入的列表数据自动生成分页数据
  * @prop {boolean} loadAll - 当 pageType 为 more 时，启用加载更多的功能即一下全部加载，而不是分页式的加载更多
- * @prop {object} page - 分页数据（没传的话，默认将传的列表数据（item）作为分页数据）
+ * @prop {object} initPage - 分页数据（没传的话，默认将传的列表数据（item）作为分页数据）
  * @prop {boolean} pager - 启动分页
  * @prop {string} pageType - 默认为 num，可选 more
  * @prop {string} pageSize - 将列表数据（item）分为每页多少条数据
@@ -28,48 +28,94 @@
  * @event onChange - 列表数据改变（分页和列表）
  * @event onScroll - 页面滚动事件
  *
- * @slot slotHeader - 添加在列表头部的组件
- * @slot slot - 列表内容
- * @slot slotPage - 分页的内容分发
+ * @Slot slotHeader - 添加在列表头部的组件
+ * @Slot Slot - 列表内容
+ * @Slot SlotPage - 分页的内容分发
  */
 
 import './List.scss'
 
 import React, {
+  FC,
+  ReactElement,
   useState,
   useEffect,
   useRef,
-  ReactElement,
   TouchEvent,
   UIEvent
 } from 'react'
 import compConf from '../../config.json'
 import { xclass } from '../../util/comp'
-import { prop as eleProps } from '../../util/dom/prop'
+// import { prop as eleProps } from '../../util/dom/prop'
 import { uid } from '../../util/util'
-import { useIsMounted } from '../../hook/hook'
 
 import ListTransition from './ListTransition'
-import Page from '../Page/Page'
-import Loading from '../Loading/Loading'
-import Row from '../Row/Row'
-import Col from '../Col/Col'
+import Page from '../Page'
+import Loading from '../Loading'
+import Row from '../Row'
+import Col from '../Col'
 
-type TypePage = {
+type TPage = {
   current: number
   length: number
   size: number
   total: number
 }
 
-type TypeItem = Array<Record<string, any>>
+type TInitPage = {
+  current: number
+  length: number
+  size?: number
+  total?: number
+}
+
+type TPageEle = 'current' | 'length' | 'size' | 'total'
+type TItem = Array<Record<string, any>>
+
+type TypeItemProps = {
+  auto?: boolean
+  animate?: boolean
+  className?: string
+  emptyHint?: string
+  height?: string | number
+  initDataLength?: number
+  initItem: TItem
+  initPage?: TInitPage
+  keyName?: string
+  loadAll?: boolean
+  noMoreDataHint?: string
+  onItemChange?: (list: TItem) => void
+  onPageChange?: (page: TPage) => void
+  onScroll?: (scrollTop: number) => any
+  onSwitch?: (page: TPage) => Promise<[TItem, TPage?]>
+  pager?: boolean
+  pageSize?: number
+  pageType?: 'num' | 'more'
+  pageTrigger?: string
+  refresh?: boolean
+  Slot?: FC<{
+    more: boolean
+    index: number
+    lastIndex: number
+    item: Record<string, any>
+  }>
+  slotHeader?: ReactElement
+  slotHeight?: number
+  SlotPage?: FC<{
+    display?: boolean
+    loadAll?: boolean
+  }>
+  style?: { [key: string]: any }
+  theme?: string
+  waterfall?: boolean
+}
 
 const _xclass = (className: string | Array<string>): string => {
   return xclass('list', className)
 }
 
 // 存储还没执行过渡动画（没出现到用户视线）的列表数据
-const addUIDToListItem = (listItem: TypeItem): TypeItem => {
+const addUIDToListItem = (listItem: TItem): TItem => {
   const listItemTemp = [...listItem]
 
   listItemTemp.forEach((item) => {
@@ -83,66 +129,46 @@ const addUIDToListItem = (listItem: TypeItem): TypeItem => {
   return listItemTemp
 }
 
-type TypeItemProps = {
-  auto: boolean
-  animate: boolean
-  className: string
-  emptyHint: string
-  item: TypeItem
-  initDataLength: number
-  keyName: string,
-  loadAll: boolean
-  noMoreDataTip: string
-  onChange: (list: TypeItem, page: TypePage) => void
-  onScroll: (scrollTop: number) => void
-  onSwitch: Function
-  page: TypePage
-  pager: boolean
-  pageSize: number
-  pageType: string
-  pageTrigger: string
-  refresh: boolean
-  slot: React.FC
-  slotHeader: React.FC
-  slotHeight: number
-  slotPage: string
-  style: { [key: string]: any }
-  theme: string
-  waterfall: boolean
-}
-
-const List: React.FC<TypeItemProps> = ({
+const List: FC<TypeItemProps> = ({
   auto = false,
   animate = false,
   className = '',
-  item = [],
-  initDataLength,
+  initDataLength = 0,
+  initItem = [],
+  initPage = {
+    current: 0,
+    length: 0
+  },
   keyName,
   loadAll = false,
-  noMoreDataTip = '已经到底啦 ~',
-  onChange,
+  noMoreDataHint = '已经到底啦 ~',
+  onItemChange,
+  onPageChange,
   onScroll,
   onSwitch,
-  page = {},
   pager = false,
   pageType = 'num',
   pageTrigger = 'scroll',
   pageSize = 20,
   emptyHint = '暂无数据',
   style = {},
-  slot,
-  slotHeight,
-  slotPage,
+  Slot,
+  slotHeight = 0,
+  SlotPage,
   waterfall = false,
   ...props
-}): React.ReactElement => {
-  const refIsMounted = useIsMounted()
-
-  const refMe = useRef(null) // 组件的 dom
-  const refBox = useRef(null) // 组件的 dom
+}): ReactElement => {
+  const refMe = useRef<HTMLDivElement>(null) // 组件的 dom
+  const refBox = useRef<HTMLDivElement>(null) // 组件的 dom
   const refScrolling = useRef(false) // 是否正在滚动
-  const refNoAnimateListItem = useRef<TypeItem>([]) // 还没执行过渡动画（没出现到用户视线）的列表数据
-  const refTargetScrollTop = useRef(0) // 当前滚动条的高度
+  const refNoAnimateListItem = useRef<TItem>([]) // 还没执行过渡动画（没出现到用户视线）的列表数据
+  const preInitItemRef = useRef<TItem>([])
+  const preInitPageRef = useRef<{
+    current?: number
+    length?: number
+    size?: number
+    total?: number
+  }>({})
 
   const refListHeight = useRef(0) // 列表的高度
   const refListBoxHeight = useRef(0) // 列表内容的高度
@@ -157,8 +183,19 @@ const List: React.FC<TypeItemProps> = ({
     y: 0
   })
 
-  const [loadingDisplay, setLoadingDisplay] = useState(true)
+  const [loadingDisplay, setLoadingDisplay] = useState(false)
   const [hasLoadAll, setHasLoadAll] = useState(true)
+
+  const [stateItem, setStateItem] = useState<TItem>([])
+  const [statePage, setStatePage] = useState<TPage>({
+    current: 0,
+    length: 0,
+    total: 0,
+    size: 0
+  })
+  const [pageDisplay, setPageDisplay] = useState(false)
+
+  const stateItemEmpty = stateItem.length === 0
 
   function compClass(): string {
     return _xclass([
@@ -168,50 +205,53 @@ const List: React.FC<TypeItemProps> = ({
   }
 
   /**
-     * 初始化分页相关数据
-     */
-  function initPageData(pageData: TypePage): TypePage {
+   * 初始化分页相关数据
+   */
+  function getPageData(pageData: TInitPage): TPage {
     if (auto) {
-      const listLength = item.length
+      const listLength = initItem.length
       const size = pageSize
 
       return {
         length: Math.ceil(listLength / size),
         size,
         total: listLength,
-        current: 1
+        current: pageData.current + 1
       }
     } else {
+      const pageSizeTmp = pageData.size || pageSize
+      const pageTotal = pageData.total === undefined
+        ? pageData.length * pageSize
+        : pageData.total
+
       return {
         ...pageData,
-        size: pageData.size || pageSize
+        total: pageTotal,
+        size: pageSizeTmp
       }
     }
   }
 
-  const [statePage, setStatePage] = useState(initPageData(page as TypePage))
-  const [pageDisplay, setPageDisplay] = useState(statePage.length !== statePage.current)
-
   /**
-     * 初始化列表数据
-     *
-     * @param {object} props - 组件的 props 值
-     */
-  function initListData({
-    listItem,
+   * 初始化列表数据
+   *
+   * @param {object} props - 组件的 props 值
+   */
+  function getListData({
+    listItem = initItem,
     pageData,
     replace = false
   }: {
-    listItem: TypeItem
-    pageData: TypePage
+    listItem?: TItem
+    pageData: TPage
     replace?: boolean
-  }): TypeItem {
+  }): TItem {
     let itemTemp = []
 
     if (loadAll) {
       itemTemp = hasLoadAll
-        ? item.slice(0, item.length)
-        : item.slice(0, initDataLength)
+        ? listItem.slice(0, listItem.length)
+        : listItem.slice(0, initDataLength)
     } else {
       if (auto) {
         let start = 0
@@ -227,38 +267,31 @@ const List: React.FC<TypeItemProps> = ({
           end = start + pageSize
         }
 
-        itemTemp = item.slice(start, end)
+        itemTemp = listItem.slice(start, end)
       } else {
-        itemTemp = [...listItem]
+        itemTemp = addUIDToListItem(listItem)
       }
     }
 
-    itemTemp = addUIDToListItem(item)
-    refNoAnimateListItem.current = [...refNoAnimateListItem.current, ...item]
+    // refNoAnimateListItem.current = [...refNoAnimateListItem.current, ...itemTemp]
 
     if (replace) {
       return itemTemp
     }
 
     if (pageType === 'more') {
-      return itemTemp.concat(item)
+      return [...stateItem, ...itemTemp]
     } else {
-      return item
+      return itemTemp
     }
   }
-  const [stateItem, setStateItem] = useState(initListData({
-    listItem: item,
-    pageData: statePage,
-    replace: true
-  }))
-  const stateItemEmpty = stateItem.length === 0
 
   /**
-     * 获得列表组件的相关数据
-     */
+   * 获得列表组件的相关数据
+   */
   function getHeight(): void {
-    refListHeight.current = (refMe && refMe.current) ? refMe.current.clientHeight : 0
-    refListBoxHeight.current = (refBox && refBox.current) ? refBox.current.scrollHeight : 0
+    refListHeight.current = refMe.current ? refMe.current.clientHeight : 0
+    refListBoxHeight.current = refBox.current ? refBox.current.scrollHeight : 0
   }
 
   /**
@@ -303,29 +336,9 @@ const List: React.FC<TypeItemProps> = ({
   }
 
   /**
-   * 初始化列表
-   *
-   * @param {object} props - 组件的 props 值
+   * 切换分页时
    */
-  function initList(listItem: TypeItem, pageData: TypePage): void {
-    // 如果是下拉加载时，第一页的数据小于分页长度时，不显示分页
-    let pageDisplay = true
-
-    if (pageType === 'more' && pageData.current === 1 && listItem.length < pageData.size) {
-      pageDisplay = false
-    }
-
-    setStatePage(pageData)
-    setStateItem(listItem)
-    setPageDisplay(pageData.length !== pageData.current && pageDisplay)
-    setLoadingDisplay(false)
-
-    animate
-      ? animateListItem((refMe.current as any).scrollTop)
-      : getHeight()
-  }
-
-  function onSwitchHandler(): void | boolean {
+  async function onSwitchHandler(): Promise<void | boolean> {
     if (statePage.length === statePage.current || !pageDisplay) {
       return false
     }
@@ -334,29 +347,45 @@ const List: React.FC<TypeItemProps> = ({
       if (loadAll) {
         // 加载全部
       }
+    } else {
+      if (onSwitch) {
+        setLoadingDisplay(true)
 
-      const pageData = {
-        ...statePage,
-        current: statePage.current + 1
+        try {
+          const [listItem, page] = await onSwitch(statePage)
+
+          let pageData = null
+
+          if (page) {
+            pageData = getPageData({
+              ...page
+            })
+          } else {
+            pageData = getPageData({
+              ...statePage,
+              current: statePage.current + 1
+            })
+          }
+
+          const listData = getListData({
+            listItem,
+            pageData
+          })
+
+          onPageChange && onPageChange(pageData)
+          onItemChange && onItemChange(listData)
+
+          setStateItem(listData)
+          setStatePage(pageData)
+          setLoadingDisplay(false)
+        } catch (error) { console.warn() }
       }
-
-      setStatePage(pageData)
-
-      const listItem = initListData({
-        listItem: item,
-        pageData
-      })
-
-      initList(listItem, statePage)
     }
-
-    onSwitch && onSwitch(statePage)
   }
 
   function onScrollHandler(event: UIEvent): void {
     const currentTarget = event.currentTarget
     const targetScrollTop = currentTarget.scrollTop
-    refTargetScrollTop.current = targetScrollTop
 
     if (!refScrolling.current) {
       window.requestAnimationFrame(() => {
@@ -385,16 +414,6 @@ const List: React.FC<TypeItemProps> = ({
     setHasLoadAll(!hasLoadAll)
   }
 
-  /**
-   * 改变itemList内具体内容
-   */
-  function changeItemHandler(index: number, data?: any): void {
-    const itemTemp = [...stateItem]
-    itemTemp.splice(index, 1, data)
-
-    setStateItem(itemTemp)
-  }
-
   function onTouchStartHandler(event: TouchEvent): void {
     refIsTouchStart.current = true
 
@@ -419,39 +438,50 @@ const List: React.FC<TypeItemProps> = ({
     refIsTouchStart.current = false
   }
 
-  useEffect(() => {
-    // _initList(item, statePage)
-  })
+  function initListItem(): void {
+    const pageData = getPageData(initPage as TPage)
+    const listItem = getListData({
+      listItem: initItem,
+      pageData: pageData
+    })
+
+    setStatePage(pageData)
+    setStateItem(listItem)
+    setPageDisplay(pageData.length !== pageData.current)
+
+    onPageChange && onPageChange(pageData)
+    onItemChange && onItemChange(listItem)
+  }
+
+  const SlotEle = ({ item, index, listItem }: { item: any, index: number, listItem: TItem }): ReactElement => {
+    return Slot
+      ? <Slot
+        more={pageDisplay}
+        index={index + 1}
+        lastIndex={listItem.length}
+        item={item}
+      />
+      : item.text
+  }
 
   const contentEle = waterfall
     ? (
       <Row>
-        {stateItem.map((item, index) => {
-          if (!item) {
-            return null
-          }
-
-          return (
-            <Col key={keyName ? item[keyName] : item.rcuid}>
-              {slot
-                ? <slot
-                  more={pageDisplay}
-                  index={index + 1}
-                  lastIndex={stateItem.length}
-                  changeItem={(): void => changeItemHandler(index)}
-                  item={item}
-                />
-                : item.text
-              }
-            </Col>
-          )
-        })}
+        {stateItem.map((item, index) => (
+          <Col key={keyName ? item[keyName] : item.rcuid}>
+            <SlotEle
+              item={item}
+              index={index}
+              listItem={stateItem}
+            />
+          </Col>
+        ))}
       </Row>
     ) : (
       <div className={_xclass('content')}>
         {animate
           ? (
-            stateItem.map((item, index) =>
+            stateItem.map((item, index) => (
               <ListTransition
                 className={_xclass('content-ele')}
                 origin='50% 0'
@@ -460,46 +490,31 @@ const List: React.FC<TypeItemProps> = ({
               >
                 <Row>
                   <Col span={12}>
-                    {slot
-                      ? <slot
-                        more={pageDisplay}
-                        index={index + 1}
-                        lastIndex={stateItem.length}
-                        changeItem={(): void => changeItemHandler(index)}
-                        item={item}
-                      />
-                      : item.text
-                    }
+                    <SlotEle
+                      item={item}
+                      index={index}
+                      listItem={stateItem}
+                    />
                   </Col>
                 </Row>
               </ListTransition>
-            )
+            ))
           ) : (
-            stateItem.map((item, index) => {
-              if (!item) {
-                return null
-              }
-
-              return (
-                <Row
-                  className={_xclass('content-ele')}
-                  key={keyName ? item[keyName] : item.rcuid}
-                // ref={`listEle${item.rcuid}`}
-                >
-                  <Col span={12}>
-                    {slot
-                      ? <slot
-                        more={pageDisplay}
-                        index={index + 1}
-                        lastIndex={stateItem.length}
-                        changeItem={(): void => changeItemHandler(index)}
-                        item={item} />
-                      : item.text
-                    }
-                  </Col>
-                </Row>
-              )
-            })
+            stateItem.map((item, index) => (
+              <Row
+                className={_xclass('content-ele')}
+                key={keyName ? item[keyName] : item.rcuid}
+              // ref={`listEle${item.rcuid}`}
+              >
+                <Col span={12}>
+                  <SlotEle
+                    item={item}
+                    index={index}
+                    listItem={stateItem}
+                  />
+                </Col>
+              </Row>
+            ))
           )
         }
       </div>
@@ -522,39 +537,76 @@ const List: React.FC<TypeItemProps> = ({
             </Col>
           </Row>
         ) : (
-          pager && pageDisplay && <Page
-            className={_xclass('page')}
-            data={statePage}
-            onSwitch={onSwitchHandler}
-            type='more'
-            slotLoadMore={(): ReactElement => {
-              if (slotPage) {
-                return <slotPage display={pageDisplay} />
-              } else {
-                return (
-                  <div className={_xclass('page-load-more')}>
-                    {pageTrigger === 'scroll'
-                      ? '上拉加载'
-                      : '点击加载'
-                    }
-                  </div>
-                )
-              }
-            }}
-          />
+          pager && pageDisplay && (
+            <Page
+              className={_xclass('page')}
+              data={statePage}
+              onSwitch={onSwitchHandler}
+              type={pageType}
+              SlotLoadMore={(): ReactElement => {
+                if (SlotPage) {
+                  return <SlotPage display={pageDisplay} />
+                } else {
+                  return (
+                    <div className={_xclass('page-load-more')}>
+                      {pageTrigger === 'scroll'
+                        ? '上拉加载'
+                        : '点击加载'
+                      }
+                    </div>
+                  )
+                }
+              }}
+            />
+          )
         )
       }
     </div>
   )
 
-  const loadAllEle = item.length > initDataLength && (
+  const loadAllEle = initItem.length > initDataLength && (
     <div className={_xclass('operation')} onClick={_loadAllHandler}>
-      {slotPage
-        ? <slotPage loadAll={hasLoadAll} />
+      {SlotPage
+        ? <SlotPage loadAll={hasLoadAll} />
         : hasLoadAll ? '收起全部' : '展开更多'
       }
     </div>
   )
+
+  if (initItem.length !== preInitItemRef.current.length) {
+    preInitItemRef.current = [...initItem]
+
+    initListItem()
+  }
+
+  if (auto) {
+    setStatePage(getPageData(initPage))
+  } else {
+    const preInitPage = preInitPageRef.current
+
+    Object.keys(initPage).every((key) => {
+      if (initPage[key as TPageEle] !== preInitPage[key as TPageEle]) {
+        preInitPageRef.current = { ...initPage }
+        const pageData = getPageData(initPage)
+        setPageDisplay(pageData.current !== pageData.length)
+        setStatePage(pageData)
+
+        return false
+      }
+
+      return true
+    })
+  }
+
+  useEffect(() => {
+    // animate
+    //   ? animateListItem((refMe.current as any).scrollTop)
+    //   : getHeight()
+  })
+
+  useEffect(() => {
+    getHeight()
+  }, [stateItem])
 
   return (
     <div
@@ -564,7 +616,10 @@ const List: React.FC<TypeItemProps> = ({
       onTouchMove={onTouchMoveHandler}
       onTouchEnd={onTouchEndHandler}
       ref={refMe}
-      style={style}
+      style={{
+        ...style,
+        height: props.height
+      }}
     >
       {props.slotHeader}
       {stateItemEmpty
@@ -578,12 +633,12 @@ const List: React.FC<TypeItemProps> = ({
         )
       }
       {pager
-        && noMoreDataTip
+        && noMoreDataHint
         && statePage.current === statePage.length
         && statePage.length > 1
         && (
           <div className={_xclass('box-nomoredata')}>
-            {noMoreDataTip}
+            {noMoreDataHint}
           </div>
         )
       }

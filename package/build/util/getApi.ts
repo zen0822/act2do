@@ -1,9 +1,9 @@
 import { deepReplaceVal } from '@act2do/component/util/data/object'
 
-const apiPath = function getApiPath(apiData, apiPrefix): any {
+const apiPath = function getApiPath(apiData: any, apiPrefix: string): any {
   return deepReplaceVal({
     obj: apiData,
-    cb(apiUrl) {
+    cb(apiUrl: string) {
       if (/^(http|https|\/\/)/.test(apiUrl)) {
         return apiUrl
       }

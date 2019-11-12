@@ -1,16 +1,13 @@
 /*
  * action 创建函数
  */
-import { Dispatch } from 'redux'
-export const ADD_OFFLINE_IMG = 'ADD_OFFLINE_IMG'
+import { AnyAction } from 'redux'
 
-export const addOfflineImg = (img: string) => async (dispatch: Dispatch): Promise<any> => {
-  try {
-    dispatch({
-      type: ADD_OFFLINE_IMG,
-      offlineImg: img
-    })
-  } catch (error) {
-    console.log(error)
+export const ADD_ADDRESS_ID = 'ADD_ADDRESS_ID'
+
+export const addAddressId = (addressId: number): AnyAction => {
+  return {
+    type: ADD_ADDRESS_ID,
+    addressId
   }
 }

@@ -1,11 +1,10 @@
-@import '../../scss/config.scss';
 @import '../../scss/extend.scss';
 @import '../../scss/mixin.scss';
 
 $css-vars-use-native: false;
 @import '../../scss/var.scss';
 
-$C_PREFIX: #{$comp-prefix}-input;
+$C_PREFIX: #{$--prefix}-input;
 
 .#{$C_PREFIX} {
   display: inline-block;
@@ -14,7 +13,7 @@ $C_PREFIX: #{$comp-prefix}-input;
 
   & > .#{$C_PREFIX}-wrap {
     background-color: #fff;
-    border-radius: $border-radius;
+    border-radius: $--border-radius;
     border: 1px solid #ddd;
 
     & > .#{$C_PREFIX}-wrap-input {
@@ -22,7 +21,7 @@ $C_PREFIX: #{$comp-prefix}-input;
 
       input,
       textarea {
-        border-radius: $border-radius;
+        border-radius: $--border-radius;
         border-style: none;
 
         &:focus {
@@ -36,18 +35,17 @@ $C_PREFIX: #{$comp-prefix}-input;
         box-sizing: border-box;
         padding: 6px;
         width: 100%;
-        color: $grey-dark;
+        color: $--color-grey-dark;
         font-size: 14px;
         vertical-align: middle;
 
         &:focus {
-          border-color: var(--primary-color);
+          border-color: var(--#{$--prefix}-color-primary);
         }
       }
 
       & > .#{$C_PREFIX}-tag-input {
         height: 40px;
-        line-height: 28px;
       }
 
       & > .#{$C_PREFIX}-tag-textarea {
@@ -66,23 +64,23 @@ $C_PREFIX: #{$comp-prefix}-input;
     }
   }
 
-  & > .#{$C_PREFIX}-error-tip {
+  & > .#{$C_PREFIX}-error-hint {
     position: absolute;
     left: 0;
-    bottom: -20px;
-    font-size: $h5;
-    color: var(--danger-color);
+    bottom: -15px;
+    font-size: $--h6;
+    color: var(--#{$--prefix}-color-danger);
   }
 
   & > .#{$C_PREFIX}-helper-text {
-    font-size: $h5;
-    color: $grey-light;
+    font-size: $--h5;
+    color: $--color-grey-light;
     margin-top: 5px;
   }
 
   & > .#{$C_PREFIX}-input-length {
-    font-size: $h5;
-    color: $grey-lightest;
+    font-size: $--h5;
+    color: $--color-grey-lighter;
   }
 
   &-border {

@@ -2,110 +2,110 @@
  * 全局盒子类
  */
 
-@import "../config.scss";
+@import "../var.config.scss";
 
-$C_PREFIX: #{$comp-prefix}-css;
+$C_PREFIX: #{$--prefix}-css;
 
 // margin top
 .#{$C_PREFIX}-m-t-half {
-  margin-top: $gutter-v-half;
+  margin-top: $--gutter-v-half;
 }
 
 .#{$C_PREFIX}-m-t {
-  margin-top: $gutter-v;
+  margin-top: $--gutter-v;
 }
 
 .#{$C_PREFIX}-m-t-double {
-  margin-top: $gutter-v-double;
+  margin-top: $--gutter-v-double;
 }
 
 // margin right
 .#{$C_PREFIX}-m-r-half {
-  margin-right: $gutter-h-half;
+  margin-right: $--gutter-h-half;
 }
 
 .#{$C_PREFIX}-m-r {
-  margin-right: $gutter-h;
+  margin-right: $--gutter-h;
 }
 
 .#{$C_PREFIX}-m-r-double {
-  margin-right: $gutter-v-double;
+  margin-right: $--gutter-v-double;
 }
 
 // margin bottom
 .#{$C_PREFIX}-m-b-half {
-  margin-bottom: $gutter-v-half;
+  margin-bottom: $--gutter-v-half;
 }
 
 .#{$C_PREFIX}-m-b {
-  margin-bottom: $gutter-v;
+  margin-bottom: $--gutter-v;
 }
 
 .#{$C_PREFIX}-m-b-double {
-  margin-bottom: $gutter-v-double;
+  margin-bottom: $--gutter-v-double;
 }
 
 // margin left
 .#{$C_PREFIX}-m-l-half {
-  margin-left: $gutter-h-half;
+  margin-left: $--gutter-h-half;
 }
 
 .#{$C_PREFIX}-m-l {
-  margin-left: $gutter-h;
+  margin-left: $--gutter-h;
 }
 
 .#{$C_PREFIX}-m-l-double {
-  margin-left: $gutter-h-double;
+  margin-left: $--gutter-h-double;
 }
 
 // padding top
 .#{$C_PREFIX}-p-t-half {
-  padding-top: $gap-v-half;
+  padding-top: $--gap-v-half;
 }
 
 .#{$C_PREFIX}-p-t {
-  padding-top: $gap-v;
+  padding-top: $--gap-v;
 }
 
 .#{$C_PREFIX}-p-t-double {
-  padding-top: $gap-v-double;
+  padding-top: $--gap-v-double;
 }
 
 // padding right
 .#{$C_PREFIX}-p-r-half {
-  padding-right: $gap-h-half;
+  padding-right: $--gap-h-half;
 }
 
 .#{$C_PREFIX}-p-r {
-  padding-right: $gap-h;
+  padding-right: $--gap-h;
 }
 
 .#{$C_PREFIX}-p-r-double {
-  padding-right: $gap-v-double;
+  padding-right: $--gap-v-double;
 }
 
 // padding bottom
 .#{$C_PREFIX}-p-b-half {
-  padding-bottom: $gap-v-half;
+  padding-bottom: $--gap-v-half;
 }
 
 .#{$C_PREFIX}-p-b {
-  padding-bottom: $gap-v;
+  padding-bottom: $--gap-v;
 }
 
 .#{$C_PREFIX}-p-b-double {
-  padding-bottom: $gap-v-double;
+  padding-bottom: $--gap-v-double;
 }
 
 // padding left
 .#{$C_PREFIX}-p-l-half {
-  padding-left: $gap-h-half;
+  padding-left: $--gap-h-half;
 }
 
 .#{$C_PREFIX}-p-l {
-  padding-left: $gap-h;
+  padding-left: $--gap-h;
 }
 
 .#{$C_PREFIX}-p-l-double {
-  padding-left: $gap-h-double;
+  padding-left: $--gap-h-double;
 }

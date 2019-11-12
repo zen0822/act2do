@@ -1,7 +1,9 @@
-# 编写 react 组件规范（官方推荐）
-* style、className 和 theme 为自定义组件的保留 props 属性（理论上每个组件都有）
-* compName (组件名字), $el (组件的 dom 对象) 为自定义组件的保留属性（）
-* 组件模块的名字就是文件夹名字和标签的名字
-* 用到 jsx 的地方一定要命名为 *.jsx
-* 注册事件的回调函数统一需要返回对象形式 {} 的格式, 并且统一返回组件的 emitter: this(组件上下文)
-* 注册事件的回调函数前面一定要加 'on' 前缀
+# Overview
+
+## Install package
+
+```bash
+yarn add react-redux react-intl --dev
+```
+
+> 因为组件要和业务项目的 react-redux、react-intl 共用一个 react context，所以需要安装依赖包 react-redux、react-intl

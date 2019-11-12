@@ -1,0 +1,13 @@
+/**
+ * row 组件样式
+ */
+
+@import '../../scss/var.config.scss';
+@import '../../scss/extend.scss';
+@import '../../scss/mixin.scss';
+
+$C_PREFIX: #{$--prefix}-grade;
+
+.#{$C_PREFIX} {
+  display: inline-block;
+}

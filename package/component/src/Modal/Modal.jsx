@@ -34,26 +34,15 @@ import './Modal.m.scss'
 
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { render } from 'react-dom'
 import { xclass, optXclass } from '../../util/comp'
 
 import Pop from '../Pop/Pop'
-import Btn from '../Btn/Btn'
 import Header from './Header'
-import Row from '../Row/Row'
-import Col from '../Col/Col'
 import Footer from './Footer'
-import FadeTransition from 'reactComp/transition/Fade'
 
 import {
   handleEleDisplay
 } from '../../util/dom/prop'
-
-const TYPE_ALERT = 'alert'
-const TYPE_CONFIRM = 'confirm'
-const TYPE_TIP = 'tip'
-
-const TIP_SHOW_TIME = 1500
 
 class Modal extends Component {
   constructor(props) {
@@ -170,7 +159,7 @@ class Modal extends Component {
      * pop 离开之后的回调函数
      */
   _afterPopLeave() {
-    this.refs.me.style.display = 'none'
+    this.meRef.style.display = 'none'
 
     this.props.onHide && this.props.onHide()
   }
@@ -190,7 +179,7 @@ class Modal extends Component {
     const top = parseFloat(styleHub.top, 10)
     const left = parseFloat(styleHub.left, 10)
 
-    this.refs.pop.position({
+    this.popRef.position({
       top: top + event.clientY - this.pointStart.y,
       left: left + event.clientX - this.pointStart.x
     })
@@ -264,10 +253,10 @@ class Modal extends Component {
      * @return {Object}
      */
   show() {
-    this.refs.me.style.display = ''
+    this.meRef.style.display = ''
     this.modalDisplay = true
 
-    this.refs.pop.enter()
+    this.popRef.enter()
   }
 
   /**
@@ -278,28 +267,28 @@ class Modal extends Component {
   hide() {
     this.modalDisplay = false
 
-    this.refs.pop.leave()
+    this.popRef.leave()
   }
 
   componentDidMount() {
     handleEleDisplay({
-      element: this.refs.me,
+      element: this.meRef,
       cb: () => {
-        this.refs.pop.computePosition()
+        this.popRef.computePosition()
       }
     })
   }
 
   componentDidUpdate() {
     handleEleDisplay({
-      element: this.refs.me,
+      element: this.meRef,
       cb: () => {
-        this.refs.pop.computePosition()
+        this.popRef.computePosition()
       }
     })
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(this._computed(nextProps))
   }
 
@@ -359,7 +348,7 @@ class Modal extends Component {
         style={{
           display: this.modalDisplay ? '' : 'none'
         }}
-        ref='me'
+        ref={(ref) => (this.meRef = ref)}
       >
         <div
           className={this._xclass('bg')}
@@ -373,7 +362,7 @@ class Modal extends Component {
           className={`${pure ? this._xclass('pop-pure') : ''} ${this._xclass('pop')}`}
           afterLeave={this._afterPopLeave}
           position={this.props.position}
-          ref='pop'
+          ref={(ref) => (this.popRef = ref)}
           type='fade'
         >
           {pure ? this.props.children : popEle}

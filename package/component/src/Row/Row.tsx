@@ -38,7 +38,7 @@ const Row: React.FC<RowPropTypes> = ({
     `align-${align}`,
     `justify-${justify}`,
     noWrap ? 'nowrap' : 'wrap'
-  ])
+  ], true)
 
   return (
     <div

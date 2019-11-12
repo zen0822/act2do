@@ -2,7 +2,7 @@
 
 //---------------- main ----------------
 
-$comp-prefix: oc !default;
+$comp-prefix: xt !default;
 
 //---------------- color ----------------
 
@@ -15,7 +15,7 @@ $default-color: #e6e6e6 !default;
 $orange-color: #ffa726 !default;
 
 $blue-light-color: #6ec6ff !default;
-$danger-light-color: #ff867c !default;
+$--color-danger-light: #ff867c !default;
 $success-light-color: #98ee99 !default;
 $warning-light-color: #ffff8b !default;
 $orange-light-color: #ffd95b !default;
@@ -37,12 +37,12 @@ $primary-light-color: $blue-light-color !default;
 $primary-lighter-color: $blue-lighter-color !default;
 $primary-dark-color: $blue-dark-color !default;
 
-$secondary-color: #999999 !default;
+$secondary-color: #999 !default;
 
-$grey: #666666 !default;
-$grey-dark: #333333 !default;
+$grey: #666 !default;
+$grey-dark: #333 !default;
 $grey-light: $secondary-color !default;
-$grey-lightest: #cccccc !default;
+$grey-lightest: #ccc !default;
 
 // background
 $bg-color: #f5f5f5 !default;
@@ -52,7 +52,7 @@ $bg-light-color: #fafafa !default;
 $link-color: $primary-color !default;
 
 // border
-$border-color: #d6d6d6 !default;
+$--border-color: #d6d6d6 !default;
 $border-lightest-color: #f0f0f0 !default;
 $border-light-color: #e5e5e5 !default;
 $border-dark-color: $grey-light !default;
@@ -115,15 +115,7 @@ $z-index-higher: 1000 !default;
 $z-index-modal: $z-index-higher !default;
 $z-index-message: 1001 !default;
 
-$shadow-lower:
-    0 2px 2px 0 rgba(0,0,0,0.14),
-    0 3px 1px -2px rgba(0,0,0,0.12),
-    0 1px 5px 0 rgba(0,0,0,0.2);
-$shadow:
-    0 8px 10px 1px rgba(0,0,0,0.14),
-    0 3px 14px 2px rgba(0,0,0,0.12),
-    0 5px 5px -3px rgba(0,0,0,0.2);
-$shadow-highter:
-    0 8px 10px 1px rgba(0,0,0,0.14),
-    0 3px 14px 2px rgba(0,0,0,0.12),
-    0 5px 5px -3px rgba(0,0,0,0.2);
+$shadow-lower: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+$shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.2);
+$shadow-highter: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12),
+  0 5px 5px -3px rgba(0, 0, 0, 0.2);

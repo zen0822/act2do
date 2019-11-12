@@ -12,12 +12,11 @@
  * @event onClickFullNav
  */
 
-import React, { Component } from 'react'
-import { render } from 'react-dom'
-import Row from '../Row/Row'
+import React from 'react'
 import Col from '../Col/Col'
 import { xclass } from '../../util/comp'
-export default function (props) {
+
+export default function ModalHeader(props) {
   const _xclass = (className) => {
     return xclass('modal', className)
   }
@@ -29,27 +28,25 @@ export default function (props) {
         onMouseUp={props.onMouseUp}
       >
         {!props.isBiggerFull &&
-                    <Col
-                      className={_xclass('header-nav')}
-                      xs={2}
-                      l={1}
-                      onClick={props.onClickFullNav}
-                    >
-                        icon 组件缺失
-                    </Col>
+          <Col
+            className={_xclass('header-nav')}
+            xs={2}
+            l={1}
+            onClick={props.onClickFullNav}
+          >icon 组件缺失</Col>
         }
-        <Col xs={props.commit ? 8 : 9} xs={props.commit ? 10 : 11}>
+        <Col xs={props.commit ? 8 : 9} l={props.commit ? 10 : 11}>
           <span className={_xclass('header-title')}>
             {props.modalHeader}
           </span>
         </Col>
         {!props.isBiggerFull && props.commit &&
-                    <Col
-                      xs={2}
-                      l={1}
-                    >
-                      <span>{this.okBtn}</span>
-                    </Col>
+          <Col
+            xs={2}
+            l={1}
+          >
+            <span>{this.okBtn}</span>
+          </Col>
         }
       </header>
     )

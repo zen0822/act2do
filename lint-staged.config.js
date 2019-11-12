@@ -1,9 +1,11 @@
 const micromatch = require('micromatch')
 
 module.exports = {
-  'app/**/*.{js,jsx,ts,tsx}': (file) => {
-    const match = micromatch.not(file, ['dist', 'tsDist'])
+  'app/**/*.{js,jsx,ts,tsx}': (files) => {
+    const match = micromatch.not(files, ['dist', 'tsDist'])
 
-    return match.map(file => `eslint ${file} --fix`)
+    return match.map((file) => {
+      return `eslint ${file} --fix`
+    })
   }
 }

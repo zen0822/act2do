@@ -21,18 +21,16 @@ export const rootReducer = persistReducer(persistConfig, reducersCells)
 
 export type AppState = ReturnType<typeof rootReducer>
 
-export default function configureStore(): any {
-  const middlewares = [thunkMiddleware]
-  const middleWareEnhancer = applyMiddleware(...middlewares)
+const middlewares = [thunkMiddleware]
+const middleWareEnhancer = applyMiddleware(...middlewares)
 
-  const store = createStore(
-    rootReducer,
-    composeWithDevTools(middleWareEnhancer)
-  )
-  const persistor = persistStore(store)
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(middleWareEnhancer)
+)
+const persistor = persistStore(store)
 
-  return {
-    store,
-    persistor
-  }
+export {
+  store,
+  persistor
 }

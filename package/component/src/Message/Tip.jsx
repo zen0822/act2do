@@ -2,7 +2,7 @@
  * 弹出样式的提示
  */
 
-import React, { Component } from 'react'
+import React from 'react'
 import { render } from 'react-dom'
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
@@ -57,25 +57,21 @@ const tip = async (message = '', opt = {}) => {
 
   store.dispatch(addTipMessage(message))
 
-  return new Promise(async (resolve, reject) => {
-    try {
-      tiping = true
+  try {
+    tiping = true
 
-      await tipVm.show()
+    await tipVm.show()
 
-      opt.cb && opt.cb()
-
-      resolve()
-    } catch (error) {
-      reject(error)
-    }
-  })
+    opt.cb && opt.cb()
+  } catch (error) {
+    console.warn(error)
+  }
 }
 
 render(
   <Tip
     store={store}
-    ref={(vm) => tipVm = vm}
+    ref={(vm) => (tipVm = vm)}
     onAutoHideCb={() => {
       tiping = false
     }}

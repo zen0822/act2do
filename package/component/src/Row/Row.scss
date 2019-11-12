@@ -2,11 +2,11 @@
  * row 组件样式
  */
 
-@import '../../scss/config.scss';
+@import '../../scss/var.config.scss';
 @import '../../scss/extend.scss';
 @import '../../scss/mixin.scss';
 
-$C_PREFIX: #{$comp-prefix}-row;
+$C_PREFIX: #{$--prefix}-row;
 
 .#{$C_PREFIX} {
   display: flex;

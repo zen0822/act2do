@@ -48,7 +48,7 @@ class Slide extends Component {
     }
   }
 
-  _compClass(className) {
+  _compClass() {
     return xclass('transition-slide', [
       ''
     ]) + ' ' + this.props.className
@@ -75,17 +75,13 @@ class Slide extends Component {
      * @param {Object} opt
      */
   async enter(opt = {}) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        await this.beforeEnter(opt)
-        await this.entering(opt)
-        await this.afterEnter(opt)
-
-        resolve()
-      } catch (error) {
-        reject(error)
-      }
-    })
+    try {
+      await this.beforeEnter(opt)
+      await this.entering(opt)
+      await this.afterEnter(opt)
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   /**
@@ -94,21 +90,17 @@ class Slide extends Component {
      * @param {Object} opt
      */
   async leave(opt = {}) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        this.transiting = this.isEntering = true
+    try {
+      this.transiting = this.isEntering = true
 
-        await this.beforeLeave(opt)
-        await this.leaveing(opt)
-        await this.afterLeave(opt)
+      await this.beforeLeave(opt)
+      await this.leaveing(opt)
+      await this.afterLeave(opt)
 
-        this.transiting = this.isEntering = false
-
-        resolve()
-      } catch (error) {
-        reject(error)
-      }
-    })
+      this.transiting = this.isEntering = false
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   beforeEnter() {
@@ -126,7 +118,7 @@ class Slide extends Component {
       'transform': this._getTranslate()
     })
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         el.style.display = ''
 
@@ -143,6 +135,7 @@ class Slide extends Component {
     }
 
     // HACK: trigger browser reflow
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const height = el.offsetHeight
 
     this.props.entering && this.props.entering()
@@ -151,7 +144,7 @@ class Slide extends Component {
       'transform': ''
     })
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         return resolve()
       }, this.transitionTime)
@@ -203,7 +196,7 @@ class Slide extends Component {
       'transform': this._getTranslate()
     })
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         el.style.display = 'none'
 
@@ -228,7 +221,7 @@ class Slide extends Component {
     this.props.afterLeave && this.props.afterLeave()
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.slideOffset = nextProps.offset
   }
 
@@ -236,7 +229,7 @@ class Slide extends Component {
     return (
       <div
         className={this._compClass()}
-        ref={($el) => this.$el = $el}
+        ref={($el) => (this.$el = $el)}
         style={{
           ...this.props.style,
           display: this.display ? '' : 'none'

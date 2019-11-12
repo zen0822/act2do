@@ -1,19 +1,19 @@
-@import '../../scss/config.scss';
-@import "../../scss/extend.scss";
+$css-vars-use-native: false;
+@import '../../scss/var.config.scss';
 
-$C_PREFIX: #{ $comp-prefix }-message;
+$C_PREFIX: #{$--prefix}-message;
 
 .#{$C_PREFIX} {
-    position: relative;
-    z-index: $z-index-toast;
+  position: relative;
+  z-index: $--z-index-message;
 
-    .#{$C_PREFIX}-pop {
-        background-color: rgba(#000, .7);
-        border-radius: $border-radius;
-        color: #fff;
-        max-width: 200px;
-        padding: $gap-h $gap-h-double;
-        text-align: center;
-        white-space: pre-line;
-    }
+  .#{$C_PREFIX}-pop {
+    background-color: rgba(#000, 0.7);
+    border-radius: $--border-radius;
+    color: #fff;
+    max-width: 200px;
+    padding: $--gap-h $--gap-h-double;
+    text-align: center;
+    white-space: pre-line;
+  }
 }

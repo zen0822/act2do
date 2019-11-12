@@ -6,10 +6,15 @@ import api from '../../../api'
 import wrapPage from '@act2do/build/util/wrapPage'
 import Input from '@act2do/component/src/Input/Input'
 import { hot } from 'react-hot-loader/root'
+import { useDispatch } from 'react-redux'
+import { addAddressId } from '../../../store/common/action'
 
 const compPrefix = 'p-home-p'
 
 const PageHome: React.FC = (): React.ReactElement => {
+  const dispatch = useDispatch()
+  const [inputVal, setInputVal] = useState('')
+
   document.title = '用户协议'
   const ad = {
     zen: 'handsome'
@@ -20,7 +25,7 @@ const PageHome: React.FC = (): React.ReactElement => {
     tuergou: 'beauty'
   }
 
-  const [inputVal, setInputVal] = useState('')
+  dispatch(addAddressId(1))
 
   useKeepAliveEffect(() => {
     console.log('mounted')

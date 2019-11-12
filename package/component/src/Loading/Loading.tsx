@@ -50,8 +50,7 @@ const Loading: React.FC<InferProps<typeof propTypes>> = ({
     return _xclass([
       '',
       `theme-${theme}`,
-      { 'mark': bgDisplay },
-      className
+      { 'mark': bgDisplay }
     ])
   }
 
@@ -86,7 +85,7 @@ const Loading: React.FC<InferProps<typeof propTypes>> = ({
 
   return (
     <div
-      className={compClass()}
+      className={`${compClass()}${className ? ` ${className}` : ''}`}
       style={{
         display: display ? '' : 'none'
       }}

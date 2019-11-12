@@ -43,7 +43,7 @@ const delCookie = (name) => {
   document.cookie = name + '=v; expires=' + date.toGMTString()
 }
 
-const setCookie = (name, value, expireMin, domain) => {
+const setCookie = function (name, value, expireMin, domain) {
   if (!domain) {
     domain = location.hostname
   }

@@ -1,14 +1,20 @@
 const path = require('path')
 const webpack = require('webpack')
+const glob = require('glob-all')
+
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const PurgecssPlugin = require('purgecss-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const Config = require('webpack-chain')
 const webpackChainConfig = new Config()
 
 module.exports = function ({
   config,
-  extractScss = false
+  extractScss = false,
+  purgeCss = false,
+  bundleAnalyzer = false
 } = {}) {
   const babelLoader = {
     loader: 'babel-loader',
@@ -174,6 +180,12 @@ module.exports = function ({
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all'
+          },
+          styles: {
+            name: 'styles',
+            test: /\.css$/,
+            chunks: 'all',
+            enforce: true
           }
         }
       }
@@ -233,7 +245,32 @@ module.exports = function ({
       .use(extractTextScss)
   }
 
-  const realwebpackChainConfig = projectConfig.webpack(webpackChainConfig)
+  if (purgeCss) {
+    webpackChainConfig
+      .plugin('purgeCss')
+      .use(PurgecssPlugin, [{
+        paths: () => glob.sync([
+          `${projectPath}/**/*`,
+          `${path.resolve(__dirname, '../../component')}/**/*`,
+          `!${path.resolve(__dirname, '../../component')}/node_modules/**/*`
+        ], { nodir: true })
+      }])
+  }
 
-  return realwebpackChainConfig
+  if (bundleAnalyzer) {
+    webpackChainConfig
+      .plugin('bundleAnalyzer')
+      .use(BundleAnalyzerPlugin, [{
+        analyzerMode: 'static',
+        reportFilename: 'webpack-bundle-report.html',
+        defaultSizes: 'parsed',
+        openAnalyzer: false,
+        generateStatsFile: false,
+        statsFilename: 'stats.json',
+        statsOptions: null,
+        logLevel: 'info'
+      }])
+  }
+
+  return projectConfig.webpack(webpackChainConfig)
 }

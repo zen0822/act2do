@@ -19,15 +19,13 @@ import './Pop.m.scss'
 
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { render } from 'react-dom'
 
-import { xclass, optXclass } from '../../util/comp'
+import { optXclass } from '../../util/comp'
 import { hasScroller } from '../../util/dom'
 import { prop as elementProp } from '../../util/dom/prop'
 
-import compConf from '../../config.json'
-import SlideTransition from 'reactComp/transition/Slide'
-import FadeTransition from 'reactComp/transition/Fade'
+import SlideTransition from '../../transition/Slide'
+import FadeTransition from '../..//transition/Fade'
 
 const scrollBarWidth = 20
 
@@ -72,7 +70,7 @@ class Pop extends Component {
     }
   }
 
-  _compClass(className) {
+  _compClass() {
     return optXclass('pop', {
       '': true,
       [`position-${this.props.position}`]: true,
@@ -85,7 +83,7 @@ class Pop extends Component {
      * 初始化弹出层
      */
   _initPop() {
-    const ele = elementProp(this.refs.slide.$el)
+    const ele = elementProp(this.slideRef.$el)
     const parentWidth = window.innerWidth
     const parentHeight = window.innerHeight
     const height = ele.offsetHeight
@@ -168,7 +166,7 @@ class Pop extends Component {
     * 计算弹出层的位置
     */
   computePosition() {
-    if (!this.refs.slide) {
+    if (!this.slideRef) {
       return false
     }
 
@@ -180,36 +178,28 @@ class Pop extends Component {
   /**
      * 进来
      */
-  enter() {
+  async enter() {
     this.computePosition()
 
-    return new Promise(async (resolve, reject) => {
-      try {
-        await this.refs.slide.enter()
-
-        resolve()
-      } catch (error) {
-        reject(error)
-      }
-    })
+    try {
+      await this.slideRef.enter()
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   /**
      * 离开
      */
-  leave() {
-    return new Promise(async (resolve, reject) => {
-      try {
-        await this.refs.slide.leave()
-
-        resolve()
-      } catch (error) {
-        reject(error)
-      }
-    })
+  async leave() {
+    try {
+      await this.slideRef.leave()
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       ...this._initData(nextProps)
     })
@@ -230,7 +220,7 @@ class Pop extends Component {
             }}
             afterEnter={this.props.afterEnter}
             afterLeave={this.props.afterLeave}
-            ref='slide'
+            ref={(ref) => (this.slideRef = ref)}
           >
             {this.props.children}
           </SlideTransition>
@@ -246,7 +236,7 @@ class Pop extends Component {
             }}
             afterEnter={this.props.afterEnter}
             afterLeave={this.props.afterLeave}
-            ref='slide'
+            ref={(ref) => (this.slideRef = ref)}
           >
             {this.props.children}
           </FadeTransition>

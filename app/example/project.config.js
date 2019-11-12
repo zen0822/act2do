@@ -1,6 +1,9 @@
 module.exports = {
   apiUrl: '//example.com',
   baseUrl: './',
+  bundleAnalyzer: true, // 打包文件的分析
+  favicon: './src/asset/favicon.ico',
+  gzip: true,
   hotPort: 80,
   htmlName: 'index',
   htmlTitle: 'ex',

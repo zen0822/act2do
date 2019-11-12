@@ -1,4 +1,4 @@
-@import './config.scss';
+@import './var.config.scss';
 
 * {
   -webkit-tap-highlight-color: rgba(255, 0, 0, 0);
@@ -6,8 +6,8 @@
 
 html,
 body {
-  color: $grey;
-  font-size: $font-base;
+  color: $--color-grey-dark;
+  font-size: $--font-base;
   font-weight: normal;
   font-family: 'Microsoft Yahei', 'simSun', 'Arial';
   padding: 0;
@@ -19,17 +19,17 @@ ul {
   padding: 0;
 }
 
-.#{$comp-prefix}-react-link {
+.#{$--prefix}-react-link {
   &:link,
   &:visited,
   &:hover,
   &:active {
-    color: $grey;
+    color: $--color-grey;
     text-decoration: none;
   }
 }
 
-.#{$comp-prefix}-link {
+.#{$--prefix}-link {
   color: #2569ff;
   white-space: nowrap;
   text-decoration: underline;

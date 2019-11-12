@@ -3,7 +3,6 @@ const webpack = require('webpack')
 const chalk = require('chalk')
 const DashboardPlugin = require('webpack-dashboard/plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 
 module.exports = function ({
@@ -12,7 +11,9 @@ module.exports = function ({
   const appName = config.project.name
   const projectConfig = config.project
   const baseWebpackChain = require('./base.webpack.conf')({
-    config
+    config,
+    extractScss: false,
+    purgeCss: false
   })
 
   const template = projectConfig.tpl ?
@@ -93,23 +94,7 @@ module.exports = function ({
     }
   }
 
-  const webpackChainConfig = baseWebpackChain.merge(devConf)
+  baseWebpackChain.merge(devConf)
 
-  if (config.bundleAnalyzer) {
-    webpackChainConfig
-      .plugin('bundleAnalyzer')
-      .use(BundleAnalyzerPlugin)
-      .args([{
-        analyzerMode: 'static',
-        reportFilename: 'webpack-bundle-report.html',
-        defaultSizes: 'parsed',
-        openAnalyzer: false,
-        generateStatsFile: false,
-        statsFilename: 'stats.json',
-        statsOptions: null,
-        logLevel: 'info'
-      }])
-  }
-
-  return webpackChainConfig
+  return baseWebpackChain
 }

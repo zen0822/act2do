@@ -1,96 +1,38 @@
 // 文本相关的工具类
 
-@import "../config.scss";
+@import '../var.config.scss';
 
-$C_PREFIX: #{$comp-prefix}-css;
-
-// 颜色类
-.#{$C_PREFIX}-color-black {
-  color: $color-black;
-}
-
-.#{$C_PREFIX}-color-blue {
-  color: $color-blue;
-}
-
-.#{$C_PREFIX}-color-danger {
-  color: $color-danger;
-}
-
-.#{$C_PREFIX}-color-grey {
-  color: $color-grey;
-}
-
-.#{$C_PREFIX}-color-orange {
-  color: $color-orange;
-}
-
-.#{$C_PREFIX}-color-warning {
-  color: $color-warning;
-}
-
-.#{$C_PREFIX}-color-white {
-  color: $color-white;
-}
-
-.#{$C_PREFIX}-color-success {
-  color: $color-success;
-}
-
-// 背景颜色
-.#{$C_PREFIX}-bg-black {
-  background-color: $color-black;
-}
-
-.#{$C_PREFIX}-bg-blue {
-  background-color: $color-blue;
-}
-
-.#{$C_PREFIX}-bg-danger {
-  background-color: $color-danger;
-}
-
-.#{$C_PREFIX}-bg-orange {
-  background-color: $color-orange;
-}
-
-.#{$C_PREFIX}-bg-warning {
-  background-color: $color-warning;
-}
-
-.#{$C_PREFIX}-bg-success {
-  background-color: $color-success;
-}
+$C_PREFIX: #{$--prefix}-css;
 
 // 字体
 .#{$C_PREFIX}-h1 {
   font-weight: 700;
-  font-size: $h1;
+  font-size: $--h1;
 }
 
 .#{$C_PREFIX}-h2 {
   font-weight: 700;
-  font-size: $h2;
+  font-size: $--h2;
 }
 
 .#{$C_PREFIX}-h3 {
   font-weight: 700;
-  font-size: $h3;
+  font-size: $--h3;
 }
 
 .#{$C_PREFIX}-h4 {
   font-weight: 700;
-  font-size: $h4;
+  font-size: $--h4;
 }
 
 .#{$C_PREFIX}-h5 {
   font-weight: 700;
-  font-size: $h5;
+  font-size: $--h5;
 }
 
 .#{$C_PREFIX}-h6 {
   font-weight: 700;
-  font-size: $h6;
+  font-size: $--h6;
 }
 
 .#{$C_PREFIX}-f12 {

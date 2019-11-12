@@ -18,10 +18,7 @@
 
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { render } from 'react-dom'
-import compConf from '../../config.json'
 import { xclass } from '../../util/comp'
-import { prop as elementProp } from '../../util/dom/prop'
 
 class ListTransition extends Component {
   constructor(props) {
@@ -46,17 +43,17 @@ class ListTransition extends Component {
     }
   }
 
-  _compClass(className) {
+  _compClass() {
     return xclass('list-transition-item', [
       ''
     ]) + ' ' + this.props.className
   }
 
   /**
-     * 启动进来时的过渡动画
-     *
-     * @param {Object} opt
-     */
+   * 启动进来时的过渡动画
+   *
+   * @param {Object} opt
+   */
   async enter(opt = {}) {
     if (this.props.reStart || !this.display) {
       await this.beforeEnter(opt)
@@ -64,16 +61,16 @@ class ListTransition extends Component {
       await this.afterEnter(opt)
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       return resolve()
     })
   }
 
   /**
-     * 启动离开时的过渡动画
-     *
-     * @param {Object} opt
-     */
+   * 启动离开时的过渡动画
+   *
+   * @param {Object} opt
+   */
   async leave(opt = {}) {
     if (this.props.reStart || this.display) {
       await this.beforeLeave(opt)
@@ -81,7 +78,7 @@ class ListTransition extends Component {
       await this.afterLeave(opt)
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       return resolve()
     })
   }
@@ -102,7 +99,7 @@ class ListTransition extends Component {
       'transform-origin': this.props.origin
     })
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         el.style.visibility = ''
 
@@ -122,7 +119,7 @@ class ListTransition extends Component {
 
     el.style.transform = ''
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         return resolve()
       }, this.transitionTime)
@@ -173,12 +170,13 @@ class ListTransition extends Component {
     }
 
     const height = el.offsetHeight
+    console.log(height)
 
     this.props.leaving && this.props.leaving()
 
     el.style.transform = 'scale(.6)'
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         el.style.visibility = 'hidden'
 
@@ -209,7 +207,7 @@ class ListTransition extends Component {
     return (
       <div
         className={this._compClass()}
-        ref={($el) => this.$el = $el}
+        ref={($el) => (this.$el = $el)}
         style={{
           ...this.props.style,
           visibility: 'hidden'

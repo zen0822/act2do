@@ -99,7 +99,7 @@ const Col: React.FC<ColPropTypes> = ({
     return xclass('col', [
       '',
       ...classOpt
-    ])
+    ], true)
   }
 
   return (

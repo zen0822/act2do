@@ -2,14 +2,22 @@
  * 组件公共类样式
  */
 
-@import "../config.scss";
-@import "../extend.scss";
-@import "../mixin.scss";
+@import '../var.config.scss';
+@import '../extend.scss';
+@import '../mixin.scss';
 
-$C_PREFIX: #{$comp-prefix}-css;
+$C_PREFIX: #{$--prefix}-css;
 
 .#{$C_PREFIX}-common {
   -webkit-tap-highlight-color: transparent;
+}
+
+.#{$C_PREFIX}-block {
+  display: block;
+}
+
+.#{$C_PREFIX}-inline-block {
+  display: inline-block;
 }
 
 .#{$C_PREFIX}-ul {
@@ -34,7 +42,7 @@ $C_PREFIX: #{$comp-prefix}-css;
   &::after {
     display: block;
     clear: both;
-    content: "";
+    content: '';
   }
 }
 
@@ -78,39 +86,47 @@ $C_PREFIX: #{$comp-prefix}-css;
   @extend %text-omit;
 }
 
+.#{$C_PREFIX}-position-relative {
+  position: relative;
+}
+
+.#{$C_PREFIX}-position-center {
+  @extend %position-center;
+}
+
 .#{$C_PREFIX}-device-size {
   position: absolute;
   height: 0;
   width: 0;
   overflow: hidden;
   visibility: hidden;
-  z-index: -$z-index;
+  z-index: $--z-index;
 
   &::after {
-    content: "xl";
+    content: 'xl';
   }
 
-  @include device-type("l") {
+  @include device-type('l') {
     &::after {
-      content: "l";
+      content: 'l';
     }
   }
 
-  @include device-type("m") {
+  @include device-type('m') {
     &::after {
-      content: "m";
+      content: 'm';
     }
   }
 
-  @include device-type("s") {
+  @include device-type('s') {
     &::after {
-      content: "s";
+      content: 's';
     }
   }
 
-  @include device-type("xs") {
+  @include device-type('xs') {
     &::after {
-      content: "xs";
+      content: 'xs';
     }
   }
 }
@@ -125,7 +141,7 @@ $C_PREFIX: #{$comp-prefix}-css;
   overflow: hidden;
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     background-color: rgba(255, 255, 255, 0.3);
     top: 50%;

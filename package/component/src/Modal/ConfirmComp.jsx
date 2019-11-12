@@ -3,10 +3,6 @@
  */
 
 import React, { Component } from 'react'
-import { render } from 'react-dom'
-import { createStore, applyMiddleware } from 'redux'
-import thunkMiddleware from 'redux-thunk'
-
 import Modal from './Modal.jsx'
 
 // 创建 confirm 组件
@@ -24,15 +20,15 @@ class Confirm extends Component {
   }
 
   show() {
-    this.refs.confirm.show()
+    this.confirmRef.confirm.show()
   }
 
   hide() {
-    this.refs.confirm.hide()
+    this.confirmRef.confirm.hide()
   }
 
   display() {
-    return this.refs.confirm.modalDisplay
+    return this.confirmRef.confirm.modalDisplay
   }
 
   onHideHandler() {
@@ -73,7 +69,7 @@ class Confirm extends Component {
       onNo={this.onNoHandler}
       onHide={this.onHideHandler}
       message={this.state.message}
-      ref='confirm'
+      ref={(ref) => (this.confirmRef = ref)}
     />
   }
 }

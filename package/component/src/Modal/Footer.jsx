@@ -10,14 +10,11 @@
  * @event no
  */
 
-import React, { Component } from 'react'
-import { render } from 'react-dom'
-import Row from '../Row/Row'
-import Col from '../Col/Col'
+import React from 'react'
 import Btn from '../Btn/Btn'
 import { xclass } from '../../util/comp'
 
-export default function (props) {
+export default function ModalFooter(props) {
   const _xclass = (className) => {
     return xclass('modal', className)
   }
@@ -31,10 +28,9 @@ export default function (props) {
       {props.type !== 'alert' && props.noBtn && (
         <Btn
           theme={props.theme}
-          kind={props.theme}
+          kind={props.theme || 'default'}
           initVal={props.noBtn}
           type='flat'
-          kind='default'
           onClick={props.no}
           radius='L'
           size='M'

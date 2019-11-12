@@ -19,11 +19,11 @@ class Tip extends Component {
   }
 
   show() {
-    this.refs.message.show()
+    this.messageRef.show()
   }
 
   hide() {
-    this.refs.message.hide()
+    this.messageRef.hide()
   }
 
   autoHideCb() {
@@ -49,7 +49,8 @@ class Tip extends Component {
       hide={this.autoHideCb}
       info={this.state.message}
       kind='fade'
-      ref='message' />
+      ref={(ref) => (this.messageRef = ref)}
+    />
   }
 }
 

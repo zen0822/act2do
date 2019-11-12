@@ -17,10 +17,7 @@
 
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { render } from 'react-dom'
-import compConf from '../config.json'
 import { xclass } from '../util/comp'
-import { prop as elementProp } from '../util/dom/prop'
 
 class Fade extends Component {
   constructor(props) {
@@ -45,7 +42,7 @@ class Fade extends Component {
     }
   }
 
-  _compClass(className) {
+  _compClass() {
     return xclass('transition-fade', [
       ''
     ]) + ' ' + this.props.className
@@ -63,7 +60,7 @@ class Fade extends Component {
       await this.afterEnter(opt)
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       return resolve()
     })
   }
@@ -80,7 +77,7 @@ class Fade extends Component {
       await this.afterLeave(opt)
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       return resolve()
     })
   }
@@ -100,7 +97,7 @@ class Fade extends Component {
       'opacity': 0
     })
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         el.style.display = ''
 
@@ -117,13 +114,14 @@ class Fade extends Component {
     }
 
     // HACK: trigger browser reflow
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const height = el.offsetHeight
 
     this.props.entering && this.props.entering()
 
     el.style.opacity = this.props.opacity ? '' : 1
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         return resolve()
       }, this.transitionTime)
@@ -173,13 +171,14 @@ class Fade extends Component {
       return false
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const height = el.offsetHeight
 
     this.props.leaving && this.props.leaving()
 
     el.style.opacity = 0
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         el.style.display = 'none'
 
@@ -209,7 +208,7 @@ class Fade extends Component {
     return (
       <div
         className={this._compClass()}
-        ref={($el) => this.$el = $el}
+        ref={($el) => (this.$el = $el)}
         style={{
           ...this.props.style,
           display: 'none'

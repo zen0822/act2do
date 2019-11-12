@@ -1,0 +1,46 @@
+// 文本相关的工具类
+
+@import '../var.config.scss';
+@import '../mixin.scss';
+
+$C_PREFIX: #{$--prefix}-css;
+
+@mixin color-util($type) {
+  @include set-color($type);
+
+  .#{$C_PREFIX}-color-#{$type}-lighter {
+    color: $--g-type-color-lighter;
+  }
+  .#{$C_PREFIX}-color-#{$type}-light {
+    color: $--g-type-color-light;
+  }
+  .#{$C_PREFIX}-color-#{$type} {
+    color: $--g-type-color;
+  }
+  .#{$C_PREFIX}-color-#{$type}-dark {
+    color: $--g-type-color-dark;
+  }
+  .#{$C_PREFIX}-color-#{$type}-darker {
+    color: $--g-type-color-darker;
+  }
+
+  .#{$C_PREFIX}-bg-#{$type}-lighter {
+    color: $--g-type-color-lighter;
+  }
+  .#{$C_PREFIX}-bg-#{$type}-light {
+    color: $--g-type-color-light;
+  }
+  .#{$C_PREFIX}-bg-#{$type} {
+    color: $--g-type-color;
+  }
+  .#{$C_PREFIX}-bg-#{$type}-dark {
+    color: $--g-type-color-dark;
+  }
+  .#{$C_PREFIX}-bg-#{$type}-darker {
+    color: $--g-type-color-darker;
+  }
+}
+
+@include color-util('primary');
+@include color-util('grey');
+@include color-util('danger');

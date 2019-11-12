@@ -2,29 +2,31 @@
  * omit 组件样式
  */
 
-@import '../../scss/config.scss';
-@import "../../scss/extend.scss";
+@import '../../scss/extend.scss';
 
-$C_PREFIX: #{$comp-prefix}-omit;
+$css-vars-use-native: false;
+@import '../../scss/var.config.scss';
+
+$C_PREFIX: #{$--prefix}-omit;
 
 .#{$C_PREFIX} {
+  width: 100%;
+  position: relative;
+
+  &-font-width {
+    visibility: hidden;
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    top: 0;
+  }
+
+  &-line {
     width: 100%;
-    position: relative;
+    white-space: nowrap;
 
-    &-font-width {
-        visibility: hidden;
-        position: absolute;
-        z-index: -1;
-        left: 0;
-        top: 0;
+    &-last {
+      @extend %text-omit;
     }
-
-    &-line {
-        width: 100%;
-        white-space: nowrap;
-
-        &-last {
-            @extend %text-omit;
-        }
-    }
+  }
 }

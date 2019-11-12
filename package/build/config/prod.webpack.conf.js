@@ -9,7 +9,8 @@ module.exports = function ({
   const projectConfig = config.project
   const baseWebpackChain = require('./base.webpack.conf')({
     config,
-    extractScss: true
+    extractScss: true,
+    bundleAnalyzer: projectConfig.bundleAnalyzer
   })
   const template = projectConfig.tpl ?
     path.resolve(projectConfig.path, `./index.html`) :
@@ -54,15 +55,14 @@ module.exports = function ({
     }
   }
 
-  const webpackChainConfig = baseWebpackChain.merge(prodWebpackConf)
+  baseWebpackChain.merge(prodWebpackConf)
 
   if (config.prod.gzip) {
     const CompressionWebpackPlugin = require('compression-webpack-plugin')
 
-    webpackChainConfig
+    baseWebpackChain
       .plugin('CompressionWebpackPlugin')
-      .use(CompressionWebpackPlugin)
-      .args([{
+      .use(CompressionWebpackPlugin, [{
         asset: '[path].gz[query]',
         algorithm: 'gzip',
         test: new RegExp(
@@ -75,5 +75,5 @@ module.exports = function ({
       }])
   }
 
-  return webpackChainConfig
+  return baseWebpackChain
 }

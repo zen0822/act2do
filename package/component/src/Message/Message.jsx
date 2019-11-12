@@ -18,16 +18,12 @@
 import './Message.scss'
 
 import React, { Component } from 'react'
-import { render } from 'react-dom'
 import PropTypes from 'prop-types'
 
 import Pop from '../Pop/Pop'
-import SlideTransition from '../../transition/Slide'
-import FadeTransition from '../../transition/Fade'
-import { xclass, optXclass } from '../../util/comp'
+import { xclass } from '../../util/comp'
 
 import {
-  prop as elementProp,
   handleEleDisplay
 } from '../../util/dom/prop'
 
@@ -71,7 +67,7 @@ class Message extends Component {
      * pop 离开的钩子
      */
   _afterPopLeave() {
-    this.refs.me.style.display = 'none'
+    this.meRef.style.display = 'none'
   }
 
   /**
@@ -80,21 +76,17 @@ class Message extends Component {
      * @param {Number} - 当前页码
      * @return {Object}
      */
-  show() {
+  async show() {
     this.messageDisplay = true
-    this.refs.me.style.display = ''
+    this.meRef.style.display = ''
 
-    return new Promise(async (resolve, reject) => {
-      try {
-        await this.refs.pop.enter()
+    try {
+      await this.popRef.enter()
 
-        this.props.show && this.props.show()
-
-        resolve()
-      } catch (error) {
-        reject(error)
-      }
-    })
+      this.props.show && this.props.show()
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   /**
@@ -102,37 +94,33 @@ class Message extends Component {
      *
      * @return {Object}
      */
-  hide() {
+  async hide() {
     this.messageDisplay = false
     clearTimeout(this.timer)
 
-    return new Promise(async (resolve, reject) => {
-      try {
-        await this.refs.pop.leave()
+    try {
+      await this.popRef.leave()
 
-        this.props.hide && this.props.hide()
-
-        resolve()
-      } catch (error) {
-        reject(error)
-      }
-    })
+      this.props.hide && this.props.hide()
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   componentDidMount() {
     handleEleDisplay({
-      element: this.refs.me,
-      cb: (element) => {
-        this.refs.pop.computePosition()
+      element: this.meRef,
+      cb: () => {
+        this.popRef.computePosition()
       }
     })
   }
 
   componentDidUpdate() {
     handleEleDisplay({
-      element: this.refs.me,
-      cb: (element) => {
-        this.refs.pop.computePosition()
+      element: this.meRef,
+      cb: () => {
+        this.popRef.computePosition()
       }
     })
   }
@@ -141,7 +129,7 @@ class Message extends Component {
     return (
       <div
         className={`${this._compClass()}`}
-        ref='me'
+        ref={(ref) => (this.meRef = ref)}
         style={{
           display: this.messageDisplay ? '' : 'none'
         }}
@@ -151,7 +139,7 @@ class Message extends Component {
           afterLeave={this._afterPopLeave}
           className={`${_xclass('pop')}`}
           position={this.props.position}
-          ref='pop'
+          ref={(ref) => (this.popRef = ref)}
           speed={this.props.speed}
           kind={this.props.kind}
         >

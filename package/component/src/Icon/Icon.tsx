@@ -2,6 +2,8 @@
  * icon 组件
  *
  * @prop theme - 主题
+ * @prop color - 颜色
+ * @prop fontSize - 字体大小
  * @prop size - 大小 (XS | S | M | L | XL)
  * @prop type - 字符图标类型
  *              (字符图标的 class 名的前缀，
@@ -14,29 +16,34 @@
 import './iconfont.svg.js' // iconfont 的 svg 图标文件
 import './Icon.scss'
 
-import PropTypes, { InferProps } from 'prop-types'
 import React from 'react'
 import { xclass } from '../../util/comp'
+
+type TSize = 'xs' | 'XS' | 's' | 'S' | 'm' | 'M' | 'l' | 'L' | 'xl' | 'XL'
+
+type TProp = {
+  className?: string
+  color?: string
+  fontSize?: number
+  kind: string
+  size?: TSize
+  type?: string
+  theme?: string
+}
 
 const _xclass = (className: string | Array<any>): string => {
   return xclass('icon', className)
 }
 
-const propTypes = {
-  className: PropTypes.string,
-  kind: PropTypes.string,
-  size: PropTypes.string,
-  type: PropTypes.string,
-  theme: PropTypes.string
-}
-
-const Icon: React.FC<InferProps<typeof propTypes>> = ({
+const Icon: React.FC<TProp> = ({
   className = '',
+  color = '',
   kind = '',
+  fontSize,
   size = 's',
   type = 'ali',
   theme = 'primary'
-} = {}): React.ReactElement => {
+}): React.ReactElement => {
   const isFa = type === 'fa'
 
   function _kindClass(): string {
@@ -52,7 +59,7 @@ const Icon: React.FC<InferProps<typeof propTypes>> = ({
 
   function _nameClass(): string {
     const className = [
-      isFa ? type : _xclass(`${type}`)
+      isFa ? type : _xclass(`ali`)
     ]
 
     if (size) {
@@ -65,13 +72,18 @@ const Icon: React.FC<InferProps<typeof propTypes>> = ({
   function compClass(): string {
     return _xclass([
       '',
-      `theme-${theme}`,
-      className
+      `theme-${theme}`
     ])
   }
 
   return (
-    <div className={compClass()}>
+    <div
+      className={`${compClass()} ${className}`}
+      style={{
+        fontSize: `${fontSize}px`,
+        color: color || undefined
+      }}
+    >
       <div className={_xclass('stage')}>
         {isFa
           ? (

@@ -2,7 +2,7 @@
  * confirm 警告弹窗
  */
 
-import React, { Component } from 'react'
+import React from 'react'
 import { render } from 'react-dom'
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
@@ -36,6 +36,7 @@ const store = createStore(
  *                       header：弹窗标题
  *                       route: 允许路由跳转，默认 false
  */
+let confirmVm = null
 const confirm = async (message = '', opt = {}) => {
   if (confirming) {
     return confirmHub.push({
@@ -59,17 +60,13 @@ const confirm = async (message = '', opt = {}) => {
   store.dispatch(addConfirmMessage(message))
   store.dispatch(addConfirmProp(compInitOpt))
 
-  return new Promise(async (resolve, reject) => {
-    try {
-      confirming = true
+  try {
+    confirming = true
 
-      await confirmVm.show()
-
-      resolve()
-    } catch (error) {
-      reject(error)
-    }
-  })
+    await confirmVm.show()
+  } catch (error) {
+    console.warn(error)
+  }
 }
 
 const hide = () => {
@@ -92,7 +89,6 @@ const display = () => {
 // 创建并挂载 confirm 组件
 const compId = `${compConfig.prefix}-confirm`
 const confirmElement = document.createElement('div')
-let confirmVm = null
 confirmElement.id = compId
 document.body.appendChild(confirmElement)
 render(
@@ -110,7 +106,7 @@ render(
       hideCb && hideCb()
       confirming = false
     }}
-    ref={(vm) => confirmVm = vm}
+    ref={(vm) => (confirmVm = vm)}
   />,
   confirmElement
 )

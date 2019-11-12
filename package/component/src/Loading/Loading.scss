@@ -40,7 +40,7 @@ $C_PREFIX: #{$comp-prefix}-loading;
     }
 
     .#{$C_PREFIX}-bg {
-      @extend %center-position;
+      @extend %position-center;
 
       background: rgba(256, 256, 256, 0.6);
       width: 100%;
@@ -79,7 +79,7 @@ $C_PREFIX: #{$comp-prefix}-loading;
   &.#{$C_PREFIX}-theme-secondary {
     &.#{$C_PREFIX}-mark {
       .#{$C_PREFIX}-bg {
-        @extend %center-position;
+        @extend %position-center;
 
         background: $grey;
         opacity: 0.6;

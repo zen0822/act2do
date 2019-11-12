@@ -1,6 +1,6 @@
-import './scss/box.scss'
-import './scss/article.scss'
-import './scss/common.scss'
+import './scss/common/box.scss'
+import './scss/common/article.scss'
+import './scss/common/common.scss'
 
 // 不支持 import Input from 'reactComp' 了
 // 因为这样会加入全部的组件

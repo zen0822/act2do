@@ -1,25 +1,25 @@
 /**
  * input 组件
  *
- * @prop {string} area - 设置为输入区域
  * @prop {string} align - 文字排版（left | center | right）
- * @prop {boolean} autoVerify - 当输入框失去焦点的时候自动检验
  * @prop {string} block - 宽度设为 100%
+ * @prop {string} bgColor - 输入框背景颜色
  * @prop {string} border - 输入区域的边界线（thin | thick | none）
- * @prop {string} className - 添加类
- * @prop {boolean} emoji - 输入框是否支持emoji的输入
- * @prop {number} errorMessage - 自定义验证的错误信息
  * @prop {number} fontSize - 字体大小
- * @prop {string} helperText - 輸入框下方的幫助信息
+ * @prop {string} fontColor - 字体颜色
  * @prop {object} header - 输入框头部的代码片段
  * @prop {number} headerWidth - 输入框头部的代码片段的宽度（百分比值）
  * @prop {number} height - 输入框高度
+ * @prop {number} width - 输入框宽度
+ *
+ * @prop {string} area - 设置为输入区域
+ * @prop {boolean} autoVerify - 当输入框失去焦点的时候自动检验
+ * @prop {string} className - 添加类
+ * @prop {boolean} emoji - 输入框是否支持emoji的输入
+ * @prop {number} errorMessage - 自定义验证的错误信息
+ * @prop {string} helperText - 輸入框下方的幫助信息
  * @prop {string} info - 输入框底部的提示信息
  * @prop {boolean} inputInvisible - 输入不可见
- * @prop {number} max - input，textarea 可输入最大长度（数字）
- * @prop {number} maxNum - input，textarea 可输入最大数字
- * @prop {number} min - input，textarea 可输入最小长度（数字）
- * @prop {number} minNum - input，textarea 可输入最小数字
  * @prop {string} name - 輸入框名字
  * @prop {boolean} number - 数字类型
  * @prop {string} param - 跟服务器提交数据的形参
@@ -32,9 +32,13 @@
  * @prop {boolean} showLength - 显示字符串长度的提示
  * @prop {string} theme - 主题
  * @prop {string | number} value - 初始化 value
- * @prop {boolean} verified - 错误的验证状态
+ * @prop {boolean} verified - 错误的验证状态(初始话验证状态)
  * @prop {string} verifiedType - 验证值的类型
- * @prop {number} width - 输入框宽度
+ *
+ * @prop {number} max - input，textarea 可输入最大长度（数字）
+ * @prop {number} maxNum - input，textarea 可输入最大数字
+ * @prop {number} min - input，textarea 可输入最小长度（数字）
+ * @prop {number} minNum - input，textarea 可输入最小数字
  *
  * @event onBlur - 输入框失去焦点
  * @event onFocus - 输入框获取焦点
@@ -44,52 +48,38 @@
  */
 
 import './Input.scss'
-import { hot } from 'react-hot-loader'
-import React, { useState, useEffect, useRef } from 'react'
-import { defineMessages, useIntl } from 'react-intl'
+
+import React, {
+  useState,
+  useRef,
+  useImperativeHandle,
+  RefForwardingComponent,
+  forwardRef,
+  ChangeEvent,
+  useEffect,
+  useCallback
+} from 'react'
+import {
+  defineMessages,
+  useIntl
+} from 'react-intl'
 
 import Row from '../Row/Row'
 import Col from '../Col/Col'
-import Tip from '../Message/Tip'
+import tip from '../Message/tip'
 
-import { xclass } from '../../util/comp'
+import { xclass, optClass } from '../../util/comp'
 import { offset as clientOffset } from '../../util/dom/prop'
 import validateRegex from './validate'
+import config from '../../config.json'
 
-const compName = 'input'
-const _xclass = (className?: string | Array<string>): string => {
-  return xclass(compName, className)
-}
-
-const language = defineMessages({
-  wrongFormat: {
-    id: 'rc.input.wrongFormat'
-  },
-  noEmptyData: {
-    id: 'rc.input.noEmptyData'
-  },
-  inputNum: {
-    id: 'rc.input.inputNum'
-  },
-  noLessNum: {
-    id: 'rc.input.noLessNum'
-  },
-  noMoreNum: {
-    id: 'rc.input.noMoreNum'
-  },
-  noLessLength: {
-    id: 'rc.input.noLessLength'
-  },
-  noMoreLength: {
-    id: 'rc.input.noMoreLength'
-  }
-})
-
+type TValue = number | string
 type InputPropTypes = {
-  align?: string
+  align?: 'left' | 'center' | 'right'
   autoFocus?: boolean
   area?: boolean
-  border?: string
+  border?: 'thin' | 'thick' | 'none'
+  bgColor?: string
   block?: boolean
   autoVerify?: boolean
   emoji?: boolean
@@ -97,10 +87,12 @@ type InputPropTypes = {
   className?: string
   errorHintType?: string
   errorMessage?: string
+  fontColor?: string
   fontSize?: number
-  height?: number | string
+  height?: number | string,
   info?: string
   inputInvisible?: boolean
+  intl?: any
   max?: number
   maxNum?: number
   min?: number
@@ -121,19 +113,57 @@ type InputPropTypes = {
   showLength?: boolean
   verifiedType?: string
   verified?: boolean
-  value?: number | string
+  value?: TValue
   width?: number | string
   onBlur?: Function
   onFocus?: Function
-  onChange?: Function
+  onChange?: (value: string | number) => any
   onChangeValidate?: Function
   onEnter?: Function
 }
 
-const Input: React.FC<InputPropTypes> = ({
+interface Api {
+  compName: string
+  param: string | undefined
+  val(): TValue
+  verify(): any
+}
+
+const compPrefix = config.prefix
+const compName = 'input'
+const _xclass = (className?: string | Array<string>): string => {
+  return xclass(compName, className)
+}
+
+const language = defineMessages({
+  wrongFormat: {
+    id: `${compPrefix}.input.wrongFormat`
+  },
+  noEmptyData: {
+    id: `${compPrefix}.input.noEmptyData`
+  },
+  inputNum: {
+    id: `${compPrefix}.input.inputNum`
+  },
+  noLessNum: {
+    id: `${compPrefix}.input.noLessNum`
+  },
+  noMoreNum: {
+    id: `${compPrefix}.input.noMoreNum`
+  },
+  noLessLength: {
+    id: `${compPrefix}.input.noLessLength`
+  },
+  noMoreLength: {
+    id: `${compPrefix}.input.noMoreLength`
+  }
+})
+
+const Input: RefForwardingComponent<Api, InputPropTypes> = ({
   align,
   autoFocus = false,
   area = false,
+  bgColor,
   border = 'thin',
   block = false,
   autoVerify = false,
@@ -141,6 +171,7 @@ const Input: React.FC<InputPropTypes> = ({
   emoji = false,
   errorMessage = '',
   errorHintType = 'hint',
+  fontColor,
   fontSize,
   header,
   headerWidth,
@@ -161,9 +192,9 @@ const Input: React.FC<InputPropTypes> = ({
   onChange,
   onChangeValidate,
   ...props
-}): React.ReactElement => {
+}, ref): React.ReactElement => {
+  const refMe = useRef(null)
   const intl = useIntl()
-  const me = useRef(null)
   let regexObj: any = null // 正则校验的正则表达式
   let formatMessage = '' // 正则校验的错误提示
 
@@ -181,11 +212,12 @@ const Input: React.FC<InputPropTypes> = ({
     formatMessage = `${validate.dataTypeName}${_getLanguage(language.wrongFormat)}`
   }
 
+  const preValueRef = useRef<string | number>('')
+  const [stateValue, setStateValue] = useState(value) // 错误的提示信息
   const [errorHint, setErrorHint] = useState('') // 错误的提示信息
   const popErrorHint = errorHintType === 'tip' // 弹窗错误提示
-  const [verified, setVerified] = useState(props.verified) // 是否通过了验证
+  const [stateVerified, setStateVerified] = useState(props.verified) // 是否通过了验证
   const [inputTextLength, setInputTextLength] = useState(0) // 当前输入框的字符长度
-
 
   /**
    * 验证数据是否为空
@@ -219,25 +251,16 @@ const Input: React.FC<InputPropTypes> = ({
    * @param {Boolean} - 是否是第一次验证
    * @return {Object} - this - 组件
    */
-  function verify({ verifyRegex = true, firstVerify = false } = {}): Function {
+  function verify({ verifyRegex = true, firstVerify = false } = {}): boolean {
+    let value = stateValue
     let verified = true
     let errorHint = ''
     const inputName = name || ''
     const { min, max, minNum, maxNum } = props
 
     const returnFun = (): any => {
-      if (!verified) {
-        // useEffect(() => {
-        //   document.body.scrollTop = clientOffset(me).top
-        // })
-      }
-
-      setVerified(verified)
+      setStateVerified(verified)
       setErrorHint(errorHint)
-
-      // useEffect(() => {
-      //   !verified && popErrorHint && Tip(errorHint)
-      // })
 
       return verified
     }
@@ -326,7 +349,7 @@ const Input: React.FC<InputPropTypes> = ({
     return returnFun()
   }
 
-  function onChangeHandler(event: any): boolean | void {
+  function onChangeHandler(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): boolean | void {
     const {
       numFixed,
       max,
@@ -347,7 +370,7 @@ const Input: React.FC<InputPropTypes> = ({
         return false
       }
 
-      if (maxNum && value > maxNum) {
+      if (maxNum && Number(value) > maxNum) {
         return false
       }
 
@@ -364,6 +387,7 @@ const Input: React.FC<InputPropTypes> = ({
 
     onChange && onChange(value)
 
+    setStateValue(value)
     setInputTextLength(value.length)
 
     if (autoVerify) {
@@ -376,10 +400,13 @@ const Input: React.FC<InputPropTypes> = ({
   function onBlurHandler(event: any): void {
     let value = event.target.value
 
+    props.onBlur && props.onBlur()
+
     if (number && !!value) {
       value = parseFloat(value)
 
       onChange && onChange(value)
+      setStateValue(value)
     }
 
     if (autoVerify) {
@@ -392,7 +419,7 @@ const Input: React.FC<InputPropTypes> = ({
     onFocus && onFocus(event)
     onFocus && onFocus(event)
 
-    setVerified(true)
+    setStateVerified(true)
     setErrorHint('')
   }
 
@@ -402,31 +429,43 @@ const Input: React.FC<InputPropTypes> = ({
     }
   }
 
+  const init = useCallback(() => {
+    if (value !== preValueRef.current) {
+      preValueRef.current = value
 
-  /**
-     * 验证数据格式并且弹出错误
-     *
-     * @return {Object} - this - 组件
-     */
-  // function validate(): void {
-  //   verify()
+      setStateValue(value)
+    }
+  }, [value])
 
-  //   if (!verified) {
-  //     errorBorderDisplay = true
 
-  //     return false
-  //   }
-  // }
+  init()
+
+  useImperativeHandle(ref, () => ({
+    compName: 'input',
+    param,
+    val(): TValue {
+      return stateValue
+    },
+    verify
+  }))
+
+  useEffect(() => {
+    if (!stateVerified) {
+      document.body.scrollTop = clientOffset(refMe.current).top
+
+      popErrorHint && tip(errorHint)
+    }
+  })
 
   return (
     <div
-      className={
-        `${_xclass()}
-          ${_xclass(`border-${border}`)}
-          ${className}
-          ${block ? _xclass('block') : ''}`
-      }
-      ref={me}
+      className={optClass({
+        [_xclass()]: true,
+        [_xclass(`border-${border}`)]: true,
+        [_xclass('block')]: block,
+        [className]: true
+      })}
+      ref={refMe}
       style={{
         width
       }}
@@ -447,11 +486,12 @@ const Input: React.FC<InputPropTypes> = ({
                 onBlur={onBlurHandler}
                 placeholder={placeholder}
                 rows={row}
-                value={value}
-                ref={me}
+                value={stateValue}
                 style={{
+                  backgroundColor: bgColor,
+                  color: fontColor,
                   fontSize,
-                  textAlign: (align as any),
+                  textAlign: align,
                   height
                 }}
               >
@@ -465,11 +505,12 @@ const Input: React.FC<InputPropTypes> = ({
                 onBlur={onBlurHandler}
                 onKeyPress={onKeyPressHandler}
                 placeholder={placeholder}
-                ref={me}
                 type={inputInvisible ? 'password' : 'text'}
-                value={value}
+                value={stateValue}
                 style={{
-                  textAlign: (align as any),
+                  backgroundColor: bgColor,
+                  color: fontColor,
+                  textAlign: align,
                   fontSize: fontSize,
                   height
                 }}
@@ -486,16 +527,19 @@ const Input: React.FC<InputPropTypes> = ({
       }
 
       <div
-        className={_xclass('error-tip')}
+        className={_xclass('error-hint')}
         style={{
-          display: errorHintType === 'hint' && !verified ? '' : 'none'
+          display: errorHintType === 'hint' && !stateVerified ? '' : 'none'
         }}
-      >{errorHint}</div>
+      >{errorMessage || errorHint}</div>
 
       {helperText && <div className={_xclass('helper-text')}>{helperText}</div>}
     </div>
   )
 }
 
+export default forwardRef(Input)
 
-export default Input
+export {
+  Api
+}
