@@ -541,5 +541,6 @@ const Input: RefForwardingComponent<Api, InputPropTypes> = ({
 export default forwardRef(Input)
 
 export {
-  Api
+  Api,
+  TValue as Value
 }
