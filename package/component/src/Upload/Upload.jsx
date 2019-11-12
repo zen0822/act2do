@@ -80,7 +80,6 @@ export default class Upload extends Component {
             user_id: getCookie('userid'),
             session_id: getCookie('sessionid'),
             visitorid: localStorage.getItem('visitorId'),
-            version: localStorage.getItem('wankeMallVersion'),
             source: localStorage.getItem('mallSource')
           }
         })

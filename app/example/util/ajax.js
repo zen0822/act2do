@@ -37,7 +37,6 @@ const ajax = async (opt = {}) => {
       ...opt,
       gettenData: {
         visitorid: localStorage.getItem('visitorId'),
-        version: localStorage.getItem('wankeMallVersion'),
         source: localStorage.getItem('mallSource'),
         ...opt.gettenData
       },
