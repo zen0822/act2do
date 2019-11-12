@@ -1,7 +1,7 @@
 import './Detail.scss'
 import React from 'react'
-import { RouteComponentProps } from '@reach/router'
-import wrapPage from '@act2do/build/util/wrapPage'
+import { RouteComponentProps } from 'react-router-dom'
+import wrapPage from '../../../util/wrapPage'
 
 const compPrefix = 'p-detail-p'
 
