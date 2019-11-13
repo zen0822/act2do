@@ -34,7 +34,7 @@ lerna bootstrap
 ## Application
 
 | name | nick name | description |
-|---|---|---|---|
+| --- | --- | --- |
 | example | EX | 例子 |
 
 ## Development
