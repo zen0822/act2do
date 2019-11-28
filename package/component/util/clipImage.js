@@ -1,5 +1,32 @@
 import EXIF from 'exif-js'
 
+function getObjectURL(file) {
+  let url = null
+  if (window.createObjectURL !== undefined) {
+    url = window.createObjectURL(file)
+  } else if (window.URL !== undefined) {
+    url = window.URL.createObjectURL(file)
+  } else if (window.webkitURL !== undefined) {
+    url = window.webkitURL.createObjectURL(file)
+  }
+  return url
+}
+
+function getPhotoOrientation(image, callback) {
+  const reader = new FileReader()
+  reader.onload = function() {
+    // 文件里的文本会在这里被打印出来
+  }
+
+  reader.readAsText(image)
+
+  let orient
+  EXIF.getData(image, function () {
+    orient = EXIF.getTag(this, 'Orientation')
+    callback(orient)
+  })
+}
+
 export default async function clipImage(file, callback) {
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')
@@ -72,31 +99,4 @@ export default async function clipImage(file, callback) {
   }
 
   image.src = getObjectURL(file)
-}
-
-function getObjectURL(file) {
-  let url = null
-  if (window.createObjectURL !== undefined) {
-    url = window.createObjectURL(file)
-  } else if (window.URL !== undefined) {
-    url = window.URL.createObjectURL(file)
-  } else if (window.webkitURL !== undefined) {
-    url = window.webkitURL.createObjectURL(file)
-  }
-  return url
-}
-
-function getPhotoOrientation(image, callback) {
-  const reader = new FileReader()
-  reader.onload = function(event) {
-    // 文件里的文本会在这里被打印出来
-  }
-
-  reader.readAsText(image)
-
-  let orient
-  EXIF.getData(image, function () {
-    orient = EXIF.getTag(this, 'Orientation')
-    callback(orient)
-  })
 }

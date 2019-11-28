@@ -5,7 +5,7 @@ $css-vars: ();
 
 // the variable may be set to "true" anywhere in the code,
 // so native CSS custom properties will be used instead of the Sass global map
-$css-vars-use-native: false !default;
+$css4: false !default;
 
 // enables the output of debug messages
 $css-vars-debug-log: false !default;
@@ -62,7 +62,7 @@ $css-vars-debug-log: false !default;
   $varName: nth($args, 1);
   $varValue: map-get($css-vars, $varName);
 
-  @if ($css-vars-debug-log or not $css-vars-use-native) {
+  @if ($css-vars-debug-log or not $css4) {
     // Sass or debug
     @if ($varValue==null) {
       // variable is not provided so far
@@ -76,14 +76,14 @@ $css-vars-debug-log: false !default;
       } @else if ($css-vars-debug-log) {
         @debug "Variable '#{$varName}' is not assigned";
 
-        @if (not $css-vars-use-native) {
+        @if (not $css4) {
           @debug "The 'var(#{$varName}...)' usage will be skipped in the output CSS";
         }
       }
     }
   }
 
-  @if ($css-vars-use-native) {
+  @if ($css4) {
     // CSS variables
     // Native CSS: don't process function in case of native
     @return unquote('var(' + $args + ')');
@@ -114,7 +114,7 @@ $css-vars-debug-log: false !default;
   }
 
   // PROCESS
-  @if ($css-vars-debug-log or not $css-vars-use-native) {
+  @if ($css-vars-debug-log or not $css4) {
     // Sass or debug
     // merge variables and values to the global map (provides no output)
     @each $varName, $varValue in $varMap {
@@ -122,7 +122,7 @@ $css-vars-debug-log: false !default;
     }
   }
 
-  @if ($css-vars-use-native) {
+  @if ($css4) {
     // CSS variables
     // Native CSS: assign CSS custom properties to the global scope
     @at-root :root {

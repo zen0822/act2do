@@ -49,7 +49,8 @@ module.exports = {
     'window': true,
     '$': true,
     'exit': true,
-    'workbox': true
+    'workbox': true,
+    wx: true
   },
   rules: {
     '@typescript-eslint/member-delimiter-style': 0,
@@ -60,6 +61,7 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': [0, {
       'prefixWithI': 'always'
     }],
+    'standard/no-callback-literal': 0,
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'react/prop-types': 0,

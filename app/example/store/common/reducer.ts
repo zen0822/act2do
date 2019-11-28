@@ -8,11 +8,15 @@ import {
   ADD_ADDRESS_ID
 } from './action'
 
-const initialState = {
-  addressId: 1
+interface CommonState {
+  addressId: number
 }
 
-export default (state = initialState, action: Action): any => {
+const initialState = {
+  addressId: 0
+}
+
+export default (state: CommonState = initialState, action: Action): any => {
   switch (action.type) {
     case ADD_ADDRESS_ID:
       return {
@@ -24,4 +28,8 @@ export default (state = initialState, action: Action): any => {
         ...state
       }
   }
+}
+
+export {
+  CommonState
 }

@@ -5,7 +5,11 @@ import thunkMiddleware from 'redux-thunk'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
-import storeCommon from './common/reducer'
+import storeCommon, { CommonState } from './common/reducer'
+
+interface State {
+  common: CommonState
+}
 
 const persistConfig = {
   key: 'root',
@@ -32,5 +36,6 @@ const persistor = persistStore(store)
 
 export {
   store,
-  persistor
+  persistor,
+  State
 }

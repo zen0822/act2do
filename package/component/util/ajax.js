@@ -22,7 +22,7 @@ function formatParam(data) {
 function getResponseType(type) {
   switch (type) {
     case 'json':
-      return 'application/json charset = utf-8'
+      return 'application/json charset=utf-8'
     case 'text':
       return 'text/plain charset=utf-8'
     default:
@@ -112,7 +112,6 @@ const jsonp = function jsonp(url, {
       }
 
       removeScript(scriptId)
-
       clearFunction(jsonpCallbackName)
     }
 
@@ -174,7 +173,7 @@ const ajax = ({
   timeout = 10000
 } = {}) => {
   if (!url) {
-    console.warn('invalid url!')
+    console.warn('ajax 地址不能为空!')
 
     return false
   }

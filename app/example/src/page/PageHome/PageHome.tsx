@@ -6,14 +6,16 @@ import api from '../../../api'
 import wrapPage from '../../../util/wrapPage'
 import Input, { Value } from '@act2do/component/src/Input/Input'
 import { hot } from 'react-hot-loader/root'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { addAddressId } from '../../../store/common/action'
+import { State } from '../../../store/store'
 
 const compPrefix = 'p-home-p'
 
 const PageHome: React.FC = (): React.ReactElement => {
   const dispatch = useDispatch()
   const [inputVal, setInputVal] = useState<Value>('')
+  const addressId = useSelector((state: State) => state.common.addressId)
 
   document.title = '用户协议'
   const ad = {
@@ -24,8 +26,6 @@ const PageHome: React.FC = (): React.ReactElement => {
     ...ad,
     tuergou: 'beauty'
   }
-
-  dispatch(addAddressId(1))
 
   useKeepAliveEffect(() => {
     console.log('mounted')
@@ -43,6 +43,11 @@ const PageHome: React.FC = (): React.ReactElement => {
       />
       <h1>列表g</h1>
       <p>{ad2.tuergou}</p>
+      <div
+        onClick={(): void => {
+          dispatch(addAddressId(addressId + 1))
+        }}
+      >点击 + 1，addressId: {addressId}</div>
       {Array.from({ length: 20 }).map((_item, index) => (
         <p key={index}>
           <Link to='detail'>{api.common}</Link>

@@ -1,0 +1,186 @@
+// btn.type 样式
+$C_PREFIX: #{$--prefix}-btn;
+$kind-hub: ('primary', 'danger', 'success', 'warning', 'default', 'grey', 'dark', 'gold');
+
+@mixin btn-button($color) {
+  background-color: $color;
+}
+
+@mixin btn-flat($color, $lighter-color) {
+  color: $color;
+  border-color: $color;
+}
+
+@mixin btn-outline($color, $border-color) {
+  border-color: $border-color;
+  color: $color;
+}
+
+.#{$C_PREFIX} {
+  &.#{$C_PREFIX}-type-button,
+  &.#{$C_PREFIX}-type-float {
+    & > .#{$C_PREFIX}-ele {
+      background-color: #fff;
+      border-radius: var(--z-border-radius);
+    }
+
+    &.#{$C_PREFIX}-kind {
+      &-primary > .#{$C_PREFIX}-ele {
+        @include btn-button(var(--z-color-primary));
+      }
+
+      &-danger > .#{$C_PREFIX}-ele {
+        @include btn-button(var(--z-color-danger));
+      }
+
+      &-success > .#{$C_PREFIX}-ele {
+        @include btn-button(var(--z-color-success));
+      }
+
+      &-warning > .#{$C_PREFIX}-ele {
+        @include btn-button(var(--z-color-warning));
+      }
+
+      &-default > .#{$C_PREFIX}-ele {
+        @include btn-button(#fff);
+
+        color: var(--z-color-grey-dark);
+
+        &:hover,
+        &:active {
+          color: var(--z-color-grey-dark);
+        }
+      }
+
+      &-grey > .#{$C_PREFIX}-ele {
+        @include btn-button(var(--z-color-grey-lighter));
+
+        color: #fff;
+      }
+
+      &-gold > .#{$C_PREFIX}-ele {
+        @include btn-button(var(--z-color-grey-darker));
+
+        color: var(--z-color-gold);
+      }
+
+      &-dark > .#{$C_PREFIX}-ele {
+        @include btn-button(#232321);
+
+        color: #fff;
+      }
+
+      &-white > .#{$C_PREFIX}-ele {
+        @include btn-button(#fff);
+
+        color: #232321;
+      }
+    }
+  }
+
+  &.#{$C_PREFIX}-type-float {
+    & > .#{$C_PREFIX}-ele {
+      border-radius: 100%;
+      width: 40px;
+      height: 40px;
+      box-sizing: border-box;
+      padding: 0;
+      min-width: auto;
+
+      &::after {
+        content: ' ';
+        display: inline-block;
+        vertical-align: middle;
+        height: 100%;
+        width: 0;
+      }
+    }
+  }
+
+  &.#{$C_PREFIX}-type-flat {
+    & > .#{$C_PREFIX}-ele {
+      background-color: transparent;
+    }
+
+    &.#{$C_PREFIX}-kind-primary > .#{$C_PREFIX}-ele {
+      @include btn-flat(var(--z-color-primary), var(--z-color-primary-lighter));
+    }
+
+    &.#{$C_PREFIX}-kind-danger > .#{$C_PREFIX}-ele {
+      @include btn-flat(var(--z-color-danger), var(--z-color-danger-lighter));
+    }
+
+    &.#{$C_PREFIX}-kind-success > .#{$C_PREFIX}-ele {
+      @include btn-flat(var(--z-color-success), var(--z-color-success-lighter));
+    }
+
+    &.#{$C_PREFIX}-kind-warning > .#{$C_PREFIX}-ele {
+      @include btn-flat(var(--z-color-warning), var(--z-color-warning-lighter));
+    }
+
+    &.#{$C_PREFIX}-kind-default > .#{$C_PREFIX}-ele {
+      @include btn-flat(var(--z-color-grey-light), var(--z-color-warning-lighter));
+    }
+
+    &.#{$C_PREFIX}-kind-gold > .#{$C_PREFIX}-ele {
+      @include btn-flat(var(--z-color-gold), var(--z-color-warning-lighter));
+    }
+
+    &.#{$C_PREFIX}-kind-dark > .#{$C_PREFIX}-ele {
+      @include btn-flat(#232321, #fff);
+    }
+
+    &.#{$C_PREFIX}-kind-white > .#{$C_PREFIX}-ele {
+      @include btn-flat(#fff, #232321);
+    }
+  }
+
+  &.#{$C_PREFIX}-type-outline {
+    & > .#{$C_PREFIX}-ele {
+      background-color: rgba(#fff, 0);
+    }
+
+    &.#{$C_PREFIX}-kind-primary > .#{$C_PREFIX}-ele > .#{$C_PREFIX}-ele-border {
+      @include btn-outline(var(--z-color-primary), var(--z-color-primary));
+    }
+
+    &.#{$C_PREFIX}-kind-danger > .#{$C_PREFIX}-ele > .#{$C_PREFIX}-ele-border {
+      @include btn-outline(var(--z-color-danger), var(--z-color-danger));
+    }
+
+    &.#{$C_PREFIX}-kind-success > .#{$C_PREFIX}-ele > .#{$C_PREFIX}-ele-border {
+      @include btn-outline(var(--z-color-success), var(--z-color-success));
+    }
+
+    &.#{$C_PREFIX}-kind-warning > .#{$C_PREFIX}-ele > .#{$C_PREFIX}-ele-border {
+      @include btn-outline(var(--z-color-warning), var(--z-color-warning));
+    }
+
+    &.#{$C_PREFIX}-kind-default > .#{$C_PREFIX}-ele > .#{$C_PREFIX}-ele-border {
+      @include btn-outline(var(--z-color-grey-light), var(--z-color-grey-light));
+    }
+
+    &.#{$C_PREFIX}-kind-gold > .#{$C_PREFIX}-ele > .#{$C_PREFIX}-ele-border {
+      @include btn-outline(var(--z-color-gold), var(--z-color-gold));
+    }
+
+    &.#{$C_PREFIX}-kind-white > .#{$C_PREFIX}-ele > .#{$C_PREFIX}-ele-border {
+      @include btn-outline(var(--z-color-grey-light), var(--z-color-grey-light));
+    }
+
+    &.#{$C_PREFIX}-kind-dark > .#{$C_PREFIX}-ele > .#{$C_PREFIX}-ele-border {
+      @include btn-outline(#232321, #232321);
+    }
+  }
+
+  &-disabled {
+    &.#{$C_PREFIX}-type-button,
+    &.#{$C_PREFIX}-type-float {
+      &.#{$C_PREFIX}-kind {
+        &-gold > .#{$C_PREFIX}-ele {
+          color: #fff;
+        }
+      }
+    }
+  }
+}

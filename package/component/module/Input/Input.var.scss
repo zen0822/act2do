@@ -1,0 +1,100 @@
+@import '../../scss/config.scss';
+@import '../../scss/extend.scss';
+@import '../../scss/mixin.scss';
+
+$css4: true;
+@import '../../scss/var.scss';
+
+$C_PREFIX: #{$comp-prefix}-input;
+
+.#{$C_PREFIX} {
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+
+  & > .#{$C_PREFIX}-wrap {
+    background-color: #fff;
+    border-radius: $border-radius;
+    border: 1px solid #ddd;
+
+    & > .#{$C_PREFIX}-wrap-input {
+      width: 100%;
+
+      input,
+      textarea {
+        border-radius: $border-radius;
+        border-style: none;
+
+        &:focus {
+          outline-style: none;
+        }
+      }
+
+      & > .#{$C_PREFIX}-tag-input,
+      & > .#{$C_PREFIX}-tag-textarea,
+      & > .#{$C_PREFIX}-tag-number {
+        box-sizing: border-box;
+        padding: 6px;
+        width: 100%;
+        color: $grey-dark;
+        font-size: 14px;
+        vertical-align: middle;
+
+        &:focus {
+          border-color: var(--primary-color);
+        }
+      }
+
+      & > .#{$C_PREFIX}-tag-input {
+        height: 40px;
+        line-height: 28px;
+      }
+
+      & > .#{$C_PREFIX}-tag-textarea {
+        resize: none;
+        line-height: 20px;
+      }
+
+      & > .#{$C_PREFIX}-tag-number {
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+        }
+
+        resize: none;
+      }
+    }
+  }
+
+  & > .#{$C_PREFIX}-error-tip {
+    position: absolute;
+    left: 0;
+    bottom: -20px;
+    font-size: $h5;
+    color: var(--danger-color);
+  }
+
+  & > .#{$C_PREFIX}-helper-text {
+    font-size: $h5;
+    color: $grey-light;
+    margin-top: 5px;
+  }
+
+  & > .#{$C_PREFIX}-input-length {
+    font-size: $h5;
+    color: $grey-lightest;
+  }
+
+  &-border {
+    &-none {
+      & > .#{$C_PREFIX}-wrap {
+        border-style: none;
+      }
+    }
+  }
+
+  &-block {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

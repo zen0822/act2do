@@ -30,10 +30,20 @@ module.exports = function ({
         }]
       ],
       plugins: [
+        require.resolve('@babel/plugin-proposal-class-properties'),
         require.resolve('@babel/plugin-syntax-dynamic-import'),
         require.resolve('@babel/plugin-transform-runtime'),
         require.resolve('@babel/plugin-transform-react-jsx-source'),
-        require.resolve('react-hot-loader/babel')
+        // require.resolve('@babel/plugin-transform-arrow-functions'),
+        require.resolve('react-hot-loader/babel'),
+        [
+          require.resolve('babel-plugin-import'),
+          {
+            'libraryName': 'antd-mobile',
+            libraryDirectory: 'es',
+            'style': 'less'
+          }
+        ]
       ]
     }
   }
@@ -57,6 +67,7 @@ module.exports = function ({
   const commonRule = {
     include: [
       projectPath,
+      /(react-intl|intl-messageformat|intl-messageformat-parser)/,
       path.resolve(__dirname, '../util'),
       path.resolve(__dirname, '../../component')
     ]
@@ -64,7 +75,7 @@ module.exports = function ({
 
   let entryConfig = {}
   const configRule = {
-    'jsx&tsx&pre': {
+    'jsx|tsx|pre': {
       ...commonRule,
       test: /\.(j|t)sx?$/,
       enforce: 'pre',
@@ -99,9 +110,27 @@ module.exports = function ({
         babel: babelLoader
       }
     },
-    'css&scss': {
+    css: {
       ...commonRule,
-      test: /\.(css|scss)$/,
+      include: [
+        ...commonRule.include
+      ],
+      test: /\.(css)$/,
+      use: {
+        style: {
+          loader: extractScss ? MiniCssExtractPlugin.loader : 'style-loader'
+        },
+        css: {
+          loader: 'css-loader'
+        },
+        postcss: {
+          loader: 'postcss-loader'
+        }
+      }
+    },
+    scss: {
+      ...commonRule,
+      test: /\.(scss)$/,
       use: {
         style: {
           loader: extractScss ? MiniCssExtractPlugin.loader : 'style-loader'
@@ -114,6 +143,24 @@ module.exports = function ({
         },
         sass: {
           loader: 'sass-loader'
+        }
+      }
+    },
+    less: {
+      ...commonRule,
+      test: /\.(less)$/,
+      use: {
+        style: {
+          loader: extractScss ? MiniCssExtractPlugin.loader : 'style-loader'
+        },
+        css: {
+          loader: 'css-loader'
+        },
+        postcss: {
+          loader: 'postcss-loader'
+        },
+        sass: {
+          loader: 'less-loader'
         }
       }
     },
@@ -138,6 +185,15 @@ module.exports = function ({
           loader: 'file-loader'
         }
       }
+    },
+    'html|tpl': {
+      ...commonRule,
+      test: /\.(html|tpl)$/,
+      use: {
+        file: {
+          loader: 'html-loader'
+        }
+      }
     }
   }
 
@@ -156,7 +212,7 @@ module.exports = function ({
     entryConfig = {
       ...entryConfig,
       [appName]: [
-        path.resolve(projectPath, './main.tsx')
+        path.resolve(projectPath, projectConfig.execute || './index')
       ]
     }
   }

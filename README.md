@@ -22,7 +22,9 @@ yarn link '@act2do/component'
 
 ```bash
 yarn install
+
 yarn global add lerna
+yarn global add @commitlint/cli @commitlint/config-conventional
 ```
 
 ### Lerna run
@@ -33,9 +35,10 @@ lerna bootstrap
 
 ## Application
 
-| name | nick name | description |
-|---|---|---|---|
-| example | EX | 例子 |
+| name              | nick name | description    |
+|-------------------|-----------|----------------|
+| example           | EX        | 例子           |
+| Plugin Management | PM        | 插件管理客户端 |
 
 ## Development
 

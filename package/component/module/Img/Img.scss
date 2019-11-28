@@ -1,0 +1,56 @@
+@import '../../scss/var.config';
+@import '../../scss/mixin.scss';
+@import '../../scss/extend.scss';
+
+$css4: false;
+@import '../../scss/var.scss';
+
+$C_PREFIX: #{$--prefix}-img;
+
+.#{$C_PREFIX} {
+  display: inline-block;
+  position: relative;
+
+  &-img {
+    width: 100%;
+    vertical-align: middle;
+  }
+
+  &-hintover {
+    background-color: rgba(#000, 0.4);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    &-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  &-zoom {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    z-index: $--z-index-upload-preview;
+
+    &-layover {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(#000, 0.8);
+      top: 0;
+      left: 0;
+    }
+
+    &-img {
+      position: relative;
+      z-index: 1;
+    }
+  }
+}

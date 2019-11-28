@@ -13,7 +13,7 @@ const compPrefix = compConf.prefix
  * @param {*} className
  * @param {*} prefix - 加上组件的前缀
  */
-const xclass = (compName, className, prefix = true) => {
+const xclass = (compName, className = '', prefix = true) => {
   const compPrefixClass = prefix ? `${compPrefix}-${compName}` : compName
 
   return xclassUtil(compPrefixClass, className)

@@ -19,6 +19,10 @@ $C_PREFIX: #{$--prefix}-css;
   margin-top: $--gutter-v-double;
 }
 
+.#{$C_PREFIX}-m-t-triple {
+  margin-top: $--gutter-v-triple;
+}
+
 // margin right
 .#{$C_PREFIX}-m-r-half {
   margin-right: $--gutter-h-half;
@@ -30,6 +34,10 @@ $C_PREFIX: #{$--prefix}-css;
 
 .#{$C_PREFIX}-m-r-double {
   margin-right: $--gutter-v-double;
+}
+
+.#{$C_PREFIX}-m-r-triple {
+  margin-right: $--gutter-v-triple;
 }
 
 // margin bottom
@@ -45,6 +53,10 @@ $C_PREFIX: #{$--prefix}-css;
   margin-bottom: $--gutter-v-double;
 }
 
+.#{$C_PREFIX}-m-b-triple {
+  margin-bottom: $--gutter-v-triple;
+}
+
 // margin left
 .#{$C_PREFIX}-m-l-half {
   margin-left: $--gutter-h-half;
@@ -56,6 +68,10 @@ $C_PREFIX: #{$--prefix}-css;
 
 .#{$C_PREFIX}-m-l-double {
   margin-left: $--gutter-h-double;
+}
+
+.#{$C_PREFIX}-m-l-triple {
+  margin-left: $--gutter-h-triple;
 }
 
 // padding top
@@ -71,6 +87,10 @@ $C_PREFIX: #{$--prefix}-css;
   padding-top: $--gap-v-double;
 }
 
+.#{$C_PREFIX}-p-t-triple {
+  padding-top: $--gap-v-triple;
+}
+
 // padding right
 .#{$C_PREFIX}-p-r-half {
   padding-right: $--gap-h-half;
@@ -82,6 +102,10 @@ $C_PREFIX: #{$--prefix}-css;
 
 .#{$C_PREFIX}-p-r-double {
   padding-right: $--gap-v-double;
+}
+
+.#{$C_PREFIX}-p-r-triple {
+  padding-right: $--gap-v-triple;
 }
 
 // padding bottom
@@ -97,6 +121,10 @@ $C_PREFIX: #{$--prefix}-css;
   padding-bottom: $--gap-v-double;
 }
 
+.#{$C_PREFIX}-p-b-triple {
+  padding-bottom: $--gap-v-triple;
+}
+
 // padding left
 .#{$C_PREFIX}-p-l-half {
   padding-left: $--gap-h-half;
@@ -108,4 +136,8 @@ $C_PREFIX: #{$--prefix}-css;
 
 .#{$C_PREFIX}-p-l-double {
   padding-left: $--gap-h-double;
+}
+
+.#{$C_PREFIX}-p-l-triple {
+  padding-left: $--gap-h-triple;
 }

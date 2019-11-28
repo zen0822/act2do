@@ -12,6 +12,7 @@ module.exports = function ({
   const config = require('../config')({
     projectConfigPath
   })
+  const projectConfig = config.project
 
   const WebpackDevServer = require('webpack-dev-server')
   const webpackConfig = process.env.NODE_ENV === 'testing' ?
@@ -26,14 +27,14 @@ module.exports = function ({
   const compiler = webpack(webpackConfig.toConfig())
   let httpsOpt = false
 
-  if (config.httpsOpt === undefined) {
+  if (projectConfig.httpsOpt === undefined) {
     httpsOpt = false
-  } else if (typeof config.httpsOpt === 'boolean') {
-    httpsOpt = config.httpsOpt
+  } else if (typeof projectConfig.httpsOpt === 'boolean') {
+    httpsOpt = projectConfig.httpsOpt
   } else {
     httpsOpt = {
-      key: fs.readFileSync(path.resolve(config.projectPath, config.httpsOpt.key)),
-      cert: fs.readFileSync(path.resolve(config.projectPath, config.httpsOpt.cert))
+      key: fs.readFileSync(path.resolve(config.projectPath, projectConfig.httpsOpt.key)),
+      cert: fs.readFileSync(path.resolve(config.projectPath, projectConfig.httpsOpt.cert))
     }
   }
 

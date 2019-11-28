@@ -4,3 +4,5 @@ tsDist
 *.jsx
 *.ts
 *.tsx
+
+./app/clockwin/**/*

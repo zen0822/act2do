@@ -1,0 +1,58 @@
+@import '../../scss/extend.scss';
+
+$css4: false;
+@import '../../scss/var.config.scss';
+
+$C_PREFIX: #{$--prefix}-list;
+$PAGE_PREFIX: #{$--prefix}-page;
+$LOADING_PREFIX: #{$--prefix}-loading;
+
+.#{$C_PREFIX} {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &-box,
+  &-content {
+    position: relative;
+  }
+
+  &-operation {
+    padding-bottom: $--gap-v-double;
+    padding-top: $--gap-v;
+
+    &-loading {
+      text-align: right;
+      padding: $--gap-v 0;
+
+      .rc-list-loading.rc-loading {
+        display: inline-block;
+        margin-top: 0;
+        margin-right: 6px;
+      }
+    }
+  }
+
+  &-loading.#{$LOADING_PREFIX} {
+    margin-right: 6px;
+    color: #ccc;
+  }
+
+  &-page {
+    width: 100%;
+
+    &.#{$PAGE_PREFIX}-type-num {
+      margin-top: 20px;
+    }
+
+    &-load-more {
+      text-align: center;
+      padding: $--gap-v 0;
+    }
+  }
+
+  &-box-nomoredata {
+    padding: 10px 0 20px;
+    text-align: center;
+    position: relative;
+  }
+}

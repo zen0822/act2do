@@ -1,0 +1,13 @@
+$css4: false;
+@import '../../scss/var.scss';
+
+$C_PREFIX: #{$--prefix}-form;
+$MENU_PREFIX: #{$--prefix}-menu;
+$INPUT_PREFIX: #{$--prefix}-input;
+
+.#{$C_PREFIX} {
+  .#{$MENU_PREFIX},
+  .#{$INPUT_PREFIX} {
+    width: 100%;
+  }
+}

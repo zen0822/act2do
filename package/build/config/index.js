@@ -37,7 +37,6 @@ module.exports = function ({
       assetPublicPath: '/',
       staticDir: projectConfig.staticDir,
       proxyTable: {
-        '/api/**': `http://localhost:${mockPort}`,
         ...projectConfig.proxy
       },
       cssSourceMap: false
