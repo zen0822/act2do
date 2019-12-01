@@ -7,8 +7,7 @@
   "license": "MIT",
   "typings": "./index.d.ts",
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com/"
+    "access": "public"
   },
   "bin": {
     "act2do-build": "./bin/command.js"
@@ -91,5 +90,5 @@
     "webpack-hot-middleware": "^2.18.2",
     "yargs": "^14.2.0"
   },
-  "gitHead": "6f116a3ce3fd9ef535a65825fd16cd12f4e2a82f"
+  "gitHead": "effed1d3e910eeca42d37beac12736cf028029a9"
 }
