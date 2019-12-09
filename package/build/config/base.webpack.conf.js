@@ -41,8 +41,17 @@ module.exports = function ({
           {
             'libraryName': 'antd-mobile',
             libraryDirectory: 'es',
-            'style': 'less'
+            'style': 'css'
           }
+        ],
+        [
+          require.resolve('babel-plugin-import'),
+          {
+            'libraryName': 'antd',
+            libraryDirectory: 'es',
+            'style': 'css'
+          },
+          'some unique name'
         ]
       ]
     }
@@ -68,6 +77,7 @@ module.exports = function ({
     include: [
       projectPath,
       /(react-intl|intl-messageformat|intl-messageformat-parser)/,
+      /(antd|antd-moboile)/,
       path.resolve(__dirname, '../util'),
       path.resolve(__dirname, '../../component')
     ]

@@ -91,6 +91,28 @@ $C_PREFIX: #{$--prefix}-input;
     }
   }
 
+  &-size {
+    &-s {
+      & > .#{$C_PREFIX}-wrap {
+        & > .#{$C_PREFIX}-wrap-input {
+          & > .#{$C_PREFIX}-tag-input {
+            height: 30px;
+          }
+        }
+      }
+    }
+
+    &-l {
+      & > .#{$C_PREFIX}-wrap {
+        & > .#{$C_PREFIX}-wrap-input {
+          & > .#{$C_PREFIX}-tag-input {
+            height: 50px;
+          }
+        }
+      }
+    }
+  }
+
   &-block {
     width: 100%;
     box-sizing: border-box;

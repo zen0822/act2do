@@ -2,9 +2,11 @@
  * modal 模态框组件
  *
  * @prop className
+ * @prop close - 展示弹窗头部的关闭按钮
  * @prop commit - 当是 full 类型的时候，
  *                不用确认直接提交的模态框，默认为否
  * @prop clickBgToHide - 点击弹窗的背景可以触发隐藏
+ * @prop drag - 点击弹窗的头部（必须设置 header 属性）可以触发移动弹窗
  * @prop header - 弹窗头部标题
  * @prop message - 模态框信息
  * @prop display - 显示状态
@@ -57,15 +59,16 @@ import {
 type TProp = React.HTMLProps<HTMLDivElement> & {
   clickBgToHide?: boolean
   className?: string
+  close?: boolean
   commit?: boolean
   deviceRange?: number
   display?: boolean
+  drag?: boolean
   footerDisplay?: boolean
   header?: string
   headerDisplay?: boolean
   headerNoBtnDisplay?: boolean
   height?: number
-  hideClose?: boolean
   message?: string | number
   noBtn?: string
   noBtnDisplay?: boolean
@@ -102,6 +105,7 @@ const Modal: RefForwardingComponent<Api, TProp> = ({
   clickBgToHide = false,
   deviceRange = 0,
   display = false,
+  drag = false,
   footerDisplay,
   header,
   okBtn = '确定',
@@ -220,7 +224,7 @@ const Modal: RefForwardingComponent<Api, TProp> = ({
    * 主要是弹窗的拖曳功能实现
    */
   function mouseMoveHandler(event: MouseEvent): void | boolean {
-    event.preventDefault()
+    // event.preventDefault()
 
     if (!isMousedown.current || !meRef.current) {
       return false
@@ -354,6 +358,8 @@ const Modal: RefForwardingComponent<Api, TProp> = ({
   if (modalHeaderDisplay) {
     popEle.push(
       <Header
+        close={props.close}
+        drag={drag}
         key='header'
         className={headerClass}
         commit={commit}
@@ -365,6 +371,7 @@ const Modal: RefForwardingComponent<Api, TProp> = ({
         onMouseUp={mouseUpHandler}
         onClickFullNav={clickFullNavHandler}
         type={type}
+        no={no}
       />
     )
   }

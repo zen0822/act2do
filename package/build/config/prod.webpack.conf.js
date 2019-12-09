@@ -24,7 +24,11 @@ module.exports = function ({
     },
     plugin: {
       CleanWebpackPlugin: {
-        plugin: CleanWebpackPlugin
+        plugin: CleanWebpackPlugin,
+        args: [{
+          // dry: true,
+          verbose: true
+        }]
       },
       UglifyJsPlugin: {
         plugin: UglifyJsPlugin,

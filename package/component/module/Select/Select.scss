@@ -20,8 +20,24 @@ $C_PREFIX: #{$--prefix}-select;
     font-size: 14px;
     line-height: 28px;
     padding: 6px;
-    height: 40px;
+    height: 42px;
     width: 100%;
+  }
+
+  &-size {
+    &-s {
+      .#{$C_PREFIX}-select {
+        height: 32px;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+
+    &-l {
+      .#{$C_PREFIX}-select {
+        height: 52px;
+      }
+    }
   }
 
   & > .#{$C_PREFIX}-error-tip {

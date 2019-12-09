@@ -46,7 +46,7 @@ type TProp = {
   radius?: 's' | 'S' | 'm' | 'M' | 'l' | 'L' | 'none'
   size?: 's' | 'S' | 'm' | 'M' | 'l' | 'L' | 'l' | 'XL'
   style?: object
-  theme?: string
+  theme?: 'primary' | 'danger' | 'success' | 'warning' | 'default' | 'gold' | 'white' | 'dark'
   type?: 'button' | 'flat' | 'float' | 'outline'
   targetBlank?: boolean
   value?: string
@@ -65,6 +65,7 @@ const Btn: FC<TProp> = ({
   size = 'M',
   targetBlank = false,
   type = 'button',
+  theme = 'primary',
   value = '',
   ...props
 }): ReactElement => {
@@ -78,7 +79,8 @@ const Btn: FC<TProp> = ({
       `radius-${radius.toLowerCase()}`,
       `size-${size.toLowerCase()}`,
       `type-${type}`,
-      `kind-${kind}`
+      `kind-${kind}`,
+      `theme-${theme}`
     ]
 
     if (disabled) {

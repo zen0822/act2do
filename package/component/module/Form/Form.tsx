@@ -29,7 +29,7 @@ type Api = {
 // 组件名字
 const compName = 'form'
 // 表单控件的组件名字
-const controlName = ['input', 'menu', 'check', 'areaPicker', 'upload']
+const controlName = ['input', 'select', 'check', 'areaPicker', 'upload']
 
 const _xclass = (className: string | void): string => {
   return xclass(compName, className)
@@ -88,7 +88,7 @@ const Form: RefForwardingComponent<Api, TProp> = ({
 
             return true
           case 'areaPicker':
-          case 'menu':
+          case 'select':
           default:
             if (ref.verify()) {
               valueRef.current = {

@@ -8,6 +8,7 @@
  * @prop {string} param - 表单控件的形参名
  * @prop {boolean} multiple - 设置为多选（暂时缺失）
  * @prop {boolean} required - 必须要选择
+ * @prop {string} size - 输入框大小 's' | 'S' | 'm' | 'M' | 'l' | 'L'
  *
  * @event onChange - 选择框的状态发生改变事件
  */
@@ -19,7 +20,9 @@ import React, {
   ChangeEvent,
   useImperativeHandle,
   forwardRef,
-  RefForwardingComponent
+  RefForwardingComponent,
+  useCallback,
+  useRef
 } from 'react'
 import { xclass } from '../../util/comp'
 
@@ -37,6 +40,7 @@ type TProp = {
   onChange?: (value: any, text: string) => void
   param?: string
   required?: boolean
+  size?: 's' | 'S' | 'm' | 'M' | 'l' | 'L'
   theme?: string
   value?: TValue
 }
@@ -59,15 +63,20 @@ const Select: RefForwardingComponent<Api, TProp> = ({
   item,
   onChange,
   required = false,
+  size = 'M',
   value,
   ...props
 }, ref): React.ReactElement => {
+  const preValueRef = useRef<string | number>('')
+
   const [verified, setVerified] = useState(false)
   const [errorHint, setErrorHint] = useState('')
+  const [stateValue, setStateValue] = useState<string | number>('')
 
   function _compClass(): string {
     return _xclass([
-      ''
+      '',
+      `size-${size.toLowerCase()}`
     ])
   }
 
@@ -75,7 +84,7 @@ const Select: RefForwardingComponent<Api, TProp> = ({
    * 获取 value
    */
   function val(): TValue | undefined {
-    return value
+    return stateValue
   }
 
   /**
@@ -106,9 +115,18 @@ const Select: RefForwardingComponent<Api, TProp> = ({
     const selectedIndex = event.currentTarget.selectedIndex
 
     onChange && onChange(selectedVal, item[selectedIndex].text)
+    setStateValue(selectedVal)
 
     setErrorHint('')
   }
+
+  const init = useCallback(() => {
+    if (value !== preValueRef.current) {
+      preValueRef.current = value as string | number
+
+      setStateValue(value as string | number)
+    }
+  }, [value])
 
   useImperativeHandle(ref, () => ({
     compName: 'select',
@@ -116,6 +134,8 @@ const Select: RefForwardingComponent<Api, TProp> = ({
     val,
     verify
   }))
+
+  init()
 
   return (
     <div className={`${_compClass()} ${className}`}>

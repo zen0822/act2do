@@ -61,16 +61,18 @@ $POP_CONTAINER_PADDING: 24px;
     }
 
     > header {
-      cursor: move;
+      cursor: default;
       padding: $--gap-v-triple $--gap-h-triple $--gutter-v-double;
       box-sizing: border-box;
       width: 100%;
+    }
 
-      .#{$C_PREFIX}-header-title {
-        font-size: $--h3;
-        line-height: 1;
-        font-weight: bold;
-      }
+    .#{$C_PREFIX}-header-title {
+      font-size: $--h3;
+      line-height: 1;
+      font-weight: bold;
+      margin-bottom: 20px;
+      cursor: default;
     }
 
     > article {

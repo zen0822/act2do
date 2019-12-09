@@ -25,8 +25,7 @@ $C_PREFIX: #{$comp-prefix}-col;
       @include device-type($type) {
         @include device-style($type);
       }
-    }
-    @else {
+    } @else {
       @include device-style($type);
     }
   }
@@ -47,6 +46,20 @@ $C_PREFIX: #{$comp-prefix}-col;
 
     &.#{$C_PREFIX}-push-#{$i} {
       left: 100% * $i / 12;
+    }
+  }
+
+  &-align {
+    &-left {
+      text-align: left;
+    }
+
+    &-center {
+      text-align: center;
+    }
+
+    &-right {
+      text-align: right;
     }
   }
 }

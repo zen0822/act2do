@@ -11,6 +11,7 @@
  * @prop {number} headerWidth - 输入框头部的代码片段的宽度（百分比值）
  * @prop {number} height - 输入框高度
  * @prop {number} width - 输入框宽度
+ * @prop {string} size - 输入框大小 's' | 'S' | 'm' | 'M' | 'l' | 'L'
  *
  * @prop {string} area - 设置为输入区域
  * @prop {boolean} autoVerify - 当输入框失去焦点的时候自动检验
@@ -113,6 +114,7 @@ type InputPropTypes = {
   requiredHint?: string
   row?: number
   showLength?: boolean
+  size?: 's' | 'S' | 'm' | 'M' | 'l' | 'L'
   verifiedType?: 'number' | 'url' | 'phone' | 'tel' | 'email' | 'password'
   verified?: boolean
   value?: TValue
@@ -189,6 +191,7 @@ const Input: RefForwardingComponent<Api, InputPropTypes> = ({
   required = false,
   row,
   showLength = false,
+  size = 'M',
   width,
   verifiedType,
   onChange,
@@ -477,6 +480,7 @@ const Input: RefForwardingComponent<Api, InputPropTypes> = ({
     <div
       className={optClass({
         [_xclass()]: true,
+        [_xclass(`size-${size.toLowerCase()}`)]: true,
         [_xclass(`border-${border}`)]: true,
         [_xclass('block')]: block,
         [className]: true

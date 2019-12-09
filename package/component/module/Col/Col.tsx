@@ -1,6 +1,7 @@
 /**
  * col 组件
  *
+ * @prop align - textAlign (left | center | right)
  * @prop className
  * @prop style
  * @prop gap（已废弃） - 定义间隔的宽度（px），覆盖行设置的间隔 (5, 10, 20, 30, 40, 50)
@@ -26,6 +27,7 @@ import { xclass } from '../../util/comp'
 type numProps = 'xs' | 's' | 'm' | 'l' | 'xl' | 'span'
 
 type ColPropTypes = {
+  align?: 'center' | 'left' | 'right'
   className?: string,
   gap?: number,
   pull?: number,
@@ -46,6 +48,7 @@ type ColPropTypes = {
 }
 
 const Col: React.FC<ColPropTypes> = ({
+  align = 'left',
   className = '',
   gap = 0,
   pull = 0,
@@ -98,6 +101,7 @@ const Col: React.FC<ColPropTypes> = ({
 
     return xclass('col', [
       '',
+      `align-${align}`,
       ...classOpt
     ], true)
   }

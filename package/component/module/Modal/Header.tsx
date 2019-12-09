@@ -15,6 +15,8 @@
 import React, { ReactElement } from 'react'
 import Col from '../Col/Col'
 import { xclass } from '../../util/comp'
+import Row from '../Row'
+import Icon from '../Icon'
 
 export default function ModalHeader({
   ...props
@@ -28,6 +30,9 @@ export default function ModalHeader({
       <header
         onMouseDown={props.onMouseDown}
         onMouseUp={props.onMouseUp}
+        style={{
+          cursor: props.drag ? 'move' : undefined
+        }}
       >
         {!props.isBiggerFull &&
           <Col
@@ -55,11 +60,27 @@ export default function ModalHeader({
     )
   } else {
     return (
-      <Col span={12}>
-        <span className={_xclass('header-title')}>
-          {props.header}
-        </span>
-      </Col>
+      <div
+        className={_xclass('header-title')}
+        onMouseDown={props.onMouseDown}
+        onMouseUp={props.onMouseUp}
+        style={{
+          cursor: props.drag ? 'move' : undefined
+        }}
+      >
+        <Row justify={props.close ? 'justify' : 'center'}>
+          <Col>
+            {props.header}
+          </Col>
+          {props.close && (
+            <Col>
+              <div className='z-css-cursor-pointer' onClick={(): void => (props.no && props.no())}>
+                <Icon kind='close' size='XS' />
+              </div>
+            </Col>
+          )}
+        </Row>
+      </div>
     )
   }
 }

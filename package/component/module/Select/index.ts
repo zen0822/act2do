@@ -1,7 +1,5 @@
 import Select, { Api } from './Select'
 
 export default Select
-export {
-  Api,
-  Api as SelectApi
-}
+export type Api = Api
+export type SelectApi = Api
