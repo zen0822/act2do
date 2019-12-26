@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useKeepAliveEffect } from 'react-keep-alive'
 import api from '../../../api'
 import wrapPage from '../../../util/wrapPage'
-import Input, { Value } from '@act2do/component/src/Input/Input'
+import Input from '@act2do/component/module/Input'
 import { hot } from 'react-hot-loader/root'
 import { useDispatch, useSelector } from 'react-redux'
 import { addAddressId } from '../../../store/common/action'
@@ -14,7 +14,7 @@ const compPrefix = 'p-home-p'
 
 const PageHome: React.FC = (): React.ReactElement => {
   const dispatch = useDispatch()
-  const [inputVal, setInputVal] = useState<Value>('')
+  const [inputVal, setInputVal] = useState<number | string>('')
   const addressId = useSelector((state: State) => state.common.addressId)
 
   document.title = '用户协议'
@@ -41,8 +41,8 @@ const PageHome: React.FC = (): React.ReactElement => {
         value={inputVal}
         onChange={(value): void => setInputVal(value)}
       />
-      <h1>列表g</h1>
       <p>{ad2.tuergou}</p>
+      <h1>列表</h1>
       <div
         onClick={(): void => {
           dispatch(addAddressId(addressId + 1))

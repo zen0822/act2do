@@ -7,7 +7,7 @@ import {
   Switch
 } from 'react-router-dom'
 import loadable from '@loadable/component'
-import LoadingComp from '@act2do/component/src/Loading/Loading'
+import LoadingComp from '@act2do/component/module/Loading/Loading'
 
 const Loading = (
   <div style={{
