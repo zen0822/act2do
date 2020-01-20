@@ -399,7 +399,7 @@ const Input: RefForwardingComponent<Api, InputPropTypes> = ({
 
     // eslint-disable-next-line no-misleading-character-class
     const emojiRegex = /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[\A9|\AE]\u3030|\uA9|\uAE|\u3030/ig
-    if (!emoji && emojiRegex.test(value)) {
+    if (emoji && emojiRegex.test(value)) {
       return false
     }
 
@@ -470,7 +470,7 @@ const Input: RefForwardingComponent<Api, InputPropTypes> = ({
 
   useEffect(() => {
     if (!stateVerified) {
-      document.body.scrollTop = clientOffset(refMe.current).top
+      document.body.scrollTop = (clientOffset(refMe.current) as any).top
 
       popErrorHint && tip(errorHint)
     }

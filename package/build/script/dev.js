@@ -56,7 +56,7 @@ module.exports = function ({
     stats: 'errors-warnings'
   })
 
-  console.log(`Starting frontend build server listening at ${httpsOpt ? 'http' : 'https'}://localhost:${port}\n`)
+  console.log(`Starting frontend build server listening at ${httpsOpt ? 'https' : 'http'}://localhost:${port}\n`)
 
   server.listen(port, function (err) {
     if (err) {

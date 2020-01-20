@@ -10,6 +10,7 @@
   },
   "scripts": {
     "dev:EX": "act2do-build dev config app/example/project.config.js",
+    "dev:EX2": "act2do-build dev config app/example2/project.config.js",
     "dev:PM": "act2do-build dev config app/pluginManagement/project.config.js",
     "prod:PM": "act2do-build prod config app/pluginManagement/project.config.js",
     "mock:EX": "nodemon --watch ./app/example/mock bin/mock.js --app example",

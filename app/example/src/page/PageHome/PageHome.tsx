@@ -2,7 +2,6 @@ import './PageHome.scss'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useKeepAliveEffect } from 'react-keep-alive'
-import api from '../../../api'
 import wrapPage from '../../../util/wrapPage'
 import Input from '@act2do/component/module/Input'
 import { hot } from 'react-hot-loader/root'
@@ -48,9 +47,9 @@ const PageHome: React.FC = (): React.ReactElement => {
           dispatch(addAddressId(addressId + 1))
         }}
       >点击 + 1，addressId: {addressId}</div>
-      {Array.from({ length: 20 }).map((_item, index) => (
+      {Array.from({ length: addressId }).map((_item, index) => (
         <p key={index}>
-          <Link to='detail'>{api.common}</Link>
+          <Link to='detail'>link: {index}</Link>
         </p>
       ))}
     </div>
