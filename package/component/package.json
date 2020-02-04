@@ -2,7 +2,7 @@
   "name": "@act2do/component",
   "version": "1.0.5-alpha.0",
   "description": "Base component for react.",
-  "author": "zenhuangzheng@126.com",
+  "author": "zenwong@aliyun.com",
   "private": false,
   "license": "MIT",
   "typings": "./index.d.ts",

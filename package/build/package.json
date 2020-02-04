@@ -2,7 +2,7 @@
 	"name": "@act2do/build",
 	"version": "1.0.4-alpha.0",
 	"description": "Tool for build react app.",
-	"author": "zenhuangzheng@126.com",
+	"author": "zenwong@aliyun.com",
 	"private": false,
 	"license": "MIT",
 	"typings": "./index.d.ts",
