@@ -38,7 +38,7 @@ const PageHome: React.FC = (): React.ReactElement => {
     <div className={compPrefix}>
       <Input
         value={inputVal}
-        onChange={(value): void => setInputVal(value)}
+        onChange={(value: number | string): void => setInputVal(value)}
       />
       <p>{ad2.tuergou}</p>
       <h1>列表</h1>

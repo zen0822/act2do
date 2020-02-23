@@ -1,18 +1,13 @@
 {
   "name": "act2do",
-  "version": "0.0.1",
-  "description": "Tool for react.",
-  "author": "zenhuangzheng@126.com",
+  "version": "1.0.0",
+  "description": "Act2do Org.",
+  "author": "zenwong@aliyun.com",
   "private": true,
   "license": "UNLICENSED",
-  "bin": {
-    "set.js": "./bin/set.js"
-  },
   "scripts": {
     "dev:EX": "act2do-build dev config app/example/project.config.js",
     "dev:EX2": "act2do-build dev config app/example2/project.config.js",
-    "dev:PM": "act2do-build dev config app/pluginManagement/project.config.js",
-    "prod:PM": "act2do-build prod config app/pluginManagement/project.config.js",
     "mock:EX": "nodemon --watch ./app/example/mock bin/mock.js --app example",
     "prod:EX": "act2do-build prod config app/example/project.config.js",
     "test": "echo \"Error: no test specified in @act2do\" && exit 1"
@@ -27,9 +22,9 @@
     "@types/react-router-dom": "^5.1.2",
     "@typescript-eslint/eslint-plugin": "^2.3.3",
     "@typescript-eslint/parser": "^2.3.3",
+    "antd": "^3.26.8",
     "antd-mobile": "^2.3.1",
     "core-js": "^3.3.3",
-    "cross-fetch": "^3.0.4",
     "eslint": "^6.5.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-friendly-formatter": "^4.0.1",
@@ -41,13 +36,8 @@
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^2.1.2",
     "eslint-plugin-standard": "^4.0.0",
-    "exif-js": "^2.3.0",
     "extract-loader": "^3.1.0",
-    "file-loader": "^4.2.0",
-    "hot-mock-middleware": "^1.1.9",
-    "html-loader": "^0.5.5",
     "husky": "^3.0.9",
-    "intl-messageformat-parser": "^3.2.2",
     "lerna": "^3.17.0",
     "lint-staged": "^9.4.2",
     "micromatch": "^4.0.2",
@@ -72,6 +62,8 @@
     "webpack": "^4.41.2"
   },
   "dependencies": {
+    "@act2do/build": "^0.0.1",
+    "@act2do/component": "^0.0.1",
     "commitlint": "^8.2.0"
   }
 }

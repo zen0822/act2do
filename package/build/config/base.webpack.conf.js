@@ -78,6 +78,7 @@ module.exports = function ({
       projectPath,
       /(react-intl|intl-messageformat|intl-messageformat-parser)/,
       /(antd|antd-moboile)/,
+      /@act2do/,
       path.resolve(__dirname, '../util'),
       path.resolve(__dirname, '../../component')
     ]

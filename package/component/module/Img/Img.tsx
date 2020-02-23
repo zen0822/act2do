@@ -29,7 +29,7 @@ import Col from '../Col/Col'
 
 import { xclass } from '../../util/comp'
 import errorImage from './pic_img_error.png'
-import previewImage from './pic_ load.png'
+import previewImage from './pic_load.png'
 import Icon from '../Icon'
 
 type TProp = React.HTMLProps<HTMLDivElement> & {
