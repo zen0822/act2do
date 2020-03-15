@@ -64,9 +64,9 @@ const loadableWrap = (Comp: any): FC => {
   return WrapComp
 }
 
-const PageHome = loadable(() => import('../src/page/PageHome/PageHome'))
-const PageDetail = loadable(() => import('../src/page/Detail/Detail'))
-const NotFound = loadable(() => import('../src/page/NotFound/NotFound'))
+const PageHome = loadable(() => import(/* webpackChunkName: 'page-home' */ '../src/page/PageHome/PageHome'))
+const PageDetail = loadable(() => import(/* webpackChunkName: 'page-detail' */ '../src/page/Detail/Detail'))
+const NotFound = loadable(() => import(/* webpackChunkName: 'page-not-found' */ '../src/page/NotFound/NotFound'))
 
 const RouterConfig: React.FC = (): React.ReactElement => (
   <ErrorBoundary>

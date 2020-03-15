@@ -24,6 +24,7 @@ module.exports = function ({
         require.resolve('@babel/preset-typescript'),
         [require.resolve('@babel/preset-env'), {
           modules: false,
+          loose: true,
           targets: {
             browsers: ['last 2 versions', 'ie >= 10', 'iOS >= 8']
           }
@@ -108,6 +109,7 @@ module.exports = function ({
             experimentalWatchApi: true,
             compilerOptions: {
               module: 'es6',
+              target: 'es6',
               noEmit: true
             }
           }
@@ -291,6 +293,10 @@ module.exports = function ({
   }
 
   webpackChainConfig.merge(baseConf)
+
+  if (projectConfig.type === 'spa') {
+    webpackChainConfig.output.chunkFilename('[name].bundle.js')
+  }
 
   if (config.zepto) {
     webpackChainConfig.module
