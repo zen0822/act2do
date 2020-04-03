@@ -38,7 +38,6 @@ lerna bootstrap
 | name              | nick name | description    |
 |-------------------|-----------|----------------|
 | example           | EX        | 例子           |
-| Plugin Management | PM        | 插件管理客户端 |
 
 ## Development
 
